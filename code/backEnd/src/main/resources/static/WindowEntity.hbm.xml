@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="lakers.ingram.ModelEntity.WindowEntity" table="window" schema="summerproj">
+        <id name="windowId">
+            <column name="window_id" sql-type="int(11)"/>
+        </id>
+        <property name="restaurant">
+            <column name="restaurant" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="windowName">
+            <column name="windowName" sql-type="varchar(45)" length="45"/>
+        </property>
+        <property name="floor">
+            <column name="floor" sql-type="int(11)"/>
+        </property>
+    </class>
+</hibernate-mapping>

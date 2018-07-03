@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">jdbc:mysql://localhost:3306/SummerProj</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <mapping class="lakers.ingram.ModelEntity.AdminEntity"/>
+        <mapping resource="static/AdminEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.CommentEntity"/>
+        <mapping resource="static/CommentEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.FoodEntity"/>
+        <mapping resource="static/FoodEntity.hbm.xml"/>
+        <mapping resource="static/FoodtagEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.FoodtagEntity"/>
+        <mapping class="lakers.ingram.ModelEntity.TagEntity"/>
+        <mapping resource="static/TagEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.TodayfoodEntity"/>
+        <mapping resource="static/TodayfoodEntity.hbm.xml"/>
+        <mapping resource="static/UserEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.UserEntity"/>
+        <mapping resource="static/UserlikefoodEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.UserlikefoodEntity"/>
+        <mapping class="lakers.ingram.ModelEntity.WindowEntity"/>
+        <mapping resource="static/WindowEntity.hbm.xml"/>
+        <mapping resource="static/WorkerEntity.hbm.xml"/>
+        <mapping class="lakers.ingram.ModelEntity.WorkerEntity"/>
+        <!-- <property name="connection.username"/> -->
+        <!-- <property name="connection.password"/> -->
+
+        <!-- DB schema will be updated if needed -->
+        <!-- <property name="hbm2ddl.auto">update</property> -->
+    </session-factory>
+</hibernate-configuration>
