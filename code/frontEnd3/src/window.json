@@ -1,0 +1,35 @@
+{
+  "windows":[
+      {
+        "id": "1",
+        "restuarant": "一餐",
+        "name": "A窗口",
+        "floor":1
+       },
+      {
+        "id": "2",
+        "restuarant": "一餐",
+        "name": "B窗口",
+        "floor":1
+      },
+      {
+        "id": "3",
+        "restuarant": "一餐",
+        "name": "A窗口",
+        "floor":2
+      },
+      {
+        "id": "4",
+        "restuarant": "一餐",
+        "name": "B窗口",
+        "floor":2
+      },
+      {
+        "id": "3",
+        "restuarant": "一餐",
+        "name": "A窗口",
+        "floor":3
+      }
+
+    ]
+}
