@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
+import {Link} from "react-router-dom"
 // core components
 
 const footerStyle = {
@@ -62,12 +63,12 @@ function Footer({ ...props }) {
                 <div className={classes.left}>
                     <List className={classes.list}>
                         <ListItem className={classes.inlineBlock}>
-                            <a href="#home" className={classes.block}>
+                            <Link to="/">
                                 Home
-                            </a>
+                            </Link>
                         </ListItem>
                         <ListItem className={classes.inlineBlock}>
-                            <a href="#help" className={classes.block}>
+                            <a href="/help" className={classes.block}>
                                 Help
                             </a>
                         </ListItem>

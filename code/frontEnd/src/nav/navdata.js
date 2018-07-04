@@ -17,25 +17,37 @@ export const mailFolderListItems = (
             <ListItemIcon>
                 <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary="Inbox" />
+            <ListItemText primary="Canteen One" />
         </ListItem>
         <ListItem button>
             <ListItemIcon>
                 <StarIcon />
             </ListItemIcon>
-            <ListItemText primary="Starred" />
+            <ListItemText primary="Canteen Two" />
         </ListItem>
         <ListItem button>
             <ListItemIcon>
                 <SendIcon />
             </ListItemIcon>
-            <ListItemText primary="Send mail" />
+            <ListItemText primary="Canteen Three" />
         </ListItem>
         <ListItem button>
             <ListItemIcon>
                 <DraftsIcon />
             </ListItemIcon>
-            <ListItemText primary="Drafts" />
+            <ListItemText primary="Canteen Four" />
+        </ListItem>
+        <ListItem button>
+            <ListItemIcon>
+                <DraftsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Canteen Five" />
+        </ListItem>
+        <ListItem button>
+            <ListItemIcon>
+                <DraftsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Canteen Six" />
         </ListItem>
     </div>
 );
@@ -46,19 +58,7 @@ export const otherMailFolderListItems = (
             <ListItemIcon>
                 <MailIcon />
             </ListItemIcon>
-            <ListItemText primary="All mail" />
-        </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <DeleteIcon />
-            </ListItemIcon>
-            <ListItemText primary="Trash" />
-        </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <ReportIcon />
-            </ListItemIcon>
-            <ListItemText primary="Spam" />
+            <ListItemText primary="Home" />
         </ListItem>
     </div>
 );

@@ -1,11 +1,24 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import PersistentDrawer from './homePage/nav'
+import MiniDrawer from './nav/nav'
+import UserPageNav from "./userCenter/userPageNav";
+import MainPage from "./homePage/mainPage";
+import {
+    HashRouter,
+    Route
+} from 'react-router-dom';
+import Floor from "./presentDish/Floor"
 class App extends Component {
   render() {
     return (
-      <PersistentDrawer/>
+        <HashRouter>
+          <MiniDrawer>
+              <Route exact  path="/" component={MainPage}/>
+              <Route path="/usercenter/:key" component={UserPageNav}/>
+              <Route path="/floor/:key" component={Floor}/>
+          </MiniDrawer>
+        </HashRouter>
     );
   }
 }

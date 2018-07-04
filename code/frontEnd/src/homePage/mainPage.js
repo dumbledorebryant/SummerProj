@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import withStyles from "@material-ui/core/styles/withStyles";
 import SwipeableTextMobileStepper from './adver'
 import ButtonBases from './btn'
-import Footer from './footer'
+import Footer from '../nav/footer'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
@@ -27,14 +27,12 @@ function MainPage(props) {
     const {classes} = props;
     return (
         <div>
-    <div className={classes.toolbar} />
     <Typography noWrap>
     <Paper className={classes.paper2} elevation={5}>
         <SwipeableTextMobileStepper/>
         </Paper>
     </Typography>
     <ButtonBases/>
-    <Footer/>
         </div>);
 }
 

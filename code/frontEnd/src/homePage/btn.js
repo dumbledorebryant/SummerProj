@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
@@ -68,12 +69,14 @@ const styles = theme => ({
 
     },
     imageMarked: {
-        height: 3,
-        width: 20,
+        height: 100,
+        width: 110,
+        opacity:0,
         backgroundColor: theme.palette.common.white,
         position: 'absolute',
         bottom: -2,
-        left: 'calc(50% - 9px)',
+        left:-40,
+        top:-40,
         transition: theme.transitions.create('opacity'),
     },
 });
@@ -126,13 +129,13 @@ function ButtonBases(props) {
                         width: image.width,
                     }}
                 >
-          <span
+                   <span
               className={classes.imageSrc}
               style={{
                   backgroundImage: `url(${image.url})`,
               }}
           />
-                    <span className={classes.imageBackdrop} />
+                     <span className={classes.imageBackdrop} />
                     <span className={classes.imageButton}>
             <Typography
                 component="span"
@@ -141,7 +144,7 @@ function ButtonBases(props) {
                 className={classes.imageTitle}
             >
               {image.title}
-                <span className={classes.imageMarked} />
+                 <Link to={'/floor/'+image.title}><span className={classes.imageMarked} /></Link>
             </Typography>
           </span>
                 </ButtonBase>

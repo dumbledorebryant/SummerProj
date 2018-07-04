@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import {  Link,Switch, Route, Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -26,11 +27,21 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
-import MainPage from './mainPage'
-import Floor from '../presentDish/Floor'
-
-
+import MainPage from '../homePage/mainPage'
+import Footer from './footer'
+import UserPageNav from '../userCenter/userPageNav'
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import StarIcon from '@material-ui/icons/Star';
+import SendIcon from '@material-ui/icons/Send';
+import MailIcon from '@material-ui/icons/Mail';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ReportIcon from '@material-ui/icons/Report';
+
 const drawerWidth = 240;
 
 function TabContainer(props) {
@@ -208,6 +219,8 @@ class MiniDrawer extends React.Component {
     };
 
     //login
+    loginName=null;
+    loginId=null;
     handleLoginOpen = () =>{
         this.setState({ loginPop:true});
     };
@@ -223,9 +236,31 @@ class MiniDrawer extends React.Component {
     handleLogin = () =>{
         let un=document.getElementById("username-input");
         let pwd=document.getElementById("password-input");
-        let info={role:this.state.value,username:un,password:pwd};
-        alert(this.state.value+"\n"+un.value+"\n"+pwd.value);
-        this.setState({login:true,loginPattern:1});
+        let formData=new FormData();
+        //formData.append("role",this.state.value.toString());
+        if (this.state.value===0){
+            formData.append("username",un.value);
+            formData.append("password",pwd.value);
+            fetch('http://localhost:8080/User/Login',{
+                method:'POST',
+                mode:'cors',
+                body:formData,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.json().then(result=>{
+                    if (result[0]==="-2" || result[0]==="-1" || result[0]==="0"){
+                        this.setState({loginPattern:2})
+                    }
+                    else{
+                        this.loginName=result[1];
+                        this.loginId=result[0];
+                        this.setState({login:true,loginPattern:1});
+                    }
+                });
+            });
+        }
+        //alert(this.state.value+"\n"+un.value+"\n"+pwd.value);
+        //this.setState({login:true,loginPattern:1});
         //this.setState({loginPattern:2});
     };
 
@@ -236,8 +271,10 @@ class MiniDrawer extends React.Component {
     handleLoginSuccess = () =>{
       this.setState({loginPop:false,loginPattern:0});
     };
+
     //register
 
+    registerId=null;
     handleRegisterOpen = () =>{
         this.setState({ registerPop:true});
     };
@@ -256,12 +293,47 @@ class MiniDrawer extends React.Component {
             phoneRok:true});
     };
 
+    handleRegisterFail = () =>{
+        this.setState({registerPattern:0});
+    };
+
+    handleRegisterSuccess = () =>{
+        this.setState({registerPop:false,registerPattern:0,nameR:"",
+            pwdR:"",
+            pwdReR:"",
+            emailR:"",
+            phoneR:"",
+            nameRok:true,
+            pwdRok:true,
+            pwdReRok:true,
+            emailRok:true,
+            phoneRok:true});
+    };
+
     handleRegister = () => {
-        let info = {username:this.state.nameR,
-                    password:this.state.pwdR,
-                    email:this.state.emailR,
-                    phone:this.state.phoneR};
-        alert(this.state.nameR+"\n"+this.state.pwdR+"\n"+this.state.emailR+"\n"+this.state.phoneR);
+
+        let formData=new FormData();
+        formData.append("username",this.state.nameR);
+        formData.append("password",this.state.pwdR);
+        formData.append("email",this.state.emailR);
+        formData.append("phone",this.state.phoneR);
+        fetch('http://localhost:8080/User/Register',{
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result[0]==="0"){
+                    this.setState({registerPattern:2});
+                }
+                else{
+                    this.registerId=result[0];
+                    this.setState({registerPattern:1})
+                }
+            })
+        });
+        //alert(this.state.nameR+"\n"+this.state.pwdR+"\n"+this.state.emailR+"\n"+this.state.phoneR);
     };
 
     handleChangeName = event => {
@@ -327,6 +399,7 @@ class MiniDrawer extends React.Component {
         this.setState({login:false,logoutPop:false});
     };
 
+
     render() {
         const { classes, theme } = this.props;
 
@@ -352,12 +425,11 @@ class MiniDrawer extends React.Component {
                         {!this.state.login?<Button color="inherit" onClick={this.handleLoginOpen}>Login</Button>:
                             <Button color="inherit" onClick={this.handleLogoutOpen}>Logout</Button>}
                         {!this.state.login?<Button color="inherit" onClick={this.handleRegisterOpen}>Register</Button>:
-                            <IconButton
-                                onclick={this.handleUserCenterOpen}
+                            <Link to={'/usercenter/'+this.loginId}><IconButton
                                 color="inherit"
                             >
                                 <AccountCircle />
-                            </IconButton>}
+                            </IconButton></Link>}
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -375,11 +447,24 @@ class MiniDrawer extends React.Component {
                     <Divider />
                     <List>{mailFolderListItems}</List>
                     <Divider />
-                    <List>{otherMailFolderListItems}</List>
+                    <List>
+                        {
+                            <div>
+                            <Link to="/">
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <MailIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Home" />
+                                </ListItem>
+                            </Link>
+                            </div>
+                        }</List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Floor/>
+                    {this.props.children}
+                    <Footer/>
                 </main>
 
                 <Dialog
@@ -456,9 +541,14 @@ class MiniDrawer extends React.Component {
                             </TabContainer>}
                         </div>}
                         {this.state.loginPattern===1 &&
+                            <div>
                                 <Typography component="p">
                                     login success.
                                 </Typography>
+                                <Typography component="p">
+                                    welcome, {this.loginName} !
+                                </Typography>
+                            </div>
                            }
                         {this.state.loginPattern===2 &&
                             <Typography component="p">
@@ -495,6 +585,7 @@ class MiniDrawer extends React.Component {
                 >
                     <DialogTitle className={classes.registerTitle} id="form-dialog-title">Register</DialogTitle>
                     <DialogContent>
+                        {this.state.registerPattern===0 &&
                         <Paper className={classes.paper3} elevation={1}>
                         {this.state.nameRok?
                             <TextField
@@ -595,16 +686,44 @@ class MiniDrawer extends React.Component {
                                 autoComplete="current-phone"
                                 margin="normal"
                                 value={this.state.phoneR}/>}
-                        </Paper>
+                        </Paper>}
+                        {this.state.registerPattern===1 &&
+                            <div>
+                                <Typography component="p">
+                                    register success.
+                                </Typography>
+                                <Typography component="p">
+                                    your id is {this.registerId} .
+                                </Typography>
+                            </div>
+                        }
+                        {this.state.registerPattern===2 &&
+                            <Typography component="p">
+                                register fail.
+                            </Typography>
+                        }
                     </DialogContent>
+                    {this.state.registerPattern===0 &&
+                        <DialogActions>
+                            <Button onClick={this.handleRegisterClose} color="secondary">
+                                Cancel
+                            </Button>
+                            <Button onClick={this.handleRegister} color="primary">
+                                Register
+                            </Button>
+                        </DialogActions>
+                    }
+                    {this.state.registerPattern===1 &&
+                        <DialogActions>
+                            <Button onClick={this.handleRegisterSuccess} color="primary"> OK</Button>
+                        </DialogActions>
+                    }
+                    {this.state.registerPattern===2 &&
                     <DialogActions>
-                        <Button onClick={this.handleRegisterClose} color="secondary">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.handleRegister} color="primary">
-                            Register
-                        </Button>
+                        <Button onClick={this.handleRegisterClose} color="secondary"> Cancel </Button>
+                        <Button onClick={this.handleRegisterFail} color="primary"> Try again</Button>
                     </DialogActions>
+                    }
                 </Dialog>
                 <Dialog
                     open={this.state.logoutPop}
