@@ -1,11 +1,12 @@
 package lakers.ingram.ModelEntity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "foodtag", schema = "summerproj", catalog = "")
 @IdClass(FoodtagEntityPK.class)
-public class FoodtagEntity {
+public class FoodtagEntity implements Serializable {
     private int tagId;
     private int foodId;
 

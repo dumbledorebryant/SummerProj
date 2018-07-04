@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.io.UnsupportedEncodingException;
-
 import java.util.List;
 
 @Service
@@ -23,6 +21,7 @@ public class AppServiceImpl implements AppService {
     //user
     public Integer addUser(UserEntity user){
         return userDao.save(user);
+
     }
 
     public void deleteUser(UserEntity user){

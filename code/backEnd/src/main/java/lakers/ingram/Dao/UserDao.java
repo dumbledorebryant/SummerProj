@@ -1,10 +1,11 @@
 package lakers.ingram.Dao;
 
 import lakers.ingram.ModelEntity.UserEntity;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface UserDao {
+public interface UserDao{
 
     public Integer save(UserEntity user);
 
@@ -21,3 +22,6 @@ public interface UserDao {
     public List<UserEntity> getAllUsers();
 
 }
+
+
+

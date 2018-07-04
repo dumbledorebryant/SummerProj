@@ -82,21 +82,28 @@ public class UserAction extends HttpServlet {
                                  @RequestParam("phone") String phone,
                                  HttpServletResponse response) throws Exception {
         PrintWriter out = response.getWriter();
-        if (appService.getUserByPhone(phone)==null){  //success
-            UserEntity user=new UserEntity(name,MD5Util.md5Encode(password),email,phone);
-            int id=appService.addUser(user);
-            ArrayList<String> ur=new ArrayList<String>();
-            ur.add(String.valueOf(id));
-            out.println(JSONArray.fromObject(ur));
+        ArrayList<String> ur=new ArrayList<String>();
+        UserEntity us=appService.getUserByPhone(phone);
+        if (us==null){  //success
+            us=appService.getUserByName(name);
+            if (us==null){
+                Byte v=1;
+                UserEntity user=new UserEntity(name,MD5Util.md5Encode(password),email,phone,v);
+                int id=appService.addUser(user);
+                ur.add(String.valueOf(id));
+            }
+           else{
+                ur.add("0"); //repeat name
+            }
         }
         else{  //repeat phone
-            ArrayList<String> ur=new ArrayList<String>();
             ur.add("0");
-            out.println(JSONArray.fromObject(ur));
+
         }
+
+        out.println(JSONArray.fromObject(ur));
         out.flush();
         out.close();
     }
-
 
 }

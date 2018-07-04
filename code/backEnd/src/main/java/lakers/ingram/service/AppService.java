@@ -1,9 +1,6 @@
 package lakers.ingram.service;
 
 import lakers.ingram.ModelEntity.UserEntity;
-import org.springframework.context.annotation.Bean;
-
-import java.io.UnsupportedEncodingException;
 
 import java.util.List;
 

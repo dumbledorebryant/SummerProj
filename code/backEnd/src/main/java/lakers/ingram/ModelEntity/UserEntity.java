@@ -3,7 +3,7 @@ package lakers.ingram.ModelEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user", schema = "summerproj", catalog = "")
+@Table(name = "user", schema = "summerproj")
 public class UserEntity {
     private int userId;
     private String username;
@@ -12,11 +12,16 @@ public class UserEntity {
     private String phone;
     private Byte valid;
 
-    public UserEntity(String username, String password, String email, String phone) {
+    public UserEntity(String username, String password, String email, String phone,Byte valid) {
         this.username=username;
         this.password=password;
         this.email=email;
         this.phone=phone;
+        this.valid=valid;
+    }
+
+    public UserEntity() {
+
     }
 
     @Id

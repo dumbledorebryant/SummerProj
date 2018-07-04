@@ -4,10 +4,10 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="lakers.ingram.ModelEntity.UserlikefoodEntity" table="userlikefood" schema="summerproj">
-        <composite-id mapped="true" class="lakers.ingram.ModelEntity.UserlikefoodEntityPK">
-            <key-property name="userId">
-                <column name="userID" sql-type="int(11)"/>
+    <class name="lakers.ingram.ModelEntity.FoodtagEntity" table="foodtag" schema="summerproj">
+        <composite-id>
+            <key-property name="tagId">
+                <column name="tagID" sql-type="int(11)"/>
             </key-property>
             <key-property name="foodId">
                 <column name="foodID" sql-type="int(11)"/>
