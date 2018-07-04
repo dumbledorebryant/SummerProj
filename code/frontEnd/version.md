@@ -1,7 +1,7 @@
 
-##version
+## version
 
-###0.1    
+### 0.1    
    2018.7.3
    * nav
    * home page
@@ -9,5 +9,5 @@
    
 ### 0.1.1
    2018.7.4
-   *presentDish
-   *according floor/windows to present dishes
+   * presentDish
+   * according floor/windows to present dishes
