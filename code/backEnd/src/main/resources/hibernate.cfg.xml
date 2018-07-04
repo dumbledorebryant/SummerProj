@@ -26,8 +26,7 @@
         <mapping resource="static/WindowEntity.hbm.xml"/>
         <mapping resource="static/WorkerEntity.hbm.xml"/>
         <mapping class="lakers.ingram.ModelEntity.WorkerEntity"/>
-        <!-- <property name="connection.username"/> -->
-        <!-- <property name="connection.password"/> -->
+        <mapping class="lakers.ingram.ModelEntity.UsertagEntity"/>
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->

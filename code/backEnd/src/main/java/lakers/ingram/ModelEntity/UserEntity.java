@@ -12,6 +12,13 @@ public class UserEntity {
     private String phone;
     private Byte valid;
 
+    public UserEntity(String username, String password, String email, String phone) {
+        this.username=username;
+        this.password=password;
+        this.email=email;
+        this.phone=phone;
+    }
+
     @Id
     @Column(name = "userID", nullable = false)
     public int getUserId() {
