@@ -27,6 +27,8 @@ import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import MainPage from './mainPage'
+import Floor from '../presentDish/Floor'
+
 
 import AccountCircle from '@material-ui/icons/AccountCircle';
 const drawerWidth = 240;
@@ -376,7 +378,8 @@ class MiniDrawer extends React.Component {
                     <List>{otherMailFolderListItems}</List>
                 </Drawer>
                 <main className={classes.content}>
-                    <MainPage/>
+                    <div className={classes.toolbar} />
+                    <Floor/>
                 </main>
 
                 <Dialog
