@@ -43,8 +43,8 @@ const options = [
 
 class WindowsFoodList extends React.Component {
     button = null;
-    constructor(prop) {
-        super(prop);
+    constructor(props) {
+        super(props);
     }
     state = {
         anchorEl: null,

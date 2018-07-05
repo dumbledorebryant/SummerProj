@@ -42,8 +42,8 @@ const options = [
 
 class WindowsMenu extends React.Component {
     button = null;
-    constructor(prop) {
-        super(prop);
+    constructor(props) {
+        super(props);
     }
     state = {
         anchorEl: null,

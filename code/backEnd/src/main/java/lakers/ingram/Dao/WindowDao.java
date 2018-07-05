@@ -1,30 +1,15 @@
-package lakers.ingram.service;
+package lakers.ingram.Dao;
 
-import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
 
 import java.util.List;
 
-public interface AppService {
-    //User
-    public Integer addUser(UserEntity user);
+public interface WindowDao {
 
-    public void deleteUser(UserEntity user);
-
-    public void updateUser(UserEntity user);
-
-    public UserEntity getUserById(int id);
-
-    public UserEntity getUserByName(String name);
-
-    public UserEntity getUserByPhone(String phone);
-
-    public List<UserEntity> getAllUsers();
-
-    //Floor
+    //get FloorList
     public List<Integer> getFloorListByRestaurant(String restaurant);
 
-    //Window
+    //get windowsList
     public List<WindowEntity> getAllWindowsByRestaurant(String restaurant);
 
     public List<WindowEntity> getAllWindowsByRestaurantAndFloor(String restaurant, int floor);

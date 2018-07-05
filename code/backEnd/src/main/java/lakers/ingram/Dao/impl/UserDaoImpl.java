@@ -26,7 +26,7 @@ class UserDaoImpl implements UserDao {
         session.getTransaction().commit();
         session=HibernateUtil.getSession();
         session.beginTransaction();
-        Query query =HibernateUtil.getSession().createQuery("select user " +
+        Query query = HibernateUtil.getSession().createQuery("select user " +
                 "from UserEntity user " +
                 "where user.username= :name");
         query.setParameter("name", user.getUsername());
