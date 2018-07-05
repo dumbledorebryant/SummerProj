@@ -14,7 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { mailFolderListItems, otherMailFolderListItems } from './navdata';
+import { canteenListItems,otherListItems } from './navdata';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -31,16 +31,13 @@ import MainPage from '../homePage/mainPage'
 import Footer from './footer'
 import UserPageNav from '../userCenter/userPageNav'
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Accessibility from'@material-ui/icons/Accessibility';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import StarIcon from '@material-ui/icons/Star';
-import SendIcon from '@material-ui/icons/Send';
+
 import MailIcon from '@material-ui/icons/Mail';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ReportIcon from '@material-ui/icons/Report';
+
 
 const drawerWidth = 240;
 
@@ -74,7 +71,7 @@ const theme2 = createMuiTheme({
     },
     typography: {
         // Tell Material-UI what the font-size on the html element is.
-        fontSize: 14,
+        fontSize: 22,
         fontFamily: [
             '-apple-system',
             'BlinkMacSystemFont',
@@ -131,6 +128,7 @@ const styles = theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
+        height:'100%'
     },
     drawerPaperClose: {
         overflowX: 'hidden',
@@ -184,6 +182,9 @@ const styles = theme => ({
     registerTitle:{
         backgroundColor:'#039be5',
         marginBottom:20,
+    },
+    link:{
+        fontcolor:'#424242'
     }
 });
 
@@ -206,6 +207,8 @@ class MiniDrawer extends React.Component {
         value:0,  //logintabs
         loginPattern:0,
         login:false,
+        admin:false,
+        worker:false,
         logoutPop:false, //logout
     };
 
@@ -255,6 +258,48 @@ class MiniDrawer extends React.Component {
                         this.loginName=result[1];
                         this.loginId=result[0];
                         this.setState({login:true,loginPattern:1});
+                    }
+                });
+            });
+        }
+        else if (this.state.value===1){
+            formData.append("id",un.value);
+            formData.append("password",pwd.value);
+            fetch('http://localhost:8080/Admin/Login',{
+                method:'POST',
+                mode:'cors',
+                body:formData,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.text().then(result=>{
+                    if (result==="fail\n"){
+                        this.setState({loginPattern:2})
+                    }
+                    else{
+                        this.loginName=result;
+                        this.loginId=null;
+                        this.setState({login:true,loginPattern:1,admin:true});
+                    }
+                });
+            });
+        }
+        else{
+            formData.append("id",un.value);
+            formData.append("password",pwd.value);
+            fetch('http://localhost:8080/Worker/Login',{
+                method:'POST',
+                mode:'cors',
+                body:formData,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.text().then(result=>{
+                    if (result==="fail\n"){
+                        this.setState({loginPattern:2})
+                    }
+                    else{
+                        this.loginName=result;
+                        this.loginId=null;
+                        this.setState({login:true,loginPattern:1,worker:true});
                     }
                 });
             });
@@ -396,9 +441,25 @@ class MiniDrawer extends React.Component {
     };
 
     handleLogout = () =>{
-        this.setState({login:false,logoutPop:false});
+        window.location.href="/";
+        this.setState({login:false,logoutPop:false,admin:false,worker:false});
     };
 
+    componentWillMount(){
+        fetch('http://localhost:8080/User/State',{
+            method:'GET',
+            mode:'cors',
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result[0]!=="-1" ){
+                    this.loginId=result[0];
+                    this.loginName=result[1];
+                    this.setState({login:true});
+                }
+            });
+        });
+    }
 
     render() {
         const { classes, theme } = this.props;
@@ -425,7 +486,7 @@ class MiniDrawer extends React.Component {
                         {!this.state.login?<Button color="inherit" onClick={this.handleLoginOpen}>Login</Button>:
                             <Button color="inherit" onClick={this.handleLogoutOpen}>Logout</Button>}
                         {!this.state.login?<Button color="inherit" onClick={this.handleRegisterOpen}>Register</Button>:
-                            <Link to={'/usercenter/'+this.loginId}><IconButton
+                            !this.state.admin&&!this.state.worker&&<Link className={classes.link} to={'/usercenter/'+this.loginId}><IconButton
                                 color="inherit"
                             >
                                 <AccountCircle />
@@ -445,21 +506,44 @@ class MiniDrawer extends React.Component {
                         </IconButton>
                     </div>
                     <Divider />
-                    <List>{mailFolderListItems}</List>
+                    <List>{canteenListItems}</List>
                     <Divider />
                     <List>
-                        {
+                        {otherListItems}
+                        {this.state.login?
                             <div>
-                            <Link to="/">
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <MailIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Home" />
+                                <ListItem button onClick={this.handleLogoutOpen}>
+                                        <ListItemIcon>
+                                            <Accessibility/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Logout" />
                                 </ListItem>
-                            </Link>
+                                {!this.state.admin&&!this.state.worker&&
+                                <Link  to={'/usercenter/'+this.loginId}>
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <AccountCircle/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="User Center" />
+                                    </ListItem>
+                                </Link>}
+                            </div>:
+                            <div>
+                                <ListItem button onClick={this.handleLoginOpen}>
+                                    <ListItemIcon>
+                                        <Accessibility/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Login" />
+                                </ListItem>
+                                <ListItem button onClick={this.handleRegisterOpen}>
+                                    <ListItemIcon>
+                                        <Accessibility />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Register" />
+                                </ListItem>
                             </div>
-                        }</List>
+                        }
+                    </List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
@@ -506,7 +590,7 @@ class MiniDrawer extends React.Component {
                                     <Paper className={classes.paper} elevation={1}>
                                         <TextField
                                             id="username-input"
-                                            label="Name"
+                                            label="ID"
                                             className={classes.textField}
                                             autoComplete="current-username"
                                             margin="normal"/>
@@ -525,7 +609,7 @@ class MiniDrawer extends React.Component {
                                     <Paper className={classes.paper} elevation={1}>
                                         <TextField
                                             id="username-input"
-                                            label="Name"
+                                            label="ID"
                                             className={classes.textField}
                                             autoComplete="current-username"
                                             margin="normal"/>
@@ -568,7 +652,12 @@ class MiniDrawer extends React.Component {
                     }
                     {this.state.loginPattern===1 &&
                         <DialogActions>
-                            <Button onClick={this.handleLoginSuccess} color="primary"> OK</Button>
+                            {!this.state.admin&&!this.state.worker&&
+                            <Button onClick={this.handleLoginSuccess} color="primary"> OK</Button>}
+                            {this.state.admin&&
+                            <Link to='/admin'><Button onClick={this.handleLoginSuccess} color="primary"> OK</Button></Link>}
+                            {this.state.worker&&
+                            <Link to='/worker'><Button onClick={this.handleLoginSuccess} color="primary"> OK</Button></Link>}
                         </DialogActions>
                     }
                     {this.state.loginPattern===2 &&

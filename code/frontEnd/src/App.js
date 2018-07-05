@@ -17,6 +17,8 @@ class App extends Component {
               <Route exact  path="/" component={MainPage}/>
               <Route path="/usercenter/:key" component={UserPageNav}/>
               <Route path="/floor/:key" component={Floor}/>
+              <Route path="/admin" component={Floor}/>
+              <Route path="/worker" component={Floor}/>
           </MiniDrawer>
         </HashRouter>
     );

@@ -84,32 +84,38 @@ const styles = theme => ({
 const images = [
     {
         url: require('../img/timg-1.jpg'),
-        title: 'one',
+        title: 'canteen one',
+        index:'one',
         width: '10%',
     },
     {
         url: require('../img/timg-1.jpg'),
-        title: 'two',
+        title: 'canteen two',
+        index:'two',
         width: '10%',
     },
     {
         url: require('../img/timg-1.jpg'),
-        title: 'three',
+        title: 'canteen three',
+        index:'three',
         width: '10%',
     },
     {
         url: require('../img/timg-1.jpg'),
-        title: 'four',
+        title: 'canteen four',
+        index:'four',
         width: '10%',
     },
     {
         url: require('../img/timg-1.jpg'),
-        title: 'five',
+        title: 'canteen five',
+        index:'five',
         width: '10%',
     },
     {
         url: require('../img/timg-1.jpg'),
-        title: 'six',
+        title: 'canteen six',
+        index:'six',
         width: '10%',
     },
 ];
@@ -144,7 +150,7 @@ function ButtonBases(props) {
                 className={classes.imageTitle}
             >
               {image.title}
-                 <Link to={'/floor/'+image.title}><span className={classes.imageMarked} /></Link>
+                 <Link to={'/floor/'+image.index}><span className={classes.imageMarked} /></Link>
             </Typography>
           </span>
                 </ButtonBase>

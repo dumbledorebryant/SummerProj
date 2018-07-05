@@ -4,7 +4,7 @@
    2018.7.3
    * nav
    * home page
-   * login/logout/register
+   * user login/logout/register
    
 ### 0.1.1
    2018.7.4
@@ -18,3 +18,10 @@
 ### 0.2.0
    2018.7.4
    * router (combine **home page** and **floor** and **user center**)
+   * connecting with back end
+   
+### 0.2.1
+   2018.7.5
+   * admin login/logout
+   * worker login/logout
+   * improve router
