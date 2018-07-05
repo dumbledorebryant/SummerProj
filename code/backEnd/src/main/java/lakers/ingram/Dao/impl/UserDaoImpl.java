@@ -4,13 +4,8 @@ import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -26,7 +21,7 @@ class UserDaoImpl implements UserDao {
         session.getTransaction().commit();
         session=HibernateUtil.getSession();
         session.beginTransaction();
-        Query query = HibernateUtil.getSession().createQuery("select user " +
+        Query query =HibernateUtil.getSession().createQuery("select user " +
                 "from UserEntity user " +
                 "where user.username= :name");
         query.setParameter("name", user.getUsername());
@@ -55,7 +50,7 @@ class UserDaoImpl implements UserDao {
         session.beginTransaction();
         Query query =session.createQuery("select user " +
                 "from UserEntity user " +
-                "where user.id= :id");
+                "where user.userId= :id");
         query.setParameter("id", id);
         @SuppressWarnings("unchecked")
         List<UserEntity> users = query.list();

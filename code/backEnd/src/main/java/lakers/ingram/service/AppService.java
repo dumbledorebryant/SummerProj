@@ -1,12 +1,13 @@
 package lakers.ingram.service;
 
+import lakers.ingram.ModelEntity.AdminEntity;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.ModelEntity.WorkerEntity;
 
 import java.util.List;
 
 public interface AppService {
-    //User
     public Integer addUser(UserEntity user);
 
     public void deleteUser(UserEntity user);
@@ -21,6 +22,10 @@ public interface AppService {
 
     public List<UserEntity> getAllUsers();
 
+    public AdminEntity getAdminById(int id);
+
+    public WorkerEntity getWorkerById(int id);
+
     //Floor
     public List<Integer> getFloorListByRestaurant(String restaurant);
 
@@ -32,7 +37,4 @@ public interface AppService {
     public WindowEntity getWindowByRestaurantAndFloorAndName(String restaurant, int floor, String windowName);
 
     public List<WindowEntity> getAllWindows();
-
-
-
 }

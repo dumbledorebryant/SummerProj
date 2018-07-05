@@ -1,9 +1,13 @@
 package lakers.ingram.service.impl;
 
+import lakers.ingram.Dao.AdminDao;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.Dao.WindowDao;
+import lakers.ingram.Dao.WorkerDao;
+import lakers.ingram.ModelEntity.AdminEntity;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.ModelEntity.WorkerEntity;
 import lakers.ingram.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,20 +19,29 @@ import java.util.List;
 public class AppServiceImpl implements AppService {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private AdminDao adminDao;
+
+    @Autowired
+    private WorkerDao workerDao;
+
     @Autowired
     private WindowDao windowDao;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
-    public void setWindowDao(WindowDao windowDao){ this.windowDao = windowDao;}
-
+    public void setAdminDao(AdminDao adminDao) {
+        this.adminDao = adminDao;
+    }
+    public void setWorkerDao(WorkerDao workerDao) {
+        this.workerDao = workerDao;
+    }
+    public void setWindowDao(WindowDao windowDao){ this.windowDao = windowDao; }
 
     //user
-    public Integer addUser(UserEntity user){
-        return userDao.save(user);
-
-    }
+    public Integer addUser(UserEntity user){ return userDao.save(user); }
 
     public void deleteUser(UserEntity user){
         userDao.delete(user);
@@ -46,10 +59,13 @@ public class AppServiceImpl implements AppService {
 
     public UserEntity getUserByPhone(String phone){ return userDao.getUserByPhone(phone); }
 
-    public List<UserEntity> getAllUsers(){
-        return userDao.getAllUsers();
-    }
+    public List<UserEntity> getAllUsers(){ return userDao.getAllUsers(); }
 
+    //admin
+    public AdminEntity getAdminById(int id){ return adminDao.getAdminById(id); }
+
+    //worker
+    public WorkerEntity getWorkerById(int id){ return workerDao.getWorkerById(id); }
 
     //Floor
     public List<Integer> getFloorListByRestaurant(String restaurant){

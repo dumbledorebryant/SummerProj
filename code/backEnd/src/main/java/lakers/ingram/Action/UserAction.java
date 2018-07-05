@@ -106,4 +106,19 @@ public class UserAction extends HttpServlet {
         out.close();
     }
 
+    @RequestMapping(value = "/State")
+    private void processState(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        Object obj=request.getSession().getAttribute("userid");
+        ArrayList<String> ur=new ArrayList<String>();
+        PrintWriter out = response.getWriter();
+        if (obj==null){ur.add("-1");}
+        else{
+            String id=obj.toString();
+            ur.add(id);
+            if (!id.equals("-1")){ur.add(request.getSession().getAttribute("username").toString());}
+        }
+        out.println(JSONArray.fromObject(ur));
+        out.flush();
+        out.close();
+    }
 }

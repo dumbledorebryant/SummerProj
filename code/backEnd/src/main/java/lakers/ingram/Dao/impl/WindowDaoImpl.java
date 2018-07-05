@@ -21,7 +21,6 @@ import java.util.List;
 class WindowDaoImpl implements WindowDao {
 
     public List<Integer> getFloorListByRestaurant(String restaurant){
-
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
         Query query =session.createQuery("select distinct window.floor " +
@@ -85,6 +84,20 @@ class WindowDaoImpl implements WindowDao {
 
         return window;
     };
+
+    public WindowEntity getWindowById(int id) {
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query =session.createQuery("select window " +
+                "from WindowEntity window " +
+                "where window.windowId= :id");
+        query.setParameter("id", id);
+        @SuppressWarnings("unchecked")
+        List<WindowEntity> windows = query.list();
+        session.getTransaction().commit();
+        WindowEntity window = windows.size() > 0 ? windows.get(0) : null;
+        return window;
+    }
 
     public List<WindowEntity> getAllWindows(){
 
