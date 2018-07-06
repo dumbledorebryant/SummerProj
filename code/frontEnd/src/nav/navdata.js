@@ -77,6 +77,14 @@ export const otherListItems = (
                 <ListItemText primary="Home" />
             </ListItem>
         </Link>
+        <Link to="/test">
+            <ListItem button>
+                <ListItemIcon>
+                    <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Chart" />
+            </ListItem>
+        </Link>
     </div>
 );
 
