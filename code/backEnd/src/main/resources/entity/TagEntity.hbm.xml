@@ -4,12 +4,15 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="lakers.ingram.ModelEntity.TagEntity" table="tag" schema="summerproj">
+    <class name="lakers.ingram.ModelEntity.TagEntity" table="tag" schema="canteen">
         <id name="tagId">
             <column name="tagID" sql-type="int(11)"/>
         </id>
         <property name="tagName">
             <column name="tagName" sql-type="varchar(45)" length="45" not-null="true"/>
+        </property>
+        <property name="tagType">
+            <column name="tagType" sql-type="varchar(45)" length="45" not-null="true"/>
         </property>
     </class>
 </hibernate-mapping>

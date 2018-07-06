@@ -4,6 +4,8 @@ import lakers.ingram.ModelEntity.AdminEntity;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
 import lakers.ingram.ModelEntity.WorkerEntity;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import java.util.List;
 
@@ -37,4 +39,14 @@ public interface AppService {
     public WindowEntity getWindowByRestaurantAndFloorAndName(String restaurant, int floor, String windowName);
 
     public List<WindowEntity> getAllWindows();
+
+    public JSONArray listUserTag(Integer name);
+    public String chooseUserTag(Integer userid,String[] tagArray);
+
+    public JSONObject showUserInfo(Integer userID);
+    public String handleUserInfo(UserEntity user)throws Exception;
+
+    public JSONArray showTags();
+    public String sendTags(Integer userid,JSONArray tagArray);
+    public JSONObject showTags(String tagName);
 }

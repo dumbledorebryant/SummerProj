@@ -1,14 +1,13 @@
 package lakers.ingram.service.impl;
 
-import lakers.ingram.Dao.AdminDao;
-import lakers.ingram.Dao.UserDao;
-import lakers.ingram.Dao.WindowDao;
-import lakers.ingram.Dao.WorkerDao;
+import lakers.ingram.Dao.*;
 import lakers.ingram.ModelEntity.AdminEntity;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
 import lakers.ingram.ModelEntity.WorkerEntity;
 import lakers.ingram.service.AppService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +27,15 @@ public class AppServiceImpl implements AppService {
 
     @Autowired
     private WindowDao windowDao;
+
+    @Autowired
+    private UserTagDao userTagDao;
+
+
+
+    @Autowired
+    private TagDao tagDao;
+
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -88,5 +96,27 @@ public class AppServiceImpl implements AppService {
     public List<WindowEntity> getAllWindows(){
         return windowDao.getAllWindows();
     };
+    public JSONArray listUserTag(Integer name){return userTagDao.listUserTag(name);}
+    public String chooseUserTag(Integer userid,String[] tagArray) {
+        return userTagDao.chooseUserTag(userid,tagArray);
+    }
 
+    public JSONObject showUserInfo(Integer userID){
+        return userDao.showUserInfo( userID);
+    }
+    public String handleUserInfo(UserEntity user)throws Exception{
+        return userDao.handleUserInfo(user);
+    }
+
+    public JSONArray showTags(){
+        return tagDao.showTags();
+    }
+
+    public String sendTags(Integer userid,JSONArray tagArray){
+        return userTagDao.sendTags(userid,tagArray);
+    }
+
+    public JSONObject showTags(String tagName){
+        return tagDao.showTags(tagName);
+    }
 }

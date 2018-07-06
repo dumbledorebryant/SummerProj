@@ -5,14 +5,20 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "usertag", schema = "SummerProj", catalog = "")
+@Table(name = "usertag", schema = "canteen", catalog = "")
 @IdClass(UsertagEntityPK.class)
 public class UsertagEntity implements Serializable {
     private int tagId;
     private int userId;
 
+    public UsertagEntity(){};
+    public UsertagEntity(int tagId,int userId){
+        this.tagId=tagId;
+        this.userId=userId;
+    }
+
     @Id
-    @Column(name = "tagID")
+    @Column(name = "tagID", nullable = false)
     public int getTagId() {
         return tagId;
     }
@@ -22,7 +28,7 @@ public class UsertagEntity implements Serializable {
     }
 
     @Id
-    @Column(name = "userID")
+    @Column(name = "userID", nullable = false)
     public int getUserId() {
         return userId;
     }

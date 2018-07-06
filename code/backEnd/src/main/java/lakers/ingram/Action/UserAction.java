@@ -4,6 +4,7 @@ import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.encode.MD5Util;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -121,4 +122,36 @@ public class UserAction extends HttpServlet {
         out.flush();
         out.close();
     }
+
+    @RequestMapping(value = "/UserInfo")
+    private void processLogin(@RequestParam("userID") Integer userID,
+                              HttpServletRequest request,
+                              HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+
+        JSONObject result=appService.showUserInfo(userID);
+
+        out.print(result);
+    }
+
+    @RequestMapping(value = "/HandleUserInfoChange")
+    private void processLogin(@RequestParam("userID") Integer userID,
+                              @RequestParam("username") String username,
+                              @RequestParam("password") String password,
+                              @RequestParam("phone") String phone,
+                              @RequestParam("email") String email,
+                              HttpServletRequest request,
+                              HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        UserEntity user=new UserEntity(userID,username,password,phone,email);
+        String result=appService.handleUserInfo(user);
+        out.print(result);
+    }
+
+
+
 }

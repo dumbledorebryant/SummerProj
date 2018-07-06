@@ -1,20 +1,32 @@
 import React, { Component } from 'react';
 import TextFields from './personalInfo';
-import {Col, Row,Nav,NavItem,Tab,Tabs} from 'react-bootstrap';
+import {Tab, Tabs} from 'react-bootstrap';
 import PersonalSetting from "./personalSetting";
 
+const tagData=[];
 class UserPageNav extends Component {
     constructor() {
         super();
         this.state = {
-            name:"123"
+            name:"123",
+            tag:tagData,
+            tagTaste:'无',
+            tagCountry:'无',
+            tagTaboo:'无',
+
         };
+
     }
 
-    render() {
 
+
+
+
+
+    render() {
         return (
             <div className="container">
+
                 <br/>
                 <br/>
                 <br/>
@@ -24,10 +36,11 @@ class UserPageNav extends Component {
                             <TextFields/>
                         </Tab>
                         <Tab eventKey={2} title="个性化设置" >
-                            <PersonalSetting/>
+                            <PersonalSetting tagTaste={this.state.tagTaste}
+                                             tagCountry={this.state.tagCountry}
+                                             tagTaboo={this.state.tagTaboo}/>
                         </Tab>
                         <Tab eventKey={3} title="我的收藏" >
-
                         </Tab>
                     </Tabs>
                 </div>,

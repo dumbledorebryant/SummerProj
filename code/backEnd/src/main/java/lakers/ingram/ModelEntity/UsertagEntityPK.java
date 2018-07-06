@@ -9,7 +9,7 @@ public class UsertagEntityPK implements Serializable {
     private int tagId;
     private int userId;
 
-    @Column(name = "tagID")
+    @Column(name = "tagID", nullable = false)
     @Id
     public int getTagId() {
         return tagId;
@@ -19,7 +19,7 @@ public class UsertagEntityPK implements Serializable {
         this.tagId = tagId;
     }
 
-    @Column(name = "userID")
+    @Column(name = "userID", nullable = false)
     @Id
     public int getUserId() {
         return userId;

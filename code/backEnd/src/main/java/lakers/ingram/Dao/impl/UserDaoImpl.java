@@ -3,7 +3,9 @@ package lakers.ingram.Dao.impl;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
+import net.sf.json.JSONObject;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
@@ -96,6 +98,38 @@ class UserDaoImpl implements UserDao {
         List<UserEntity> users = query.list();
         session.getTransaction().commit();
         return users;
+    }
+
+    public JSONObject showUserInfo(Integer userID)
+    {
+        Session session=HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select a from UserEntity a where a.userId= :id").
+                setParameter("id", userID);
+        UserEntity user=(UserEntity)query.uniqueResult();
+        JSONObject userJson=new JSONObject().fromObject(user);
+        System.out.println(userJson);
+        transaction.commit();
+        return userJson;
+    }
+
+    public String handleUserInfo(UserEntity user) throws Exception {
+        Session session=HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select a from UserEntity a where a.userId= :id").
+                setParameter("id", user.getUserId());
+        UserEntity userDB=(UserEntity)query.uniqueResult();
+        String pwd=user.getPassword();
+        String encodePwd=lakers.ingram.encode.MD5Util.md5Encode(pwd);
+
+        userDB.setEmail(user.getEmail());
+        userDB.setPhone(user.getPhone());
+        userDB.setUsername(user.getUsername());
+        userDB.setPassword(encodePwd);
+
+        session.update(userDB);
+        transaction.commit();
+        return "success";
     }
 
 }

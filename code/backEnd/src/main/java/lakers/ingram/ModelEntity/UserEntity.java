@@ -19,6 +19,14 @@ public class UserEntity {
         this.phone=phone;
         this.valid=valid;
     }
+    public UserEntity(int userId,String username,String password,
+                      String email,String phone){
+        this.userId=userId;
+        this.username=username;
+        this.password=password;
+        this.email=email;
+        this.phone=phone;
+    }
 
     public UserEntity() {
 

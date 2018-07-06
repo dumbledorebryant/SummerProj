@@ -1,6 +1,7 @@
 package lakers.ingram.Dao;
 
 import lakers.ingram.ModelEntity.UserEntity;
+import net.sf.json.JSONObject;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public interface UserDao{
     public UserEntity getUserByPhone(String phone);
 
     public List<UserEntity> getAllUsers();
+
+    public JSONObject showUserInfo(Integer userID);
+    public String handleUserInfo(UserEntity user) throws Exception;
 
 }
 
