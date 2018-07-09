@@ -125,4 +125,8 @@ public class AppServiceImpl implements AppService {
         return userDao.updatePic(imgFile, userid);
     }
 
+    public String newFoodPic(File imageFile,String windowid){
+        return workerDao.newFoodPic(imageFile,windowid);
+    }
+
 }

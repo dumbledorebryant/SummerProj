@@ -52,5 +52,5 @@ public interface AppService {
     public JSONObject showTags(String tagName);
 
     public String updatePic(File imgFile, Integer userid);
-
+    public String newFoodPic(File imageFile,String windowid);
 }
