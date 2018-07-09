@@ -18,11 +18,6 @@ class UserPageNav extends Component {
 
     }
 
-
-
-
-
-
     render() {
         return (
             <div className="container">

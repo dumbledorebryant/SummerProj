@@ -1,5 +1,9 @@
 package lakers.ingram.Action;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.encode.MD5Util;
 import lakers.ingram.service.AppService;
@@ -9,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +21,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -151,6 +158,50 @@ public class UserAction extends HttpServlet {
         String result=appService.handleUserInfo(user);
         out.print(result);
     }
+
+    @RequestMapping(value = "/UpdatePic")
+    private void processLogin(@RequestParam("files[]") MultipartFile file,
+                              @RequestParam("userId") Integer userid,
+                              HttpServletRequest request,
+                              HttpServletResponse response)
+            throws Exception {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("image/*");
+        PrintWriter out = response.getWriter();
+        System.out.println("file: " + file);
+        String headImg;
+        if (file != null && !file.isEmpty()) {
+            headImg = file.getOriginalFilename();
+            // 构建上传目录及文件对象，不存在则自动创建
+            String path = "C:\\webImages\\";
+            File imgFile = new File(path, headImg);
+            file.transferTo(imgFile);
+            String result = appService.updatePic(imgFile, userid);
+            out.print(result);
+        }
+    }
+
+    @RequestMapping(value = "/GetPic")
+    private void showPic(@RequestParam("userID") Integer userid,
+                         HttpServletRequest request,
+                         HttpServletResponse response)
+            throws Exception {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("image/*");
+        OutputStream out = response.getOutputStream();
+        //GridFSDBFile result = appService.getPic(fileName);
+        MongoClient mongo = new MongoClient();
+        DB mongodb = mongo.getDB("Portrait");
+
+        GridFS gfsPhoto = new GridFS(mongodb, "Images");
+        // get image file by it's filename
+        GridFSDBFile imageForOutput = gfsPhoto.findOne(userid.toString());
+        imageForOutput.writeTo(out);
+        out.flush();
+        out.close();
+        mongo.close();
+    }
+
 
 
 

@@ -1,5 +1,9 @@
 package lakers.ingram.Dao.impl;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSInputFile;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
@@ -9,6 +13,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.List;
 
 @Repository("UserDao")
@@ -130,6 +135,24 @@ class UserDaoImpl implements UserDao {
         session.update(userDB);
         transaction.commit();
         return "success";
+    }
+
+    public String updatePic(File imgFile, Integer userid){
+        MongoClient mongo = new MongoClient();
+        DB mongodb = mongo.getDB("Portrait");
+        try {
+            GridFS gfsPhoto = new GridFS(mongodb, "Images");
+            gfsPhoto.remove(gfsPhoto.findOne(userid.toString()));
+            GridFSInputFile gfsFile = gfsPhoto.createFile(imgFile);
+            gfsFile.setFilename(userid.toString());
+
+            gfsFile.save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            mongo.close();
+            return "Success";
+        }
     }
 
 }

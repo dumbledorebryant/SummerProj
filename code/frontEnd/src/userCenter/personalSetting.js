@@ -130,7 +130,7 @@ class PersonalSetting extends Component {
                         countryTemp.splice(0,countryTemp.size);
                         tabooTemp.splice(0,tabooTemp.size);
                         foodTemp.splice(0,foodTemp.size);
-                        console.log("All:"+ result[0].tagType);
+
                         for(var i in result){
                             this.state.checkBool.push(false);
                             let add={"tagType":result[i].tagType,

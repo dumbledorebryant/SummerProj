@@ -1,12 +1,11 @@
 import React from 'react';
 import {Button, Form, Image, FormGroup, ControlLabel, FormControl, Glyphicon} from 'react-bootstrap';
 import protrait from '../img/pic.jpg'
-
+import Avatar from './userpic'
 
 
 
 class TextFields extends React.Component {
-
     constructor(props) {
         super();
         this.state = {
@@ -43,9 +42,6 @@ class TextFields extends React.Component {
                     });
             })
     };
-
-
-
 
     handleChangeName= event =>{
         this.setState({
@@ -86,11 +82,10 @@ class TextFields extends React.Component {
         return (
             <div align="center">
                 <br/>
-                <br/>
-                <Image src={protrait} width={"100px"}  height={"100px"}  circle />
-                <br/>
-                <br/>
+                <Avatar/>
 
+                <h5>点击头像框更改头像</h5>
+                <br/>
                 <Form inline>
                     <FormGroup controlId="formValidationSuccess3"  bsStyle="primary">
                         <ControlLabel>昵称：</ControlLabel>
@@ -147,7 +142,6 @@ class TextFields extends React.Component {
                 </Form>
                 <br/>
                 <Button bsStyle="primary" onClick={this.handleInfo}>提交修改</Button>
-
             </div>
 
         );

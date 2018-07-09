@@ -7,6 +7,7 @@ import lakers.ingram.ModelEntity.WorkerEntity;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.io.File;
 import java.util.List;
 
 public interface AppService {
@@ -49,4 +50,7 @@ public interface AppService {
     public JSONArray showTags();
     public String sendTags(Integer userid,JSONArray tagArray);
     public JSONObject showTags(String tagName);
+
+    public String updatePic(File imgFile, Integer userid);
+
 }

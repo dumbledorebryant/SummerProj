@@ -4,6 +4,7 @@ import lakers.ingram.ModelEntity.UserEntity;
 import net.sf.json.JSONObject;
 import org.springframework.data.repository.CrudRepository;
 
+import java.io.File;
 import java.util.List;
 
 public interface UserDao{
@@ -24,6 +25,7 @@ public interface UserDao{
 
     public JSONObject showUserInfo(Integer userID);
     public String handleUserInfo(UserEntity user) throws Exception;
+    public String updatePic(File imgFile, Integer userid);
 
 }
 

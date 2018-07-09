@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -119,4 +120,9 @@ public class AppServiceImpl implements AppService {
     public JSONObject showTags(String tagName){
         return tagDao.showTags(tagName);
     }
+
+    public String updatePic(File imgFile, Integer userid){
+        return userDao.updatePic(imgFile, userid);
+    }
+
 }
