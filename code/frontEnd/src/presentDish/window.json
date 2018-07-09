@@ -1,35 +1,34 @@
 {
   "windows":[
       {
-        "id": "1",
+        "window_id": "1",
         "restuarant": "一餐",
-        "name": "A窗口",
+        "windowName": "A窗口",
         "floor":1
        },
       {
-        "id": "2",
+        "window_id": "2",
         "restuarant": "一餐",
-        "name": "B窗口",
+        "windowName": "B窗口",
         "floor":1
       },
       {
-        "id": "3",
+        "window_id": "3",
         "restuarant": "一餐",
-        "name": "A窗口",
+        "windowName": "A窗口",
         "floor":2
       },
       {
-        "id": "4",
+        "window_id": "4",
         "restuarant": "一餐",
-        "name": "B窗口",
+        "windowName": "B窗口",
         "floor":2
       },
       {
-        "id": "5",
+        "window_id": "5",
         "restuarant": "一餐",
-        "name": "C窗口",
+        "windowName": "C窗口",
         "floor":3
       }
-
     ]
 }

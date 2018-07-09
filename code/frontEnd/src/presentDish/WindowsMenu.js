@@ -50,7 +50,8 @@ class WindowsMenu extends React.Component {
         selectedIndex: 0,
         content:1,
         floor:this.props.floor,        //上一级传过来的，拿来去后端拿windowList和dishesList，如果是0就取全部
-        windowList:["全部","A窗口","B窗口","D窗口"],//渲染windowMenu的按钮
+        //windowList:["全部","A窗口","B窗口","D窗口"],//渲染windowMenu的按钮
+        windowList:this.props.windowList,//渲染windowMenu的按钮
         dishesList: [       //从后端拿到，传给下一级的windowFoodList
             {
                 foodname:"蛋炒饭",
@@ -83,15 +84,89 @@ class WindowsMenu extends React.Component {
         this.setState({ anchorEl: event.currentTarget });
     };
 
-    handleMenuItemClick = (event, index) => {
-       // alert(index);
+    handleMenuItemClick = (event, index, windowId) => {
+        alert("index"+index+" windowId"+windowId);
+        let formData=new FormData();
+        formData.append("restaurant",this.props.canteen);
+        formData.append("floor",this.props.floor);
+        formData.append("windowId",windowId);
+        fetch('http://localhost:8080/Food/FoodsByWindowId',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    dishesList:result,
+                    selectedIndex: index,
+                    anchorEl: null,
+                    content:index
+                });
+            })
+        });
+
+    };
+
+    handleMunuItemClickAll = (event, index) => {
+        alert(index);
+        let formData=new FormData();
+        formData.append("restaurant",this.props.canteen);
+        formData.append("floor",this.props.floor);
+       // if(this.props.floor!=0){
+            fetch('http://localhost:8080/Food/FoodListByRestaurantFloor',{
+                credentials: 'include',
+                method:'POST',
+                mode:'cors',
+                body:formData,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.json().then(result=>{
+                    this.setState({dishesList:result});
+                })
+            });
+       // }
+        /*else {
+            fetch('http://localhost:8080/Food/FoodListByRestaurant',{
+                method:'POST',
+                mode:'cors',
+                body:formData,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.json().then(result=>{
+                    this.setState({dishesList:result});
+                })
+            });
+        }*/
         this.setState({ selectedIndex: index, anchorEl: null, content:index
         });
     };
 
+
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
+
+   componentWillMount(){
+        let formData=new FormData();
+        formData.append("restaurant",this.props.canteen);
+        formData.append("floor",this.state.floor);
+        formData.append("windowId",0)
+        fetch('http://localhost:8080/Food/FoodsByWindowId',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                    this.setState({dishesList:result});
+            })
+        });
+    }//render之前，construct之后*/
+
+
 
     render() {
         const { classes } = this.props;
@@ -113,7 +188,7 @@ class WindowsMenu extends React.Component {
                             onClick={this.handleClickListItem}
                         >
                             <ListItemText
-                                primary={this.state.windowList[this.state.selectedIndex]}
+                                primary={this.state.selectedIndex==0||this.state.selectedIndex>this.props.windowList.length?"All":this.props.windowList[this.state.selectedIndex-1].windowName}
                             />
                         </ListItem>
                     </List>
@@ -123,15 +198,21 @@ class WindowsMenu extends React.Component {
                         open={Boolean(anchorEl)}
                         onClose={this.handleClose}
                     >
-                        {this.state.windowList.map((option, index) => (
+                        <MenuItem
+                            key="All"
+                            selected={this.props.windowList.length === this.state.selectedIndex}
+                            onClick={event => this.handleMenuItemClick(event, 0 , 0)}
+                        >
+                            All
+                        </MenuItem>
+                        {this.props.windowList.map((option, index) => (
                             <MenuItem
-                                key={option}
+                                key={option.windowName}
                                 selected={index === this.state.selectedIndex}
-                                onClick={event => this.handleMenuItemClick(event, index)}
+                                onClick={event => this.handleMenuItemClick(event, index+1, option.windowId)}
                             >
-                                {option}
+                                {option.windowName}
                             </MenuItem>
-
                         ))}
                     </Menu>
                 </div>
@@ -139,6 +220,10 @@ class WindowsMenu extends React.Component {
                     <div>
                         <WindowsFoodList dishesList={this.state.dishesList}/>
                     </div>
+
+                    {this.state.dishesList.map((option, index) => (
+                        <div>foodName:{option.foodName}</div>
+                        ))}
                 </div>
             </div>
         );

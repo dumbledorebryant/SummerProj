@@ -57,7 +57,8 @@ class Dishes extends React.Component {
         tips:this.props.tips,
         window_id:this.props.window_id,
         like:this.props.like,
-        picture:this.props.picture
+        picture:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531295582&di=9ea923418530769b7e3f12b8cfd31e7d&imgtype=jpg&er=1&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fc83d70cf3bc79f3d84baeae4b0a1cd11738b298e.jpg"
+
     };
 
     handleExpandClick = () => {
@@ -82,8 +83,8 @@ class Dishes extends React.Component {
                                 <MoreVertIcon />
                             </IconButton>
                         }
-                        title={this.state.foodname}
-                        subheader={this.state.window_id}
+                        title={this.props.foodname}
+                        subheader={this.props.window_name}
                         className={classes.cardHeader}
                     />
                     <CardMedia
@@ -93,13 +94,13 @@ class Dishes extends React.Component {
                     />
                     <CardContent>
                         <Typography component="p">
-                            Price:{this.state.price}￥
+                            Price:{this.props.price}￥
                         </Typography>
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton aria-label="Add to favorites">
                             <FavoriteIcon />
-                        </IconButton>{this.state.like}
+                        </IconButton>{this.props.like}
                         <IconButton aria-label="Share">
                             <ShareIcon />
                         </IconButton>
@@ -120,7 +121,7 @@ class Dishes extends React.Component {
                                    Tips:
                                 </Typography>
                                 <Typography paragraph>
-                                    {this.state.tips}
+                                    {this.props.tips}
                                 </Typography>
                             </CardContent>
                         </Collapse>

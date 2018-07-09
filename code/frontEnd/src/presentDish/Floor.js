@@ -43,6 +43,7 @@ class Floor extends React.Component {
       floorList:[0,1,2,3],         //0表示全部,用canteen从后端拿floorList
       floor:0,                      //默认是0, 后面通过点击某一层，传递楼层给windowsMenu
       windows:constantData.windows,
+      dishesList:[],
   };
 
   handleChange = (event, value) => {
@@ -56,11 +57,39 @@ class Floor extends React.Component {
   handleChangeFloor= (event, index) => {
       let temp=[];
       let allwin=constantData.windows;
-      allwin.map((item,i)=>(
-          item.floor==index?temp.push(item):1
-      ))
+      let formData=new FormData();
+      formData.append("restaurant",this.state.canteen);
+      formData.append("floor",this.state.floorList[index]);
+      formData.append("windowID",0);
 
-      this.setState({ windows:temp});
+      fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
+          credentials: 'include',
+          method:'POST',
+          mode:'cors',
+          body:formData,
+      }).then(response2=>{
+          console.log('Request successful',response2);
+          return response2.json().then(result2=>{
+              //alert(result2[0].windowName)
+              this.setState({windows:result2 , floor:this.state.floorList[index]});
+              fetch('http://localhost:8080/Food/FoodsByWindowId',{
+                  credentials: 'include',
+                  method:'POST',
+                  mode:'cors',
+                  body:formData,
+              }).then(response=>{
+                  console.log('Request successful',response);
+                  return response.json().then(result=>{
+                      this.setState({dishesList:result});
+                  })
+              });
+
+          })
+      });
+
+
+
+
   };
 
   componentWillMount(){
@@ -69,6 +98,7 @@ class Floor extends React.Component {
       formData.append("floor",this.state.floor);
 
       fetch('http://localhost:8080/Window/FloorListByRestaurant',{
+          credentials: 'include',
           method:'POST',
           mode:'cors',
           body:formData,
@@ -78,18 +108,18 @@ class Floor extends React.Component {
               if (result[0]==0){
                   this.setState({floorList:result});
               }
-
               fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
+                  credentials: 'include',
                   method:'POST',
                   mode:'cors',
                   body:formData,
               }).then(response2=>{
                   console.log('Request successful',response2);
                   return response2.json().then(result2=>{
+                      //alert(result2[0].windowName)
                       this.setState({windows:result2});
                   })
               });
-
 
           })
       });
@@ -124,20 +154,20 @@ class Floor extends React.Component {
           </Tabs>
 
         </AppBar>
-        <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={this.state.value}
-          onChangeIndex={this.handleChangeIndex}
-        >
-            {this.state.floorList.map((item,i) => (
-                <TabContainer dir={theme.direction}><WindowsMenu canteen={this.state.canteen} windows={this.state.windows} index={i} floor={i}></WindowsMenu></TabContainer>
-            ))
-            }
+            <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={this.state.value}
+                onChangeIndex={this.handleChangeIndex}
+            >
+                {this.state.floorList.map((item,i) => (
+                    <TabContainer dir={theme.direction}>
+                        <WindowsMenu key={this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
+                ))
+                }
+            </SwipeableViews>
 
-
-        </SwipeableViews>
             <div>
-            {this.state.windows.map((items,i)=>(<div>{items[0]}</div>)
+            {this.state.windows.map((items,i)=>(<div>{items.windowName}</div>)
             )}
             </div>
       </div>
@@ -153,6 +183,18 @@ Floor.propTypes = {
 
 export default withStyles(styles, { withTheme: true })(Floor);
 
+
+
+
+/*
+* {this.state.floorList.map((item,i) => (
+                <TabContainer dir={theme.direction}>
+                    <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
+            ))
+            }
+*     <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={0} floor={this.state.floor}></WindowsMenu>
+* */
+
 /*
     <Tab label="全部" index={0} onClick={event=>this.handleChangeFloor(event,0)}></Tab>
     <Tab label="一楼" index={1} ></Tab>
@@ -165,3 +207,14 @@ export default withStyles(styles, { withTheme: true })(Floor);
 <TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows} index={1}/></TabContainer>
 <TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={2}/></TabContainer>
 <TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={3}/></TabContainer>*/
+/*
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={this.state.value}
+          onChangeIndex={this.handleChangeIndex}
+        >
+            <TabContainer dir={theme.direction}>
+                <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={0} floor={this.state.floor}></WindowsMenu></TabContainer>
+        </SwipeableViews>
+
+* */
