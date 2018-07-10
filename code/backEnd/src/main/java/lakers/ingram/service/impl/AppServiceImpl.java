@@ -1,10 +1,7 @@
 package lakers.ingram.service.impl;
 
 import lakers.ingram.Dao.*;
-import lakers.ingram.ModelEntity.AdminEntity;
-import lakers.ingram.ModelEntity.UserEntity;
-import lakers.ingram.ModelEntity.WindowEntity;
-import lakers.ingram.ModelEntity.WorkerEntity;
+import lakers.ingram.ModelEntity.*;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,9 +27,13 @@ public class AppServiceImpl implements AppService {
     private WindowDao windowDao;
 
     @Autowired
+    private FoodDao foodDao;
+
+    @Autowired
+    private UserLikeFoodDao userLikeFoodDao;
+
+    @Autowired
     private UserTagDao userTagDao;
-
-
 
     @Autowired
     private TagDao tagDao;
@@ -48,6 +49,8 @@ public class AppServiceImpl implements AppService {
         this.workerDao = workerDao;
     }
     public void setWindowDao(WindowDao windowDao){ this.windowDao = windowDao; }
+    public void setFoodDao(FoodDao foodDao){this.foodDao = foodDao;}
+    public void setUserLikeFoodDao(UserLikeFoodDao userLikeFoodDao){this.userLikeFoodDao = userLikeFoodDao;}
 
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
@@ -97,6 +100,54 @@ public class AppServiceImpl implements AppService {
     public List<WindowEntity> getAllWindows(){
         return windowDao.getAllWindows();
     };
+    //Food
+    public List<FoodEntity> getAllFood(){
+        return foodDao.getAllFood();
+    };
+
+    public List<FoodEntity> getAllFoodByRestaurant(String restaurant){
+        return foodDao.getAllFoodByRestaurant(restaurant);
+    };
+
+    public List<FoodEntity> getAllFoodByRestaurantAndFloor(String restaurant, int floor){
+        return foodDao.getAllFoodByRestaurantAndFloor(restaurant,floor);
+    };
+
+    public List<FoodEntity> getAllFoodByWindowid(int window_id){
+        return foodDao.getAllFoodByWindowid(window_id);
+    };
+
+    public String getWindowNameByFoodId(int foodId){
+        return foodDao.getWindowNameByFoodId(foodId);
+    };
+
+    //  UserLikeFood
+
+    public boolean IsSave(int userId, int foodId){
+        return userLikeFoodDao.IsSave(userId,foodId);
+    };//是否已经收藏，是返回1，不是返回0
+
+    public Integer saveUserLikeFood(UserlikefoodEntity userLikeFood, int foodId){
+        return userLikeFoodDao.save(userLikeFood,foodId);
+    };//收藏
+
+    public Integer deleteUserLikeFood(UserlikefoodEntity userLikeFood, int foodId){
+        return userLikeFoodDao.delete(userLikeFood,foodId);
+    };//取消收藏
+
+    public List<FoodEntity> getLikeFoodListByUserId(int UserId){
+        return userLikeFoodDao.getFoodListByUserId(UserId);
+    };//查看用户的收藏菜单
+
+    public int getCountUserByFoodId(int foodId){
+        return userLikeFoodDao.getCountUserByFoodId(foodId);
+    };//统计每一道菜的收藏数目
+
+    public List<UserlikefoodEntity> getAllUserLikeFood(){
+        return userLikeFoodDao.getAllUserLikeFood();
+    };
+
+//
     public JSONArray listUserTag(Integer name){return userTagDao.listUserTag(name);}
     public String chooseUserTag(Integer userid,String[] tagArray) {
         return userTagDao.chooseUserTag(userid,tagArray);
@@ -128,5 +179,7 @@ public class AppServiceImpl implements AppService {
     public String newFoodPic(File imageFile,String windowid){
         return workerDao.newFoodPic(imageFile,windowid);
     }
+
+
 
 }
