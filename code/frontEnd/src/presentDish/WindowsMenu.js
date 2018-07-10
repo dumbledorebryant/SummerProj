@@ -85,7 +85,6 @@ class WindowsMenu extends React.Component {
     };
 
     handleMenuItemClick = (event, index, windowId) => {
-        alert("index"+index+" windowId"+windowId);
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.props.floor);
@@ -207,7 +206,7 @@ class WindowsMenu extends React.Component {
                         </MenuItem>
                         {this.props.windowList.map((option, index) => (
                             <MenuItem
-                                key={option.windowName}
+                                key={this.props.canteen+option.windowName}
                                 selected={index === this.state.selectedIndex}
                                 onClick={event => this.handleMenuItemClick(event, index+1, option.windowId)}
                             >
@@ -220,10 +219,6 @@ class WindowsMenu extends React.Component {
                     <div>
                         <WindowsFoodList dishesList={this.state.dishesList}/>
                     </div>
-
-                    {this.state.dishesList.map((option, index) => (
-                        <div>foodName:{option.foodName}</div>
-                        ))}
                 </div>
             </div>
         );
@@ -247,7 +242,9 @@ export default withStyles(styles)(WindowsMenu);
                                   }
                                   */
 /*
-*
+* {this.state.dishesList.map((option, index) => (
+                        <div>foodName:{option.foodName}</div>
+                        ))}
 *              <Grid container className={classes.root} spacing={16}>
                             <Grid item xs={12}>
                                 <Grid container className={classes.demo} justify="center" spacing={40} >

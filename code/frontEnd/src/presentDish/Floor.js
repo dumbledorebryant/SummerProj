@@ -87,9 +87,6 @@ class Floor extends React.Component {
           })
       });
 
-
-
-
   };
 
   componentWillMount(){
@@ -129,22 +126,55 @@ class Floor extends React.Component {
 
     componentDidMount//render之后
 
+    componentWillReceiveProps(nextProps){
+      this.setState({canteen:nextProps.match.params.key, });
+        let formData=new FormData();
+        formData.append("restaurant",nextProps.match.params.key);
+        formData.append("floor",this.state.floor);
+        fetch('http://localhost:8080/Window/FloorListByRestaurant',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result[0]==0){
+                    this.setState({floorList:result});
+                }
+                fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
+                    credentials: 'include',
+                    method:'POST',
+                    mode:'cors',
+                    body:formData,
+                }).then(response2=>{
+                    console.log('Request successful',response2);
+                    return response2.json().then(result2=>{
+                        //alert(result2[0].windowName)
+                        this.setState({windows:result2});
+                    })
+                });
+
+            })
+        });
+
+    }
 
   render() {
     const { classes, theme,params } = this.props;
 
 
     return (
-        <div className={classes.root}><div>{this.props.match.params.key}</div>
+        <div className={classes.root}>
+
         <AppBar position="static" color="default">
-          <Tabs
+          <Tabs key = {this.state.canteen}
             value={this.state.value}
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
             fullWidth
           >
-
               {this.state.floorList.map((item,i) => (
                   i==0?  <Tab label="全部" index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>:
                   <Tab label={item+"楼"} index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>
@@ -161,15 +191,12 @@ class Floor extends React.Component {
             >
                 {this.state.floorList.map((item,i) => (
                     <TabContainer dir={theme.direction}>
-                        <WindowsMenu key={this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
+                        <WindowsMenu key={this.state.canteen+this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
                 ))
                 }
             </SwipeableViews>
 
-            <div>
-            {this.state.windows.map((items,i)=>(<div>{items.windowName}</div>)
-            )}
-            </div>
+
       </div>
     );
   }
@@ -206,8 +233,9 @@ export default withStyles(styles, { withTheme: true })(Floor);
 <TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows} index={0}></WindowsMenu></TabContainer>
 <TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows} index={1}/></TabContainer>
 <TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={2}/></TabContainer>
-<TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={3}/></TabContainer>*/
+<TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={3}/></TabContainer>*/            /*<div>{this.props.match.params.key}</div>*/
 /*
+
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={this.state.value}
@@ -217,4 +245,9 @@ export default withStyles(styles, { withTheme: true })(Floor);
                 <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={0} floor={this.state.floor}></WindowsMenu></TabContainer>
         </SwipeableViews>
 
+ <div>
+            {this.state.windows.map((items,i)=>(<div>{items.windowName}</div>)
+            )}
+            </div>
 * */
+

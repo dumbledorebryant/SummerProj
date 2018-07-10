@@ -51,6 +51,7 @@ const styles = theme => ({
 
 class Dishes extends React.Component {
     state = {
+        userId:-1,
         expanded: false,
         foodname:this.props.foodname,
         price:this.props.price,
@@ -64,6 +65,46 @@ class Dishes extends React.Component {
     handleExpandClick = () => {
         this.setState(state => ({ expanded: !state.expanded }));
     };
+
+    handleLikeClick=()=>{
+
+        let formData=new FormData();
+ //       formData.append("restaurant",this.props.canteen);
+  //      formData.append("floor",this.state.floor);
+   //     formData.append("windowId",0);
+        formData.append("foodId",this.props.foodId);
+
+        fetch('http://localhost:8080/User/State',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({userId: result[0]});
+                if(result==-1){
+                    alert("Please Login First");
+                }
+                else {
+                    alert("userId:"+result +" "+"FoodId:"+this.props.foodId);
+                    formData.append("userId",result[0]);
+                    fetch('http://localhost:8080/UserLikeFood/Save', {
+                        credentials: 'include',
+                        method: 'POST',
+                        mode: 'cors',
+                        body: formData,
+                    }).then(response => {
+                        console.log('Request successful', response);
+                        return response.json().then(result => {
+                            this.setState({dishesList: result});
+                        })
+                    });
+                }
+            })
+        });
+    };
+
 
     render() {
         const { classes } = this.props;
@@ -98,7 +139,7 @@ class Dishes extends React.Component {
                         </Typography>
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
-                        <IconButton aria-label="Add to favorites">
+                        <IconButton aria-label="Add to favorites"  onClick={this.handleLikeClick}>
                             <FavoriteIcon />
                         </IconButton>{this.props.like}
                         <IconButton aria-label="Share">

@@ -72,7 +72,7 @@ class WindowsFoodList extends React.Component {
                         <Grid item xs={12}>
                             <Grid container className={classes.demo} justify="center" spacing={40} >
                                 {this.props.dishesList.map((item,i) => (
-                                    <Grid item><Dishes foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes}picture=""/></Grid>))
+                                    <Grid item><Dishes foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes}picture=""/></Grid>))
                                 }
                                 </Grid>
                         </Grid>
