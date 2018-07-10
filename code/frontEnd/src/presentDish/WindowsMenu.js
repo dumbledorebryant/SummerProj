@@ -30,15 +30,7 @@ const styles = theme => ({
         width: 60,
         height: 60,
     },
-
 });
-
-const options = [
-    '全部',
-    'A窗口',
-    'B窗口',
-    'C窗口',
-];
 
 class WindowsMenu extends React.Component {
     button = null;
@@ -50,7 +42,6 @@ class WindowsMenu extends React.Component {
         selectedIndex: 0,
         content:1,
         floor:this.props.floor,        //上一级传过来的，拿来去后端拿windowList和dishesList，如果是0就取全部
-        //windowList:["全部","A窗口","B窗口","D窗口"],//渲染windowMenu的按钮
         windowList:this.props.windowList,//渲染windowMenu的按钮
         dishesList: [       //从后端拿到，传给下一级的windowFoodList
             {
@@ -105,43 +96,7 @@ class WindowsMenu extends React.Component {
                 });
             })
         });
-
     };
-
-    handleMunuItemClickAll = (event, index) => {
-        alert(index);
-        let formData=new FormData();
-        formData.append("restaurant",this.props.canteen);
-        formData.append("floor",this.props.floor);
-       // if(this.props.floor!=0){
-            fetch('http://localhost:8080/Food/FoodListByRestaurantFloor',{
-                credentials: 'include',
-                method:'POST',
-                mode:'cors',
-                body:formData,
-            }).then(response=>{
-                console.log('Request successful',response);
-                return response.json().then(result=>{
-                    this.setState({dishesList:result});
-                })
-            });
-       // }
-        /*else {
-            fetch('http://localhost:8080/Food/FoodListByRestaurant',{
-                method:'POST',
-                mode:'cors',
-                body:formData,
-            }).then(response=>{
-                console.log('Request successful',response);
-                return response.json().then(result=>{
-                    this.setState({dishesList:result});
-                })
-            });
-        }*/
-        this.setState({ selectedIndex: index, anchorEl: null, content:index
-        });
-    };
-
 
     handleClose = () => {
         this.setState({ anchorEl: null });
@@ -170,11 +125,6 @@ class WindowsMenu extends React.Component {
     render() {
         const { classes } = this.props;
         const { anchorEl } = this.state;
-        /*let list=this.state.windowList.map((item,i) => (
-            (0==this.props.index)?<Dishes/>:
-            (this.state.windowList[this.state.selectedIndex]=="全部"&& item.floor==this.props.index)?<div><label>{item.name}</label><GuttersGrid /></div>:
-                ((item.name==this.state.windowList[this.state.selectedIndex] && item.floor==this.props.index)?<GuttersGrid />:<label></label>
-        )))*/
         return (
             <div>
                 <div className={classes.root}>

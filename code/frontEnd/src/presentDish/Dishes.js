@@ -47,17 +47,21 @@ const styles = theme => ({
     avatar: {
         backgroundColor: red[500],
     },
+    avatar2: {
+        backgroundColor: red[0],
+    },
 });
 
 class Dishes extends React.Component {
     state = {
         userId:-1,
         expanded: false,
-        foodname:this.props.foodname,
-        price:this.props.price,
-        tips:this.props.tips,
-        window_id:this.props.window_id,
+        //foodname:this.props.foodname,
+        //price:this.props.price,
+        //tips:this.props.tips,
+        //window_id:this.props.window_id,
         like:this.props.like,
+        icon:0,
         picture:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531295582&di=9ea923418530769b7e3f12b8cfd31e7d&imgtype=jpg&er=1&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fc83d70cf3bc79f3d84baeae4b0a1cd11738b298e.jpg"
 
     };
@@ -67,13 +71,8 @@ class Dishes extends React.Component {
     };
 
     handleLikeClick=()=>{
-
         let formData=new FormData();
- //       formData.append("restaurant",this.props.canteen);
-  //      formData.append("floor",this.state.floor);
-   //     formData.append("windowId",0);
         formData.append("foodId",this.props.foodId);
-
         fetch('http://localhost:8080/User/State',{
             credentials: 'include',
             method:'POST',
@@ -87,8 +86,9 @@ class Dishes extends React.Component {
                     alert("Please Login First");
                 }
                 else {
-                    alert("userId:"+result +" "+"FoodId:"+this.props.foodId);
+                  //  alert("userId:"+result +" "+"FoodId:"+this.props.foodId);
                     formData.append("userId",result[0]);
+                    formData.append("state",1);
                     fetch('http://localhost:8080/UserLikeFood/Save', {
                         credentials: 'include',
                         method: 'POST',
@@ -97,7 +97,18 @@ class Dishes extends React.Component {
                     }).then(response => {
                         console.log('Request successful', response);
                         return response.json().then(result => {
-                            this.setState({dishesList: result});
+                          //  alert(result);
+                            this.setState({icon: result});
+                            if(result==0){
+                                this.setState({
+                                    like:this.state.like+1
+                                })
+                            }
+                            else{
+                                this.setState({
+                                    like:this.state.like-1
+                                })
+                            }
                         })
                     });
                 }
@@ -105,6 +116,39 @@ class Dishes extends React.Component {
         });
     };
 
+    componentWillMount(){
+        let formData=new FormData();
+        formData.append("foodId",this.props.foodId);
+        fetch('http://localhost:8080/User/State',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({userId: result[0]});
+                if(result==-1){
+                }
+                else {
+                    formData.append("userId",result[0]);
+                    formData.append("state",0);
+                    fetch('http://localhost:8080/UserLikeFood/Save', {
+                        credentials: 'include',
+                        method: 'POST',
+                        mode: 'cors',
+                        body: formData,
+                    }).then(response => {
+                        console.log('Request successful', response);
+                        return response.json().then(result => {
+                            //alert(result);
+                            this.setState({icon: result});
+                        })
+                    });
+                }
+            })
+        });
+    }
 
     render() {
         const { classes } = this.props;
@@ -139,12 +183,15 @@ class Dishes extends React.Component {
                         </Typography>
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
-                        <IconButton aria-label="Add to favorites"  onClick={this.handleLikeClick}>
-                            <FavoriteIcon />
-                        </IconButton>{this.props.like}
+                        <IconButton aria-label="Add to favorites" onClick={this.handleLikeClick}>
+                            {this.state.icon?<Avatar aria-label="Recipe" className={classes.avatar2}>♡
+                            </Avatar>:
+                            <Avatar aria-label="Recipe" className={classes.avatar}>♡
+                            </Avatar>}
+                        </IconButton>{this.state.like}
                         <IconButton aria-label="Share">
                             <ShareIcon />
-                        </IconButton>
+                        </IconButton><i>{!this.state.icon?"已收藏":"加入收藏"}</i>
                         <IconButton
                             className={classnames(classes.expand, {
                                 [classes.expandOpen]: this.state.expanded,

@@ -92,7 +92,7 @@ class Floor extends React.Component {
   componentWillMount(){
       let formData=new FormData();
       formData.append("restaurant",this.state.canteen);
-      formData.append("floor",this.state.floor);
+      formData.append("floor",0);
 
       fetch('http://localhost:8080/Window/FloorListByRestaurant',{
           credentials: 'include',
@@ -124,13 +124,11 @@ class Floor extends React.Component {
 
   }//render之前，construct之后
 
-    componentDidMount//render之后
-
     componentWillReceiveProps(nextProps){
       this.setState({canteen:nextProps.match.params.key, });
         let formData=new FormData();
         formData.append("restaurant",nextProps.match.params.key);
-        formData.append("floor",this.state.floor);
+        formData.append("floor",0);
         fetch('http://localhost:8080/Window/FloorListByRestaurant',{
             credentials: 'include',
             method:'POST',
@@ -140,7 +138,7 @@ class Floor extends React.Component {
             console.log('Request successful',response);
             return response.json().then(result=>{
                 if (result[0]==0){
-                    this.setState({floorList:result});
+                    this.setState({floorList:result,floor:0});
                 }
                 fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
                     credentials: 'include',
@@ -151,7 +149,7 @@ class Floor extends React.Component {
                     console.log('Request successful',response2);
                     return response2.json().then(result2=>{
                         //alert(result2[0].windowName)
-                        this.setState({windows:result2});
+                        this.setState({windows:result2,value:0});
                     })
                 });
 
