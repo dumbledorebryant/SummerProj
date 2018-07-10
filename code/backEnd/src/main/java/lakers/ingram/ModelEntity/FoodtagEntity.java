@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "foodtag", schema = "summerproj", catalog = "")
+@Table(name = "foodtag", schema = "SummerProj", catalog = "")
 @IdClass(FoodtagEntityPK.class)
 public class FoodtagEntity implements Serializable {
     private int tagId;

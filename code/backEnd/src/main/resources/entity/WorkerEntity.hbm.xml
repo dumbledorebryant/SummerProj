@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="lakers.ingram.ModelEntity.WorkerEntity" table="worker" schema="summerproj">
+    <class name="lakers.ingram.ModelEntity.WorkerEntity" table="worker" schema="SummerProj">
         <id name="windowId">
             <column name="window_id" sql-type="int(11)"/>
         </id>

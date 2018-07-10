@@ -76,6 +76,4 @@ public class WorkerAction extends HttpServlet {
             out.print(result);
         }
     }
-
-
 }

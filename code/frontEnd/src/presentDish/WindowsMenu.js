@@ -43,32 +43,7 @@ class WindowsMenu extends React.Component {
         content:1,
         floor:this.props.floor,        //上一级传过来的，拿来去后端拿windowList和dishesList，如果是0就取全部
         windowList:this.props.windowList,//渲染windowMenu的按钮
-        dishesList: [       //从后端拿到，传给下一级的windowFoodList
-            {
-                foodname:"蛋炒饭",
-                price:10,
-                tips:"放了鸡蛋",
-                window_id:"五餐一楼",
-                like:100,
-                picture:"https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=c99aafe21c950a7b613846966bb809bc/f31fbe096b63f624eef2cdd78644ebf81b4ca3b3.jpg"
-            },
-            {
-                foodname:"牛肉面",
-                price:15,
-                tips:"放了牛肉",
-                window_id:"五餐二楼",
-                like:130,
-                picture:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531293828&di=c6cbea2184bca30c5f01054809a7ab03&imgtype=jpg&er=1&src=http%3A%2F%2Fimage.suning.cn%2Fuimg%2Fsop%2Fcommodity%2F100451187013144729424040_x.jpg"
-            },
-            {
-                foodname:"汤圆",
-                price:13,
-                tips:"豆沙天下第一",
-                window_id:"四餐一楼",
-                like:99,
-                picture:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531295582&di=9ea923418530769b7e3f12b8cfd31e7d&imgtype=jpg&er=1&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fc83d70cf3bc79f3d84baeae4b0a1cd11738b298e.jpg"
-            }
-        ]
+        dishesList: []      //从后端拿到，传给下一级的windowFoodList
     };
 
     handleClickListItem = event => {

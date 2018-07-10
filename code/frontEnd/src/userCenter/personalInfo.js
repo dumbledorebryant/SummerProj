@@ -1,13 +1,15 @@
 import React from 'react';
 import {Button, Form, Image, FormGroup, ControlLabel, FormControl, Glyphicon} from 'react-bootstrap';
 import protrait from '../img/pic.jpg'
+import {match} from 'react-router-dom'
 import Avatar from './userpic'
 
 
 
 class TextFields extends React.Component {
+
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             name: '',
             pwd: '',
@@ -19,29 +21,38 @@ class TextFields extends React.Component {
         this.handleChangeEmail=this.handleChangeEmail.bind(this);
         this.handleChangePhone=this.handleChangePhone.bind(this);
         this.showInfo=this.showInfo.bind(this);
-        this.showInfo();
+        //this.showInfo();
 
 
     }
+
+    componentWillMount(){
+        this.showInfo();
+    }
+
     showInfo= () => {
-        fetch('http://localhost:8080/User/UserInfo?userID=1',
+        fetch('http://localhost:8080/User/UserInfo',
             {
-                method: 'POST',
-                mode: 'cors'
+                credentials: 'include',
+                method: 'GET',
+                mode: 'cors',
             }
         )
             .then(response => {
                 response.json()
                     .then(result => {
-                        this.setState({name:result.username});
-                        this.setState({pwd:result.password});
-                        this.setState({email:result.email});
-                        this.setState({phone:result.phone});
+                        this.setState({name:result[1]});
+                        this.setState({pwd:result[2]});
+                        this.setState({email:result[3]});
+                        this.setState({phone:result[4]});
                         console.log("result: ", result);
 
                     });
             })
     };
+
+
+
 
     handleChangeName= event =>{
         this.setState({
@@ -59,12 +70,14 @@ class TextFields extends React.Component {
     }
 
     handleInfo= () => {
-        fetch('http://localhost:8080/User/HandleUserInfoChange?userID=1&username='+
+        fetch('http://localhost:8080/User/HandleUserInfoChange?userID='+this.props.userid+'&username='+
             this.state.name+'&password='+this.state.pwd+'&phone='+this.state.phone+'&email='+
             this.state.email,
             {
+                credentials: 'include',
                 method: 'POST',
-                mode: 'cors'
+                mode: 'cors',
+
             }
         )
             .then(response => {
@@ -79,13 +92,15 @@ class TextFields extends React.Component {
 
 
     render() {
+        const { classes, theme,params } = this.props;
         return (
             <div align="center">
                 <br/>
-                <Avatar/>
+                <Avatar userid={this.props.userid}/>
 
                 <h5>点击头像框更改头像</h5>
                 <br/>
+
                 <Form inline>
                     <FormGroup controlId="formValidationSuccess3"  bsStyle="primary">
                         <ControlLabel>昵称：</ControlLabel>
@@ -142,6 +157,7 @@ class TextFields extends React.Component {
                 </Form>
                 <br/>
                 <Button bsStyle="primary" onClick={this.handleInfo}>提交修改</Button>
+
             </div>
 
         );

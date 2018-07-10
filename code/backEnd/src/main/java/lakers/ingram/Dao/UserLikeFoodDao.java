@@ -1,7 +1,6 @@
 package lakers.ingram.Dao;
 
 import lakers.ingram.ModelEntity.FoodEntity;
-import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
 
 import java.util.List;

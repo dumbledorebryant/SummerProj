@@ -3,13 +3,14 @@ package lakers.ingram.ModelEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "food", schema = "summerproj", catalog = "")
+@Table(name = "food", schema = "SummerProj", catalog = "")
 public class FoodEntity {
     private int foodId;
     private String foodName;
     private Double price;
     private String tips;
     private Integer likes;
+    private Integer windowId;
 
     @Id
     @Column(name = "foodID", nullable = false)
@@ -43,9 +44,7 @@ public class FoodEntity {
 
     @Basic
     @Column(name = "tips", nullable = true, length = 45)
-    public String getTips() {
-        return tips;
-    }
+    public String getTips() { return tips; }
 
     public void setTips(String tips) {
         this.tips = tips;
@@ -85,5 +84,15 @@ public class FoodEntity {
         result = 31 * result + (tips != null ? tips.hashCode() : 0);
         result = 31 * result + (likes != null ? likes.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "window_id", nullable = true)
+    public Integer getWindowId() {
+        return windowId;
+    }
+
+    public void setWindowId(Integer windowId) {
+        this.windowId = windowId;
     }
 }

@@ -1,9 +1,5 @@
 package lakers.ingram.Dao.impl;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSInputFile;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
@@ -15,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSInputFile;
 
 @Repository("UserDao")
 @Transactional
@@ -125,12 +125,12 @@ class UserDaoImpl implements UserDao {
                 setParameter("id", user.getUserId());
         UserEntity userDB=(UserEntity)query.uniqueResult();
         String pwd=user.getPassword();
-        String encodePwd=lakers.ingram.encode.MD5Util.md5Encode(pwd);
+       // String encodePwd=lakers.ingram.encode.MD5Util.md5Encode(pwd);
 
         userDB.setEmail(user.getEmail());
         userDB.setPhone(user.getPhone());
         userDB.setUsername(user.getUsername());
-        userDB.setPassword(encodePwd);
+        userDB.setPassword(pwd);
 
         session.update(userDB);
         transaction.commit();
@@ -154,5 +154,4 @@ class UserDaoImpl implements UserDao {
             return "Success";
         }
     }
-
 }

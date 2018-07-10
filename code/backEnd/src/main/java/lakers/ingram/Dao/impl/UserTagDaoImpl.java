@@ -1,6 +1,7 @@
 package lakers.ingram.Dao.impl;
 
 import lakers.ingram.Dao.UserTagDao;
+import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.TagEntity;
 
 import lakers.ingram.ModelEntity.UsertagEntity;
@@ -19,7 +20,7 @@ import java.util.List;
 public class UserTagDaoImpl implements UserTagDao{
     public JSONArray listUserTag(Integer name)
     {
-        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
         Query query1 = session.createQuery("select a from UsertagEntity a where a.userId= :id").
                 setParameter("id", name);
@@ -31,7 +32,7 @@ public class UserTagDaoImpl implements UserTagDao{
     }
 
     public String chooseUserTag(Integer userid,String[] tagArray){
-        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSessionFactory().openSession();
+        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
         Boolean tasteFlag=true;
         Boolean countryFlag=true;
@@ -66,7 +67,7 @@ public class UserTagDaoImpl implements UserTagDao{
     }
 
     public String sendTags(Integer userid,JSONArray tagArray){
-        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 
         Integer idx=tagArray.size()-1;

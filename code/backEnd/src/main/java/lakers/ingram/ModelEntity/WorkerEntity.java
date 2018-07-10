@@ -3,7 +3,7 @@ package lakers.ingram.ModelEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "worker", schema = "summerproj", catalog = "")
+@Table(name = "worker", schema = "SummerProj", catalog = "")
 public class WorkerEntity {
     private int windowId;
     private String password;

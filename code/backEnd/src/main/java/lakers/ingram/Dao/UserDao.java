@@ -26,7 +26,6 @@ public interface UserDao{
     public JSONObject showUserInfo(Integer userID);
     public String handleUserInfo(UserEntity user) throws Exception;
     public String updatePic(File imgFile, Integer userid);
-
 }
 
 

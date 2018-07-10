@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core/styles';
 import {MuiThemeProvider,createMuiTheme } from '@material-ui/core/styles';
 
 
-
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -16,6 +15,7 @@ import Input from "@material-ui/core/es/Input/Input";
 import InputLabel from "@material-ui/core/es/InputLabel/InputLabel";
 import Select from "@material-ui/core/es/Select/Select";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
+import {Link,hashHistory} from 'react-router-dom';
 
 const theme2=createMuiTheme({
     typography:{
@@ -76,28 +76,14 @@ const styles = theme => ({
 
 const tag=[];
 const foodTemp=[];
-class PersonalSetting extends Component {
-    constructor() {
-        super();
-        this.state = {
-            name:[],
-            checkBool:tag,
-            arr:[],
-            allTags:'',
-            tasteTags:tasteTemp,
-            countryTags:countryTemp,
-            tabooTags:tabooTemp,
-            foodTags:foodTemp,
-            open: false,
-            choose:'',
-            chooseType:'',
-            chooseName:''
-        };
+class PersonalSetting extends React.Component {
+    constructor(props) {
+        super(props);
 
-        this.showTags=this.showTags.bind(this);
-        this.showTags();
+        /*this.showTags=this.showTags.bind(this);
+        //this.showTags();
         this.searchSavedTag=this.searchSavedTag.bind(this);
-        this.searchSavedTag();
+        //this.searchSavedTag();
         this.handleChange1=this.handleChange1.bind(this);
         this.handleChange=this.handleChange.bind(this);
 
@@ -105,9 +91,26 @@ class PersonalSetting extends Component {
         this.handleClose=this.handleClose.bind(this);
         this.handleOpen=this.handleOpen.bind(this);
 
-        this.searchNewAddTag=this.searchNewAddTag.bind(this);
+        this.searchNewAddTag=this.searchNewAddTag.bind(this);*/
     }
-
+    state = {
+        name:[],
+        checkBool:tag,
+        arr:[],
+        allTags:'',
+        tasteTags:tasteTemp,
+        countryTags:countryTemp,
+        tabooTags:tabooTemp,
+        foodTags:foodTemp,
+        open: false,
+        choose:'',
+        chooseType:'',
+        chooseName:''
+    };
+    componentDidMount(){
+        this.showTags();
+        this.searchSavedTag();
+    }
     handleClose = () => {
         this.setState({ open: false });
     };
@@ -117,10 +120,12 @@ class PersonalSetting extends Component {
     };
 
     showTags= () => {
-        fetch('http://localhost:8080/UserCenter/ShowTags?',
+        fetch('http://localhost:8080/UserCenter/ShowTags',
             {
-                method: 'POST',
-                mode: 'cors'
+                credentials: 'include',
+                method: 'GET',
+                mode: 'cors',
+
             }
         )
             .then(response => {
@@ -130,7 +135,7 @@ class PersonalSetting extends Component {
                         countryTemp.splice(0,countryTemp.size);
                         tabooTemp.splice(0,tabooTemp.size);
                         foodTemp.splice(0,foodTemp.size);
-
+                        console.log("All:"+ result[0].tagType);
                         for(var i in result){
                             this.state.checkBool.push(false);
                             let add={"tagType":result[i].tagType,
@@ -150,13 +155,11 @@ class PersonalSetting extends Component {
                             }
                         }
                         this.setState({
-                            tasteTags:tasteTemp,
-                            coutryTags:countryTemp,
+                            tasteTags:tasteTemp, coutryTags:countryTemp,
                             foodTags:foodTemp,
                             tabooTags:tabooTemp }, () => {
                             this.searchSavedTag()
                         });
-
                     });
             })
     };
@@ -173,10 +176,12 @@ class PersonalSetting extends Component {
 
 
     searchSavedTag= () => {
-        fetch('http://localhost:8080/UserCenter/SearchSavedTag?userID=1',
+        fetch('http://localhost:8080/UserCenter/SearchSavedTag?userID='+this.props.userid,
             {
+                credentials: 'include',
                 method: 'POST',
-                mode: 'cors'
+                mode: 'cors',
+
             }
         )
             .then(response => {
@@ -214,10 +219,13 @@ class PersonalSetting extends Component {
             sendArr.push(this.state.chooseName);
         }
         console.log("array:" + sendArr + '\n');
-        fetch('http://localhost:8080/UserCenter/ChooseTag?userID=1&tagArray='+sendArr,
+        fetch('http://localhost:8080/UserCenter/ChooseTag?userID='+this.props.userid+'&tagArray='+sendArr,
             {
+
+                credentials: 'include',
                 method: 'POST',
-                mode: 'cors'
+                mode: 'cors',
+
             }
             )
             .then(response => {
@@ -235,8 +243,10 @@ class PersonalSetting extends Component {
     searchNewAddTag=()=>{
         fetch('http://localhost:8080/UserCenter/SearchNewAddTag?tagName='+this.state.chooseName,
             {
+                credentials: 'include',
                 method:'POST',
-                mode:'cors'
+                mode:'cors',
+
             })
             .then(reponse=>{
                 reponse.json()
@@ -287,7 +297,7 @@ class PersonalSetting extends Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes,match } = this.props;
         return (
             <div>
                 <br/>
@@ -453,7 +463,8 @@ class PersonalSetting extends Component {
 }
 
 PersonalSetting.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(PersonalSetting);

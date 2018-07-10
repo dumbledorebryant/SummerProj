@@ -44,12 +44,15 @@ const styles = theme => ({
     expandOpen: {
         transform: 'rotate(180deg)',
     },
-    avatar: {
-        backgroundColor: red[500],
+    avatar3: {
+        color: red[500],
     },
     avatar2: {
-        backgroundColor: red[0],
+        color: red[0],
     },
+    avatar:{
+        backgroundColor:'#fb8c00'
+    }
 });
 
 class Dishes extends React.Component {
@@ -184,10 +187,8 @@ class Dishes extends React.Component {
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton aria-label="Add to favorites" onClick={this.handleLikeClick}>
-                            {this.state.icon?<Avatar aria-label="Recipe" className={classes.avatar2}>♡
-                            </Avatar>:
-                            <Avatar aria-label="Recipe" className={classes.avatar}>♡
-                            </Avatar>}
+                            {this.state.icon?<FavoriteIcon className={classes.avatar2}/>:
+                            <FavoriteIcon className={classes.avatar3}/>}
                         </IconButton>{this.state.like}
                         <IconButton aria-label="Share">
                             <ShareIcon />

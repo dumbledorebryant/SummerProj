@@ -245,9 +245,11 @@ class MiniDrawer extends React.Component {
             formData.append("username",un.value);
             formData.append("password",pwd.value);
             fetch('http://localhost:8080/User/Login',{
+                credentials: 'include',
                 method:'POST',
                 mode:'cors',
                 body:formData,
+
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.json().then(result=>{
@@ -266,9 +268,11 @@ class MiniDrawer extends React.Component {
             formData.append("id",un.value);
             formData.append("password",pwd.value);
             fetch('http://localhost:8080/Admin/Login',{
+                credentials: 'include',
                 method:'POST',
                 mode:'cors',
                 body:formData,
+
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.text().then(result=>{
@@ -287,9 +291,11 @@ class MiniDrawer extends React.Component {
             formData.append("id",un.value);
             formData.append("password",pwd.value);
             fetch('http://localhost:8080/Worker/Login',{
+                credentials: 'include',
                 method:'POST',
                 mode:'cors',
                 body:formData,
+
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.text().then(result=>{
@@ -363,9 +369,11 @@ class MiniDrawer extends React.Component {
         formData.append("email",this.state.emailR);
         formData.append("phone",this.state.phoneR);
         fetch('http://localhost:8080/User/Register',{
+            credentials: 'include',
             method:'POST',
             mode:'cors',
             body:formData,
+
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
@@ -441,14 +449,24 @@ class MiniDrawer extends React.Component {
     };
 
     handleLogout = () =>{
+        fetch('http://localhost:8080/User/Logout',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+        });
         window.location.href="/";
         this.setState({login:false,logoutPop:false,admin:false,worker:false});
     };
 
     componentWillMount(){
         fetch('http://localhost:8080/User/State',{
+            credentials: 'include',
             method:'GET',
             mode:'cors',
+
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{

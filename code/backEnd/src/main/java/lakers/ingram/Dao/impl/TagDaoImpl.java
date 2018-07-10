@@ -1,6 +1,7 @@
 package lakers.ingram.Dao.impl;
 
 import lakers.ingram.Dao.TagDao;
+import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.TagEntity;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -14,7 +15,7 @@ import java.util.List;
 @Repository
 public class TagDaoImpl implements TagDao {
     public JSONArray showTags(){
-        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("select a from TagEntity a");
         List<TagEntity> list=query.list();
@@ -27,7 +28,7 @@ public class TagDaoImpl implements TagDao {
 
     public JSONObject showTags(String tagName)
     {
-        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("select a from TagEntity a where a.tagName= :name").
                 setParameter("name", tagName);

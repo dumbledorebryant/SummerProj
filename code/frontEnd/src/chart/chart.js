@@ -75,20 +75,141 @@ class TempChart extends React.Component {
         let testTotal=0;
         let testHistoryCurrentData=[];
         let testHistoryTotalData=[];
+        let testHistoryTotal=0;
+        let currentLength=0;
         while (hour!==topHour || minute!==topMin){
-            time=hour.toString()+":"+minute.toString();
+            if (minute<10 && hour<10) { time="0"+hour.toString()+":0"+minute.toString();}
+            else if (minute<10){ time=hour.toString()+":0"+minute.toString();}
+            else {time=hour.toString()+":"+minute.toString();}
             timeLabel.push(time);
-            if (hour*60+minute<hourN*60+minuteN) testCurrentData.push(minute/3);
-            testHistoryCurrentData.push(minute/3+1);
-            testTotal+=minute/3;
-            if (hour*60+minute<hourN*60+minuteN) testTotalData.push(testTotal);
-            testHistoryTotalData.push(testTotal+1);
+            //if (hour*60+minute<hourN*60+minuteN) testCurrentData.push(minute/3);
+            //testHistoryCurrentData.push(minute/3+1);
+            //testTotal+=minute/3;
+            //if (hour*60+minute<hourN*60+minuteN) testTotalData.push(testTotal);
+            //testHistoryTotalData.push(testTotal+1);
             hour=hour+Math.floor((minute+2)/60);
             minute=(minute+2)%60;
         }
-        this.setState({label:timeLabel,currentData:testCurrentData,totalData:testTotalData,
-                        historyCurrentData:testHistoryCurrentData,historyTotalData:testHistoryTotalData});
+        let formData = new FormData();
+        let formDate = date.getFullYear()+"-";
+        if ((date.getMonth()+1).toString().length===1){formDate += "0"+(date.getMonth()+1).toString()+"-";}
+        else { formDate += (date.getMonth()+1).toString()+"-"; }
+        if (date.getDate().toString().length === 1){formDate += "0"+date.getDate()+" ";}
+        else { formDate += date.getDate()+" "; }
+        if (date.getHours().toString().length === 1){formDate += "0"+date.getHours()+":";}
+        else {formDate += date.getHours()+":";}
+        if (date.getMinutes().toString().length === 1){formDate += "0"+date.getMinutes()+":";}
+        else {formDate += date.getMinutes()+":";}
+        if (date.getSeconds().toString().length === 1){formDate += "0"+date.getSeconds();}
+        else {formDate += date.getSeconds();}
+        formData.append("time",formDate);
+        fetch('http://localhost:8080/Data/Init',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
 
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result.length === 0){
+                    let idx=0;
+                    while (idx<15){
+                        testCurrentData.push(null);
+                        testTotalData.push(null);
+                        idx++;
+                    }
+                }
+                else {
+                    currentLength=parseInt(result[result.length-1][0]);
+                    let idx = 0;
+                    let iidx=0;
+                    while ( iidx < result.length && idx < 15 && !(result[iidx][1].toString().substring(11, 16) >= timeLabel[idx] &&
+                        result[iidx][1].toString().substring(11, 16) <= timeLabel[idx + 1]) ) {
+                        testCurrentData.push(null);
+                        testTotalData.push(null);
+                        idx++;
+                    }
+                    if (iidx < result.length) {
+                        testCurrentData.push(parseInt(result[iidx][0]));
+                        testTotal += parseInt(result[iidx][0]);
+                        testTotalData.push(testTotal);
+                        idx++;
+                        iidx++;
+                        while (iidx < result.length) {
+                            testCurrentData.push(parseInt(result[iidx][0]));
+                            testTotal += parseInt(result[iidx][0]);
+                            testTotalData.push(testTotal);
+                            idx++;
+                            iidx++;
+                        }
+                    }
+
+                }
+                this.setState({currentData:testCurrentData,totalData:testTotalData,
+                    currentLength:currentLength});
+
+            });
+        });
+
+        formData.append("time",date.toString());
+        fetch('http://localhost:8080/Data/HistoryInit',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result.length === 0){
+                    let idx=0;
+                    while (idx<30){
+                        testHistoryCurrentData.push(null);
+                        testHistoryTotalData.push(null);
+                        idx++;
+                    }
+                }
+                else{
+                    let idx=0;
+                    let iidx=0;
+                    while (iidx < result.length && idx < 29 && !(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
+                        result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])) {
+                        testHistoryCurrentData.push(null);
+                        testHistoryTotalData.push(null);
+                        idx++;
+                    }
+                    if (iidx < result.length){
+                        testHistoryCurrentData.push(parseInt(result[iidx][0]));
+                        testHistoryTotal+=parseInt(result[iidx][0]);
+                        testHistoryTotalData.push(testHistoryTotal);
+                        idx++;
+                        iidx++;
+                        while (iidx < result.length){
+                            testHistoryCurrentData.push(parseInt(result[iidx][0]));
+                            testHistoryTotal+=parseInt(result[iidx][0]);
+                            testHistoryTotalData.push(testHistoryTotal);
+                            idx++;
+                            iidx++;
+                        }
+                        while (idx < 30){
+                            testHistoryCurrentData.push(null);
+                            testHistoryTotalData.push(null);
+                            idx++;
+                        }
+                    }
+                    else{
+                        while (idx < 30){
+                            testHistoryCurrentData.push(null);
+                            testHistoryTotalData.push(null);
+                            idx++;
+                        }
+                    }
+                }
+                this.setState({historyCurrentData:testHistoryCurrentData,historyTotalData:testHistoryTotalData,});
+            });
+        });
+        this.setState({label:timeLabel,});
     }
 
     componentDidMount(){
@@ -103,7 +224,94 @@ class TempChart extends React.Component {
 
     updateChart=()=>{
         let label=this.state.label;
-        let time=label[29];
+        let date=new Date();
+        let hourN=date.getHours();
+        let minuteN=date.getMinutes();
+        label.push(hourN.toString()+":"+minuteN.toString());
+        label.shift();
+        let formData = new FormData();
+        let formDate = date.getFullYear()+"-";
+        if ((date.getMonth()+1).toString().length===1){formDate += "0"+(date.getMonth()+1).toString()+"-";}
+        else { formDate += (date.getMonth()+1).toString()+"-"; }
+        if (date.getDate().toString().length === 1){formDate += "0"+date.getDate()+" ";}
+        else { formDate += date.getDate()+" "; }
+        if (date.getHours().toString().length === 1){formDate += "0"+date.getHours()+":";}
+        else {formDate += date.getHours()+":";}
+        if (date.getMinutes().toString().length === 1){formDate += "0"+date.getMinutes()+":";}
+        else {formDate += date.getMinutes()+":";}
+        if (date.getSeconds().toString().length === 1){formDate += "0"+date.getSeconds();}
+        else {formDate += date.getSeconds();}
+        formData.append("time",formDate);
+        let testCurrent=this.state.currentData;
+        let testTotal=this.state.totalData;
+        let testHistoryCurrent=this.state.historyCurrentData;
+        let testHistoryTotal=this.state.historyTotalData;
+        let total=0;
+        let currentLength=0;
+        if (testTotal.length>0){
+            if (testTotal[testTotal.length-1]!=null){
+                total=testTotal[testTotal.length-1];
+            }
+        }
+        let historyTotal=0;
+        if (testHistoryTotal.length>0){
+            if (testHistoryTotal[testHistoryTotal.length-1]!=null){
+                historyTotal=testHistoryTotal[testHistoryTotal.length-1];
+            }
+        }
+        fetch('http://localhost:8080/Data/Current',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result!=null){
+                    currentLength=parseInt(result[0]);
+                    testCurrent.push(currentLength);
+                    testCurrent.shift();
+                    total+=currentLength;
+                    testTotal.push(total);
+                    testTotal.shift();
+                }
+                else {
+                    testCurrent.push(null);
+                    testCurrent.shift();
+                    testTotal.push(null);
+                    testTotal.shift();
+                }
+                this.setState({currentData:testCurrent,totalData:testTotal,
+                    currentLength:currentLength});
+            });
+        });
+        fetch('http://localhost:8080/Data/HistoryCurrent',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body: formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result!=null){
+                    testHistoryCurrent.push(parseInt(result[0]));
+                    testHistoryCurrent.shift();
+                    historyTotal+=parseInt(result[0]);
+                    testHistoryTotal.push(total);
+                    testHistoryTotal.shift();
+                }
+                else {
+                    testHistoryCurrent.push(null);
+                    testHistoryCurrent.shift();
+                    testHistoryTotal.push(null);
+                    testHistoryTotal.shift();
+                }
+                this.setState({historyCurrentData:testHistoryCurrent,historyTotalData:testHistoryTotal,});
+            });
+        });
+
+        this.setState({label:label,});
+        /*let time=label[29];
         let idx=time.indexOf(":");
         let hour=parseInt(time.substring(0,idx));
         let minute=parseInt(time.substring(idx+1));
@@ -111,7 +319,8 @@ class TempChart extends React.Component {
         minute=(minute+2)%60;
         label.push(hour.toString()+":"+minute.toString());
         label.shift();
-        let testCurrent=this.state.currentData;
+        */
+        /*let testCurrent=this.state.currentData;
         let testData=testCurrent[0]+1;
         testCurrent.push(testData);
         testCurrent.shift();
@@ -123,9 +332,8 @@ class TempChart extends React.Component {
         testTotal.shift();
         let testHistoryTotal=this.state.historyTotalData;
         testHistoryTotal.push(testTotal[testTotal.length-1]+testData+4);
-        testHistoryTotal.shift();
-        this.setState({label:label,currentData:testCurrent,totalData:testTotal,
-            historyCurrentData:testHistoryCurrent,historyTotalData:testHistoryTotal,currentLength:testData});
+        testHistoryTotal.shift();*/
+
     };
 
     handleChangeChart= event =>{
@@ -171,7 +379,7 @@ class TempChart extends React.Component {
                     </Grid>
                     <Grid item xs={6} >
                         <Typography className={classes.queueInfo} color="primary" component="p">
-                            the current length of queue is {this.state.currentLength}
+                            the current length of queue is {this.state.currentLength.toString()}
                             </Typography>
                         <Typography className={classes.updateInfo} component="p" color="secondary">
                             the last time of update: {this.state.label[14]}

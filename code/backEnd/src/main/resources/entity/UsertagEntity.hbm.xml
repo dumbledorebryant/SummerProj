@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="lakers.ingram.ModelEntity.UsertagEntity" table="usertag" schema="canteen">
+    <class name="lakers.ingram.ModelEntity.UsertagEntity" table="usertag" schema="SummerProj">
         <composite-id >
             <key-property name="tagId">
                 <column name="tagID" sql-type="int(11)"/>

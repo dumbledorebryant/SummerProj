@@ -1,10 +1,8 @@
 package lakers.ingram.Action;
 
 import lakers.ingram.ModelEntity.FoodEntity;
-import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
-import lakers.ingram.encode.MD5Util;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -16,10 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

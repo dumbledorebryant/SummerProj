@@ -3,7 +3,6 @@ package lakers.ingram.Dao.impl;
 import lakers.ingram.Dao.UserLikeFoodDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
-import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;

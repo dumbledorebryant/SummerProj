@@ -1,10 +1,9 @@
 import { Upload, Icon, message } from 'antd';
 import React from 'react';
-import protrait from '../img/none.jpg'
 
 class Avatar extends React.Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
             loading:false,
             imageUrl:'',
@@ -15,7 +14,7 @@ class Avatar extends React.Component {
     }
 
     showPic = () => {
-        fetch('http://localhost:8080/User/GetPic?userID=1',
+        fetch('http://localhost:8080/User/GetPic?userID='+this.props.userid,
             {
                 method: 'GET',
                 mode: 'cors',

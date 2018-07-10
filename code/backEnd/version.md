@@ -11,3 +11,6 @@
     * user/ admin/ worker/ window DAO
     * service
     * user/ admin/ worker/ window Action 
+    
+### 1.0.0
+2018.7.10

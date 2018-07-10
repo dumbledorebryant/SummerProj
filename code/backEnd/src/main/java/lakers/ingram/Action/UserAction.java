@@ -131,20 +131,32 @@ public class UserAction extends HttpServlet {
     }
 
     @RequestMapping(value = "/UserInfo")
-    private void processLogin(@RequestParam("userID") Integer userID,
+    private void processGetUserInfo(
                               HttpServletRequest request,
                               HttpServletResponse response)
             throws Exception {
-        response.setContentType("application/json;charset=utf-8");
+        Object obj=request.getSession().getAttribute("userid");
+        ArrayList<String> ur=new ArrayList<String>();
         PrintWriter out = response.getWriter();
-
-        JSONObject result=appService.showUserInfo(userID);
-
-        out.print(result);
+        if (obj==null){ur.add("-1");}
+        else{
+            String id=obj.toString();
+            ur.add(id);
+            if (!id.equals("-1")){
+                UserEntity user=appService.getUserById(Integer.valueOf(id));
+                ur.add(user.getUsername());
+                ur.add(user.getPassword());
+                ur.add(user.getEmail());
+                ur.add(user.getPhone());
+            }
+        }
+        out.println(JSONArray.fromObject(ur));
+        out.flush();
+        out.close();
     }
 
     @RequestMapping(value = "/HandleUserInfoChange")
-    private void processLogin(@RequestParam("userID") Integer userID,
+    private void processChangeUserInfo(@RequestParam("userID") Integer userID,
                               @RequestParam("username") String username,
                               @RequestParam("password") String password,
                               @RequestParam("phone") String phone,
@@ -158,6 +170,7 @@ public class UserAction extends HttpServlet {
         String result=appService.handleUserInfo(user);
         out.print(result);
     }
+
 
     @RequestMapping(value = "/UpdatePic")
     private void processLogin(@RequestParam("files[]") MultipartFile file,
@@ -196,13 +209,12 @@ public class UserAction extends HttpServlet {
         GridFS gfsPhoto = new GridFS(mongodb, "Images");
         // get image file by it's filename
         GridFSDBFile imageForOutput = gfsPhoto.findOne(userid.toString());
-        imageForOutput.writeTo(out);
+        if (imageForOutput!=null){
+            imageForOutput.writeTo(out);
+        }
         out.flush();
         out.close();
         mongo.close();
     }
-
-
-
 
 }

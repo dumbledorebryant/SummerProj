@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -38,6 +39,8 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private TagDao tagDao;
 
+    @Autowired
+    private DataDao dataDao;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -49,9 +52,7 @@ public class AppServiceImpl implements AppService {
         this.workerDao = workerDao;
     }
     public void setWindowDao(WindowDao windowDao){ this.windowDao = windowDao; }
-    public void setFoodDao(FoodDao foodDao){this.foodDao = foodDao;}
-    public void setUserLikeFoodDao(UserLikeFoodDao userLikeFoodDao){this.userLikeFoodDao = userLikeFoodDao;}
-
+    public void setDataDao(DataDao dataDao){ this.dataDao = dataDao; }
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
 
@@ -100,6 +101,7 @@ public class AppServiceImpl implements AppService {
     public List<WindowEntity> getAllWindows(){
         return windowDao.getAllWindows();
     };
+
     //Food
     public List<FoodEntity> getAllFood(){
         return foodDao.getAllFood();
@@ -147,7 +149,7 @@ public class AppServiceImpl implements AppService {
         return userLikeFoodDao.getAllUserLikeFood();
     };
 
-//
+    //user center
     public JSONArray listUserTag(Integer name){return userTagDao.listUserTag(name);}
     public String chooseUserTag(Integer userid,String[] tagArray) {
         return userTagDao.chooseUserTag(userid,tagArray);
@@ -181,5 +183,12 @@ public class AppServiceImpl implements AppService {
     }
 
 
+    //data
+    public List<DataEntity> getInitDataByDate(Timestamp date){ return dataDao.getInitDataByDate(date); }
 
+    public DataEntity getCurrentData(){ return dataDao.getCurrentData(); }
+
+    public List<DataEntity> getHistoryDataByDate(Timestamp date){ return dataDao.getHistoryDataByDate(date); }
+
+    public DataEntity getCurrentHistoryDataByDate(Timestamp date){ return dataDao.getCurrentHistoryDataByDate(date); }
 }

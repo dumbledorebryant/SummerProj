@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="lakers.ingram.ModelEntity.FoodEntity" table="food" schema="summerproj">
+    <class name="lakers.ingram.ModelEntity.FoodEntity" table="food" schema="SummerProj">
         <id name="foodId">
             <column name="foodID" sql-type="int(11)"/>
         </id>
@@ -16,6 +16,9 @@
         </property>
         <property name="tips">
             <column name="tips" sql-type="varchar(45)" length="45" not-null="true"/>
+        </property>
+        <property name="windowId">
+            <column name="window_id" sql-type="int(11)" not-null="true"/>
         </property>
         <property name="likes">
             <column name="likes" sql-type="int(11)" not-null="true"/>

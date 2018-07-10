@@ -4,12 +4,14 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "comment", schema = "summerproj", catalog = "")
+@Table(name = "comment", schema = "SummerProj", catalog = "")
 public class CommentEntity {
     private int commentId;
     private String commentContent;
     private Timestamp commentDate;
     private Byte valid;
+    private int userId;
+    private int windowId;
 
     @Id
     @Column(name = "commentID", nullable = false)
@@ -74,5 +76,25 @@ public class CommentEntity {
         result = 31 * result + (commentDate != null ? commentDate.hashCode() : 0);
         result = 31 * result + (valid != null ? valid.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "userID", nullable = false)
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    @Basic
+    @Column(name = "windowID", nullable = false)
+    public int getWindowId() {
+        return windowId;
+    }
+
+    public void setWindowId(int windowId) {
+        this.windowId = windowId;
     }
 }

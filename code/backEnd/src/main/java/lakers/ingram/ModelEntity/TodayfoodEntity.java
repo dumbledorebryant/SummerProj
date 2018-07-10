@@ -4,11 +4,12 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "todayfood", schema = "summerproj", catalog = "")
+@Table(name = "todayfood", schema = "SummerProj", catalog = "")
 public class TodayfoodEntity {
     private int foodId;
     private Date date;
     private Integer time;
+    private Integer windowId;
 
     @Id
     @Column(name = "foodID", nullable = false)
@@ -60,5 +61,15 @@ public class TodayfoodEntity {
         result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "window_id", nullable = true)
+    public Integer getWindowId() {
+        return windowId;
+    }
+
+    public void setWindowId(Integer windowId) {
+        this.windowId = windowId;
     }
 }

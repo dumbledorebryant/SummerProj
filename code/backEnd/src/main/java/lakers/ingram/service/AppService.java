@@ -5,6 +5,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface AppService {
@@ -38,7 +39,6 @@ public interface AppService {
 
     public List<WindowEntity> getAllWindows();
 
-
     //Food
 
     public List<FoodEntity> getAllFood();
@@ -65,19 +65,25 @@ public interface AppService {
 
     public List<UserlikefoodEntity> getAllUserLikeFood();
 
-
-    //
-
+    //user center
     public JSONArray listUserTag(Integer name);
-    public String chooseUserTag(Integer userid,String[] tagArray);
+    public String chooseUserTag(Integer userid, String[] tagArray);
 
     public JSONObject showUserInfo(Integer userID);
     public String handleUserInfo(UserEntity user)throws Exception;
 
     public JSONArray showTags();
-    public String sendTags(Integer userid,JSONArray tagArray);
+    public String sendTags(Integer userid, JSONArray tagArray);
     public JSONObject showTags(String tagName);
 
     public String updatePic(File imgFile, Integer userid);
     public String newFoodPic(File imageFile,String windowid);
+    //data
+    public List<DataEntity> getInitDataByDate(Timestamp date);
+
+    public DataEntity getCurrentData();
+
+    public List<DataEntity> getHistoryDataByDate(Timestamp date);
+
+    public DataEntity getCurrentHistoryDataByDate(Timestamp date);
 }

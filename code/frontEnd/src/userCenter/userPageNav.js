@@ -5,8 +5,8 @@ import PersonalSetting from "./personalSetting";
 
 const tagData=[];
 class UserPageNav extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             name:"123",
             tag:tagData,
@@ -18,6 +18,11 @@ class UserPageNav extends Component {
 
     }
 
+
+
+
+
+
     render() {
         return (
             <div className="container">
@@ -28,12 +33,14 @@ class UserPageNav extends Component {
                 <div>
                     <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
                         <Tab eventKey={1} title="个人信息" >
-                            <TextFields/>
+                            <TextFields userid={this.props.match.params.key}/>
                         </Tab>
                         <Tab eventKey={2} title="个性化设置" >
                             <PersonalSetting tagTaste={this.state.tagTaste}
                                              tagCountry={this.state.tagCountry}
-                                             tagTaboo={this.state.tagTaboo}/>
+                                             tagTaboo={this.state.tagTaboo}
+                                             userid={this.props.match.params.key}
+                            />
                         </Tab>
                         <Tab eventKey={3} title="我的收藏" >
                         </Tab>
