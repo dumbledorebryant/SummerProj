@@ -9,6 +9,7 @@ import constantData from './window.json';
 import Typography from '@material-ui/core/Typography';
 import WindowsMenu from './WindowsMenu';
 
+
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
@@ -24,14 +25,17 @@ TabContainer.propTypes = {
 
 const styles = theme => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
-    width: 1400,
-
+      display: 'flex',
+      flexWrap: 'wrap',
+      backgroundColor: theme.palette.background.paper,
+      width: "100%",
+   //   maxWidth: '80%',
   },
 });
 
 class Floor extends React.Component {
 
+<<<<<<< HEAD
     state = {
         value: 0,
         canteen:this.props.match.params.key,           //上一级跳转的时候传来的，要给windowsMenu
@@ -96,6 +100,96 @@ class Floor extends React.Component {
     };
 
     componentWillMount(){
+=======
+  state = {
+      value: 0,
+      canteen:this.props.match.params.key,           //上一级跳转的时候传来的，要给windowsMenu
+      floorList:[0,1,2,3],         //0表示全部,用canteen从后端拿floorList
+      floor:0,                      //默认是0, 后面通过点击某一层，传递楼层给windowsMenu
+      windows:constantData.windows,
+      dishesList:[],
+  };
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
+  handleChangeIndex = index => {
+    this.setState({ value: index });
+  };
+
+  handleChangeFloor= (event, index) => {
+      let temp=[];
+      let allwin=constantData.windows;
+      let formData=new FormData();
+      formData.append("restaurant",this.state.canteen);
+      formData.append("floor",this.state.floorList[index]);
+      formData.append("windowID",0);
+
+      fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
+          credentials: 'include',
+          method:'POST',
+          mode:'cors',
+          body:formData,
+      }).then(response2=>{
+          console.log('Request successful',response2);
+          return response2.json().then(result2=>{
+              //alert(result2[0].windowName)
+              this.setState({windows:result2 , floor:this.state.floorList[index]});
+              fetch('http://localhost:8080/Food/FoodsByWindowId',{
+                  credentials: 'include',
+                  method:'POST',
+                  mode:'cors',
+                  body:formData,
+              }).then(response=>{
+                  console.log('Request successful',response);
+                  return response.json().then(result=>{
+                      this.setState({dishesList:result});
+                  })
+              });
+
+          })
+      });
+
+  };
+
+  componentWillMount(){
+      let formData=new FormData();
+      formData.append("restaurant",this.state.canteen);
+      formData.append("floor",0);
+
+      fetch('http://localhost:8080/Window/FloorListByRestaurant',{
+          credentials: 'include',
+          method:'POST',
+          mode:'cors',
+          body:formData,
+      }).then(response=>{
+          console.log('Request successful',response);
+          return response.json().then(result=>{
+              if (result[0]==0){
+                  this.setState({floorList:result});
+              }
+              fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
+                  credentials: 'include',
+                  method:'POST',
+                  mode:'cors',
+                  body:formData,
+              }).then(response2=>{
+                  console.log('Request successful',response2);
+                  return response2.json().then(result2=>{
+                      this.setState({windows:result2});
+                  })
+              });
+
+          })
+      });
+
+
+  }//render之前，construct之后
+
+    componentWillReceiveProps(nextProps){
+      this.setState({canteen:nextProps.match.params.key, });
+>>>>>>> dc8191da713439efe75e3b5dd6e8022ee1581e0a
         let formData=new FormData();
         formData.append("restaurant", this.state.canteen);
         formData.append("floor", 0);
@@ -121,6 +215,7 @@ class Floor extends React.Component {
                     body:formData,
                 }).then(response2=>{
                     console.log('Request successful',response2);
+<<<<<<< HEAD
                     return response2.json()
                         .then(result2=>{
                         this.setState({
@@ -135,6 +230,14 @@ class Floor extends React.Component {
     {
         this.setState({
             canteen: nextProps.match.params.key
+=======
+                    return response2.json().then(result2=>{
+                        this.setState({windows:result2,value:0});
+                    })
+                });
+
+            })
+>>>>>>> dc8191da713439efe75e3b5dd6e8022ee1581e0a
         });
         let formData=new FormData();
         formData.append("restaurant", nextProps.match.params.key);
@@ -213,6 +316,46 @@ class Floor extends React.Component {
           </div>
         );
     }
+<<<<<<< HEAD
+=======
+
+  render() {
+    const { classes, theme,params } = this.props;
+    return (
+        <div className={classes.root}>
+            <AppBar position="static" color="default">
+                <Tabs key = {this.state.canteen}
+                      value={this.state.value}
+                      onChange={this.handleChange}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      fullWidth
+                >
+                    {this.state.floorList.map((item,i) => (
+                        i==0?  <Tab label="全部" index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>:
+                            <Tab label={item+"楼"} index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>
+                    ))
+                    }
+
+                </Tabs>
+
+            </AppBar>
+            <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={this.state.value}
+                onChangeIndex={this.handleChangeIndex}
+            >
+                {this.state.floorList.map((item,i) => (
+                    <TabContainer dir={theme.direction}>
+                        <WindowsMenu key={this.state.canteen+this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
+                ))
+                }
+            </SwipeableViews>
+
+      </div>
+    );
+  }
+>>>>>>> dc8191da713439efe75e3b5dd6e8022ee1581e0a
 }
 
 Floor.propTypes =
@@ -221,3 +364,39 @@ Floor.propTypes =
     theme: PropTypes.object.isRequired,
 };
 export default withStyles(styles, { withTheme: true })(Floor);
+<<<<<<< HEAD
+=======
+
+
+/*
+*         <AppBar position="static" color="default">
+          <Tabs key = {this.state.canteen}
+            value={this.state.value}
+            onChange={this.handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            fullWidth
+          >
+              {this.state.floorList.map((item,i) => (
+                  i==0?  <Tab label="全部" index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>:
+                  <Tab label={item+"楼"} index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>
+                ))
+              }
+
+          </Tabs>
+
+        </AppBar>
+            <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={this.state.value}
+                onChangeIndex={this.handleChangeIndex}
+            >
+                {this.state.floorList.map((item,i) => (
+                    <TabContainer dir={theme.direction}>
+                        <WindowsMenu key={this.state.canteen+this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
+                ))
+                }
+            </SwipeableViews>
+*
+* */
+>>>>>>> dc8191da713439efe75e3b5dd6e8022ee1581e0a

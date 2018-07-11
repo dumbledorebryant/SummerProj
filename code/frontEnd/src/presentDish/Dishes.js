@@ -59,7 +59,10 @@ class Dishes extends React.Component {
     state = {
         userId:-1,
         expanded: false,
+<<<<<<< HEAD
 
+=======
+>>>>>>> dc8191da713439efe75e3b5dd6e8022ee1581e0a
         like:this.props.like,
         icon:0,
         picture:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531295582&di=9ea923418530769b7e3f12b8cfd31e7d&imgtype=jpg&er=1&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fc83d70cf3bc79f3d84baeae4b0a1cd11738b298e.jpg"
@@ -100,7 +103,6 @@ class Dishes extends React.Component {
                     }).then(response => {
                         console.log('Request successful', response);
                         return response.json().then(result => {
-                          //  alert(result);
                             this.setState({icon: result});
                             if(result === 0){
                                 this.setState({
@@ -143,6 +145,7 @@ class Dishes extends React.Component {
                         body: formData,
                     }).then(response => {
                         console.log('Request successful', response);
+<<<<<<< HEAD
                         return response.json()
                             .then(result => {
                                 this.setState({
@@ -150,6 +153,12 @@ class Dishes extends React.Component {
                                 });
                             })
                         });
+=======
+                        return response.json().then(result => {
+                            this.setState({icon: result});
+                        })
+                    });
+>>>>>>> dc8191da713439efe75e3b5dd6e8022ee1581e0a
                 }
             })
         });
