@@ -15,12 +15,12 @@ import GuttersGrid from './GuttersGrid';
 
 const styles = theme => ({
     root: {
-        width: '500%',
-        maxWidth: 1260,
+        width: '80%',
+       // maxWidth: '80%',
         backgroundColor: theme.palette.background.paper,
     },
     row: {
-        display: 'flex',
+       display: 'flex',
         justifyContent: 'center',
     },
     avatar: {
@@ -81,50 +81,8 @@ class WindowsFoodList extends React.Component {
         );
     }
 }
-
 WindowsFoodList.propTypes = {
     classes: PropTypes.object.isRequired,
 
 };
-
 export default withStyles(styles)(WindowsFoodList);
-
-/*
-<div className={classes.root}>
-    <List component="nav">
-        <ListItem
-            button
-            aria-haspopup="true"
-            aria-controls="lock-menu"
-            aria-label="When device is locked"
-            onClick={this.handleClickListItem}
-        >
-            <ListItemText
-                primary={options[this.state.selectedIndex]}
-            />
-        </ListItem>
-    </List>
-    <Menu
-        id="lock-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={this.handleClose}
-    >
-        {options.map((option, index) => (
-            <MenuItem
-                key={option}
-                selected={index === this.state.selectedIndex}
-                onClick={event => this.handleMenuItemClick(event, index)}
-            >
-                {option}
-            </MenuItem>
-
-        ))}
-    </Menu>
-</div>
-*/
-/*
-                 <Avatar className={classes.pinkAvatar}>
-                        <PageviewIcon />
-                    </Avatar>
-                    */
