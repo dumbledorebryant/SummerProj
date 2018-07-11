@@ -5,7 +5,11 @@ import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
+import lakers.ingram.ModelEntity.WindowEntity;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -108,5 +112,58 @@ class UserLikeFoodDaoImpl implements UserLikeFoodDao {
         session.getTransaction().commit();
         return userlikefoods;
     };
+
+    public JSONArray searchUserLike(Integer userID) {
+        Session session=HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        Query query1 = session.createQuery("select a from UserlikefoodEntity a where a.userId= :userID").
+                setParameter("userID", userID);
+        List<UserlikefoodEntity> list = query1.list();
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < list.size(); i++) {
+            Integer foodId = list.get(i).getFoodId();
+            Query query2 = session.createQuery("select a from FoodEntity a where a.foodId= :foodID").
+                    setParameter("foodID", foodId);
+            FoodEntity food = (FoodEntity) query2.uniqueResult();
+            String foodName = food.getFoodName();
+            Query query3 = session.createQuery("select a from WindowEntity  a where a.windowId= :windowID").
+                    setParameter("windowID", food.getWindowId());
+            WindowEntity window = (WindowEntity) query3.uniqueResult();
+            String windowName = window.getWindowName();
+            String restaurant = window.getRestaurant();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("foodId", foodId);
+            jsonObject.put("foodName", foodName);
+            jsonObject.put("windowName", windowName);
+            jsonObject.put("restaurant", restaurant);
+            jsonArray.add(jsonObject);
+        }
+        transaction.commit();
+        return jsonArray;
+    }
+
+    public String updateUserLike(Integer userID,Integer foodID,Integer flag) {
+        Session session=HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        if (flag == 0) {
+            Query query = session.createQuery("delete from UserlikefoodEntity a where a.userId= :userid " +
+                    "and a.foodId=:foodid").
+                    setParameter("userid", userID).setParameter("foodid", foodID);
+            query.executeUpdate();
+        } else {
+            Query query2 = session.createQuery("select a from UserlikefoodEntity a where a.userId= :userid " +
+                    "and a.foodId=:foodid").
+                    setParameter("userid", userID).setParameter("foodid", foodID);
+            if (query2.list().size() == 0) {
+                UserlikefoodEntity newUserLike = new UserlikefoodEntity();
+                newUserLike.setFoodId(foodID);
+                newUserLike.setUserId(userID);
+                session.save(newUserLike);
+            }
+        }
+        transaction.commit();
+        return "success";
+    }
+
 
 }

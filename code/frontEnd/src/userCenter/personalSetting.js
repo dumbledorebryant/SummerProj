@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-
 import {Navbar, Button, Col, Row} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {MuiThemeProvider,createMuiTheme } from '@material-ui/core/styles';
-
-
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from "@material-ui/core/es/FormGroup/FormGroup";
 import Checkbox from "@material-ui/core/es/Checkbox/Checkbox";
 import Input from "@material-ui/core/es/Input/Input";
-import InputLabel from "@material-ui/core/es/InputLabel/InputLabel";
 import Select from "@material-ui/core/es/Select/Select";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
 import {Link,hashHistory} from 'react-router-dom';
@@ -41,36 +37,29 @@ const theme2=createMuiTheme({
 const tasteTemp=[];
 const countryTemp=[];
 const tabooTemp=[];
-
-
 const styles = theme => ({
     root: {
         display: 'flex',
         align:"center"
-
     },
     formControl: {
         margin: theme.spacing.unit * 2,
-
     },
     group: {
         margin: `${theme.spacing.unit}px 0`,
     },
     choice: {
         margin: theme.spacing.unit*0.01 ,
-
     },
     input: {
         margin: theme.spacing.unit,
     },
-
     formControl2: {
         margin: theme.spacing.unit,
         minWidth: 120,
     },
     formControl3: {
         margin: theme.spacing.unit*1.5,
-
     },
 });
 
@@ -79,19 +68,14 @@ const foodTemp=[];
 class PersonalSetting extends React.Component {
     constructor(props) {
         super(props);
-
-        /*this.showTags=this.showTags.bind(this);
-        //this.showTags();
+        this.showTags=this.showTags.bind(this);
         this.searchSavedTag=this.searchSavedTag.bind(this);
-        //this.searchSavedTag();
         this.handleChange1=this.handleChange1.bind(this);
         this.handleChange=this.handleChange.bind(this);
-
         this.sendTag=this.sendTag.bind(this);
         this.handleClose=this.handleClose.bind(this);
         this.handleOpen=this.handleOpen.bind(this);
-
-        this.searchNewAddTag=this.searchNewAddTag.bind(this);*/
+        this.searchNewAddTag=this.searchNewAddTag.bind(this);
     }
     state = {
         name:[],
@@ -107,16 +91,21 @@ class PersonalSetting extends React.Component {
         chooseType:'',
         chooseName:''
     };
+
     componentDidMount(){
         this.showTags();
         this.searchSavedTag();
     }
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({
+            open: false
+        });
     };
 
     handleOpen = () => {
-        this.setState({ open: true });
+        this.setState({
+            open: true
+        });
     };
 
     showTags= () => {
@@ -125,7 +114,6 @@ class PersonalSetting extends React.Component {
                 credentials: 'include',
                 method: 'GET',
                 mode: 'cors',
-
             }
         )
             .then(response => {
@@ -136,7 +124,7 @@ class PersonalSetting extends React.Component {
                         tabooTemp.splice(0,tabooTemp.size);
                         foodTemp.splice(0,foodTemp.size);
                         console.log("All:"+ result[0].tagType);
-                        for(var i in result){
+                        for(let i in result){
                             this.state.checkBool.push(false);
                             let add={"tagType":result[i].tagType,
                                 "tagId":result[i].tagId,"tagName":result[i].tagName};
@@ -173,15 +161,13 @@ class PersonalSetting extends React.Component {
         console.log("clickAfter:"+this.state.checkBool);
     };
 
-
-
     searchSavedTag= () => {
-        fetch('http://localhost:8080/UserCenter/SearchSavedTag?userID='+this.props.userid,
+        fetch('http://localhost:8080/UserCenter/SearchSavedTag?' +
+            'userID='+this.props.userid,
             {
                 credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
-
             }
         )
             .then(response => {
@@ -194,19 +180,17 @@ class PersonalSetting extends React.Component {
                             let idx=result[i].tagId;
                             temp[idx-1]=true;
                         }
-                        this.setState({checkBool:temp});
+                        this.setState({
+                            checkBool:temp
+                        });
                     });
             })
     };
 
-
     sendTag= () => {
-        console.log("finalCheckBool:" + this.state.checkBool + '\n');
-        console.log("自定义:" + this.state.chooseType + '\n');
-        console.log("自定义:" + this.state.chooseName + '\n');
         let sendArr=[];
         let idx=0;
-        for(var i in this.state.checkBool){
+        for(let i in this.state.checkBool){
             idx++;
             console.log("index:" + this.state.checkBool[i] + '\n');
             if(this.state.checkBool[i]===true){
@@ -219,15 +203,16 @@ class PersonalSetting extends React.Component {
             sendArr.push(this.state.chooseName);
         }
         console.log("array:" + sendArr + '\n');
-        fetch('http://localhost:8080/UserCenter/ChooseTag?userID='+this.props.userid+'&tagArray='+sendArr,
+        fetch('http://localhost:8080/UserCenter/ChooseTag?' +
+            'userID='+this.props.userid+
+            '&tagArray='+sendArr,
             {
 
                 credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
-
             }
-            )
+        )
             .then(response => {
                 response.text()
                     .then(result => {
@@ -285,15 +270,19 @@ class PersonalSetting extends React.Component {
     };
 
     handleChange = event => {
-        console.log("xialakuang:"+event.target.name+'\n');
-        console.log("xiala:"+event.target.value+'\n');
-        this.setState({ [event.target.name]: event.target.value });
-        this.setState({chooseType:event.target.value});
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+        this.setState({
+            chooseType:event.target.value
+        });
 
     };
 
     handleChange3= event => {
-        this.setState({chooseName:event.target.value});
+        this.setState({
+            chooseName:event.target.value
+        });
     };
 
     render() {
@@ -340,7 +329,6 @@ class PersonalSetting extends React.Component {
                             </FormControl>
                         </form>
                     </Col>
-
                     <Col md={2}>
                         <Input bsSize="large"
                                placeholder="输入自定义标签"
@@ -348,19 +336,13 @@ class PersonalSetting extends React.Component {
                                onChange={this.handleChange3}
                         />
                     </Col>
-
                 </Row>
                 </MuiThemeProvider>
-
-
                 <br/>
-
                 <div className={classes.root} >
-
                     <FormControl component="fieldset" required className={classes.formControl}>
                         <Row>
                         <Col md={3}>
-
                         <FormLabel component="legend"><h5>口味</h5></FormLabel>
                         <FormGroup className={classes.group}>{
                             this.state.tasteTags.map(function (item) {
@@ -380,10 +362,7 @@ class PersonalSetting extends React.Component {
                             },this)
                         }
                         </FormGroup>
-
                         </Col>
-
-
                         <Col md={3}>
                         <FormLabel component="legend"><h5>种类</h5></FormLabel>
                             <FormGroup className={classes.group}>{
@@ -404,8 +383,6 @@ class PersonalSetting extends React.Component {
                             }
                             </FormGroup>
                         </Col>
-
-
                     <Col md={3}>
                         <FormLabel component="legend"><h5>禁忌</h5></FormLabel>
                         <FormGroup className={classes.group}>{
@@ -426,8 +403,6 @@ class PersonalSetting extends React.Component {
                         }
                         </FormGroup>
                     </Col>
-
-
                             <Col md={3}>
                                 <FormLabel component="legend"><h5>食材</h5></FormLabel>
                                 <FormGroup className={classes.group}>{
@@ -448,16 +423,14 @@ class PersonalSetting extends React.Component {
                                 }
                                 </FormGroup>
                             </Col>
-
-
-
                         </Row>
                     </FormControl>
                 </div>
-                <Button bsStyle="info" onClick={this.sendTag}>提交修改</Button>
+                <Button bsStyle="info"
+                        onClick={this.sendTag}>
+                    提交修改
+                </Button>
             </div>
-
-
         );
     }
 }

@@ -181,7 +181,12 @@ public class AppServiceImpl implements AppService {
     public String newFoodPic(File imageFile,String windowid){
         return workerDao.newFoodPic(imageFile,windowid);
     }
-
+    public JSONArray searchUserLike(Integer userID){
+        return userLikeFoodDao.searchUserLike(userID);
+    }
+    public String updateUserLike(Integer userID,Integer foodID,Integer flag){
+        return userLikeFoodDao.updateUserLike(userID,foodID,flag);
+    }
 
     //data
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId){ return dataDao.getInitDataByDate(date,windowId); }

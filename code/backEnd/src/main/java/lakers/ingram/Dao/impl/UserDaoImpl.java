@@ -20,7 +20,6 @@ import com.mongodb.gridfs.GridFSInputFile;
 @Transactional
 class UserDaoImpl implements UserDao {
 
-
     public Integer save(UserEntity user) {
         Session session=HibernateUtil.getSession();
         session.beginTransaction();

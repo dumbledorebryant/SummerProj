@@ -33,7 +33,6 @@ class Avatar extends React.Component {
                                 imageUrl:reader.result
                             })
                         };
-                        console.log("image2:"+this.state.imageUrl);
                     });
             });
     };
@@ -82,7 +81,6 @@ class Avatar extends React.Component {
                 <div className="ant-upload-text">Upload</div>
             </div>
         );
-
         return (
             <Upload
                 name="avatar"

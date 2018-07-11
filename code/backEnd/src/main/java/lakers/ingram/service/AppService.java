@@ -78,6 +78,9 @@ public interface AppService {
 
     public String updatePic(File imgFile, Integer userid);
     public String newFoodPic(File imageFile,String windowid);
+
+    public JSONArray searchUserLike(Integer userID);
+    public String updateUserLike(Integer userID,Integer foodID,Integer flag);
     //data
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId);
 

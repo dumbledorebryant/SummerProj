@@ -1,5 +1,9 @@
 package lakers.ingram.Action;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -71,6 +76,50 @@ public class UserLikeFoodAction extends HttpServlet {
         out.println(arr2.toString());
         out.flush();
         out.close();
+    }
+
+    @RequestMapping(value = "/update")
+    private void processLogin(@RequestParam("userId") Integer userID,
+                              @RequestParam("userLikeId") Integer foodID,
+                              @RequestParam("flag") Integer flag,
+                              HttpServletRequest request,
+                              HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        String result = appService.updateUserLike(userID,foodID,flag);
+        out.print(result);
+    }
+
+    @RequestMapping(value = "/search")
+    private void processLogin(@RequestParam("userId") Integer userID,
+                              HttpServletRequest request,
+                              HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        JSONArray result = appService.searchUserLike(userID);
+        out.print(result);
+    }
+
+    @RequestMapping(value = "/GetPic")
+    private void processLogin(@RequestParam("foodID") String foodID,
+                              HttpServletRequest request,
+                              HttpServletResponse response)
+            throws Exception {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("image/*");
+        OutputStream out = response.getOutputStream();
+        //GridFSDBFile result = appService.getPic(fileName);
+        MongoClient mongo = new MongoClient();
+        DB mongodb = mongo.getDB("Food");
+        GridFS gfsPhoto = new GridFS(mongodb, "Images");
+        // get image file by it's filename
+        GridFSDBFile imageForOutput = gfsPhoto.findOne(foodID);
+        imageForOutput.writeTo(out);
+        out.flush();
+        out.close();
+        mongo.close();
     }
 
 }

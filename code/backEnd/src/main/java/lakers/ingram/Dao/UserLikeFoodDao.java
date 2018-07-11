@@ -2,6 +2,7 @@ package lakers.ingram.Dao;
 
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
+import net.sf.json.JSONArray;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public interface UserLikeFoodDao {
     public int getCountUserByFoodId(int foodId);//统计每一道菜的收藏数目
 
     public List<UserlikefoodEntity> getAllUserLikeFood();
+
+    public JSONArray searchUserLike(Integer userID);
+
+    public String updateUserLike(Integer userID,Integer foodID,Integer flag);
 
 }
 
