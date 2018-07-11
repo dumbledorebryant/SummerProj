@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import MiniDrawer from './nav/nav'
 import UserPageNav from "./userCenter/userPageNav";

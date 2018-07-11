@@ -13,16 +13,8 @@ class UserPageNav extends Component {
             tagTaste:'无',
             tagCountry:'无',
             tagTaboo:'无',
-
         };
-
     }
-
-
-
-
-
-
     render() {
         return (
             <div className="container">
@@ -50,7 +42,4 @@ class UserPageNav extends Component {
         );
     }
 }
-
-
-
 export default UserPageNav;

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import withStyles from "@material-ui/core/styles/withStyles";
 import SwipeableTextMobileStepper from './adver'
 import ButtonBases from './btn'
-import Footer from '../nav/footer'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 

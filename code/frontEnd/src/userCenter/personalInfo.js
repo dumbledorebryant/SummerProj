@@ -1,15 +1,13 @@
 import React from 'react';
-import {Button, Form, Image, FormGroup, ControlLabel, FormControl, Glyphicon} from 'react-bootstrap';
-import protrait from '../img/pic.jpg'
-import {match} from 'react-router-dom'
+import {Button, Form, FormGroup, ControlLabel, FormControl, Glyphicon} from 'react-bootstrap';
 import Avatar from './userpic'
 
 
 
 class TextFields extends React.Component {
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             name: '',
             pwd: '',
@@ -21,9 +19,6 @@ class TextFields extends React.Component {
         this.handleChangeEmail=this.handleChangeEmail.bind(this);
         this.handleChangePhone=this.handleChangePhone.bind(this);
         this.showInfo=this.showInfo.bind(this);
-        //this.showInfo();
-
-
     }
 
     componentWillMount(){
@@ -41,12 +36,19 @@ class TextFields extends React.Component {
             .then(response => {
                 response.json()
                     .then(result => {
-                        this.setState({name:result[1]});
-                        this.setState({pwd:result[2]});
-                        this.setState({email:result[3]});
-                        this.setState({phone:result[4]});
+                        this.setState({
+                            name:result[1]
+                        });
+                        this.setState({
+                            pwd:result[2]
+                        });
+                        this.setState({
+                            email:result[3]
+                        });
+                        this.setState({
+                            phone:result[4]
+                        });
                         console.log("result: ", result);
-
                     });
             })
     };
@@ -56,28 +58,36 @@ class TextFields extends React.Component {
 
     handleChangeName= event =>{
         this.setState({
-            name:event.target.value
+            name: event.target.value
         });
     };
     handleChangePwd(event){
-        this.setState({pwd:event.target.value});
+        this.setState({
+            pwd: event.target.value
+        });
     }
     handleChangeEmail(event){
-        this.setState({email:event.target.value});
+        this.setState({
+            email: event.target.value
+        });
     }
     handleChangePhone(event){
-        this.setState({phone:event.target.value});
+        this.setState({
+            phone: event.target.value
+        });
     }
 
     handleInfo= () => {
-        fetch('http://localhost:8080/User/HandleUserInfoChange?userID='+this.props.userid+'&username='+
-            this.state.name+'&password='+this.state.pwd+'&phone='+this.state.phone+'&email='+
-            this.state.email,
+        fetch('http://localhost:8080/User/HandleUserInfoChange' +
+            '?userID=' + this.props.userid +
+            '&username=' + this.state.name +
+            '&password=' + this.state.pwd +
+            '&phone=' + this.state.phone +
+            '&email=' + this.state.email,
             {
                 credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
-
             }
         )
             .then(response => {
@@ -88,39 +98,34 @@ class TextFields extends React.Component {
             })
     };
 
-
-
-
     render() {
-        const { classes, theme,params } = this.props;
         return (
-            <div align="center">
+            <div align = "center">
                 <br/>
-                <Avatar userid={this.props.userid}/>
+                <Avatar userid = {this.props.userid}/>
 
                 <h5>点击头像框更改头像</h5>
                 <br/>
 
                 <Form inline>
-                    <FormGroup controlId="formValidationSuccess3"  bsStyle="primary">
+                    <FormGroup controlId = "formValidationSuccess3"  bsStyle="primary">
                         <ControlLabel>昵称：</ControlLabel>
                         {' '}
-                        <FormControl type="text" value={this.state.name}
+                        <FormControl type="text"
+                                     value={this.state.name}
                                      onChange={this.handleChangeName}/>
                         <FormControl.Feedback>
                             <Glyphicon glyph="user" />
                         </FormControl.Feedback>
                     </FormGroup>
                 </Form>
-
-
                 <br/>
-
                 <Form inline>
                     <FormGroup controlId="formValidationSuccess3"  bsStyle="primary">
                         <ControlLabel>密码：</ControlLabel>
                         {' '}
-                        <FormControl type="password" value={this.state.pwd}
+                        <FormControl type="password"
+                                     value={this.state.pwd}
                                      onChange={this.handleChangePwd}/>
                         <FormControl.Feedback>
                             <Glyphicon glyph="lock" />
@@ -134,7 +139,8 @@ class TextFields extends React.Component {
                     <FormGroup controlId="formValidationSuccess3"  bsStyle="primary">
                         <ControlLabel>手机：</ControlLabel>
                         {' '}
-                        <FormControl type="text" value={this.state.phone}
+                        <FormControl type="text"
+                                     value={this.state.phone}
                                      onChange={this.handleChangePhone}/>
                         <FormControl.Feedback>
                             <Glyphicon glyph="earphone" />
@@ -148,7 +154,8 @@ class TextFields extends React.Component {
                     <FormGroup controlId="formValidationSuccess3"  bsStyle="primary">
                         <ControlLabel>邮箱：</ControlLabel>
                         {' '}
-                        <FormControl type="text" value={this.state.email}
+                        <FormControl type="text"
+                                     value={this.state.email}
                                      onChange={this.handleChangeEmail}/>
                         <FormControl.Feedback>
                             <Glyphicon glyph="envelope" />
@@ -157,12 +164,8 @@ class TextFields extends React.Component {
                 </Form>
                 <br/>
                 <Button bsStyle="primary" onClick={this.handleInfo}>提交修改</Button>
-
             </div>
-
         );
     }
 }
-
-
 export default TextFields

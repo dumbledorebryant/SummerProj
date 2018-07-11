@@ -6,12 +6,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import Grid from '@material-ui/core/Grid';
-import constantData from './window.json';
-import Avatar from '@material-ui/core/Avatar';
-import PageviewIcon from '@material-ui/icons/Pageview';
-import Dishes from './Dishes';
-import GuttersGrid from './GuttersGrid';
 import WindowsFoodList from './WindowsFoodList'
 const styles = theme => ({
     root: {
@@ -34,9 +28,7 @@ const styles = theme => ({
 
 class WindowsMenu extends React.Component {
     button = null;
-    constructor(props) {
-        super(props);
-    }
+
     state = {
         anchorEl: null,
         selectedIndex: 0,
@@ -81,7 +73,7 @@ class WindowsMenu extends React.Component {
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.state.floor);
-        formData.append("windowId",0)
+        formData.append("windowId",0);
         fetch('http://localhost:8080/Food/FoodsByWindowId',{
             credentials: 'include',
             method:'POST',
@@ -112,7 +104,10 @@ class WindowsMenu extends React.Component {
                             onClick={this.handleClickListItem}
                         >
                             <ListItemText
-                                primary={this.state.selectedIndex==0||this.state.selectedIndex>this.props.windowList.length?"All":this.props.windowList[this.state.selectedIndex-1].windowName}
+                                primary={this.state.selectedIndex === 0
+                                ||this.state.selectedIndex > this.props.windowList.length
+                                    ?"All"
+                                    :this.props.windowList[this.state.selectedIndex - 1].windowName}
                             />
                         </ListItem>
                     </List>
@@ -156,24 +151,3 @@ WindowsMenu.propTypes = {
 };
 
 export default withStyles(styles)(WindowsMenu);
-
-/*<WindowsFoodList dishesList={this.state.dishesList}/>*/
-
-/* {this.props.windows.map((item,i) => (
-                                          (0==this.props.index)?<Grid key={i} item><Dishes foodname="蛋炒饭呀"/></Grid>:
-                                          (options[this.state.selectedIndex]=="全部"&& item.floor==this.props.index)?<Grid><label>{item.name}</label><Dishes foodname="蛋炒饭呀"/></Grid>:
-                                              ((item.name==options[this.state.selectedIndex] && item.floor==this.props.index)?<Grid><Dishes foodname="蛋炒饭呀"/></Grid>:<label></label>
-                                          )))
-                                  }
-                                  */
-/*
-* {this.state.dishesList.map((option, index) => (
-                        <div>foodName:{option.foodName}</div>
-                        ))}
-*              <Grid container className={classes.root} spacing={16}>
-                            <Grid item xs={12}>
-                                <Grid container className={classes.demo} justify="center" spacing={40} >
-                                    </Grid>
-                            </Grid>
-                        </Grid>
-                                */

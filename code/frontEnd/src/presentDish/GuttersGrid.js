@@ -2,11 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import Paper from '@material-ui/core/Paper';
 import Dishes from './Dishes';
 
 const styles = theme => ({
@@ -25,12 +20,6 @@ const styles = theme => ({
 class GuttersGrid extends React.Component {
     state = {
         spacing: '16',
-    };
-
-    handleChange = key => (event, value) => {
-        this.setState({
-            [key]: value,
-        });
     };
 
     render() {

@@ -5,11 +5,9 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Nav from '@material-ui/core/Tab';
 import constantData from './window.json';
 import Typography from '@material-ui/core/Typography';
 import WindowsMenu from './WindowsMenu';
-import {Link,hashHistory} from 'react-router';
 
 function TabContainer({ children, dir }) {
   return (
@@ -33,102 +31,75 @@ const styles = theme => ({
 });
 
 class Floor extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
-  state = {
-      value: 0,
-      canteen:this.props.match.params.key,           //上一级跳转的时候传来的，要给windowsMenu
-      floorList:[0,1,2,3],         //0表示全部,用canteen从后端拿floorList
-      floor:0,                      //默认是0, 后面通过点击某一层，传递楼层给windowsMenu
-      windows:constantData.windows,
-      dishesList:[],
-  };
+    state = {
+        value: 0,
+        canteen:this.props.match.params.key,           //上一级跳转的时候传来的，要给windowsMenu
+        floorList:[0,1,2,3],         //0表示全部,用canteen从后端拿floorList
+        floor:0,                      //默认是0, 后面通过点击某一层，传递楼层给windowsMenu
+        windows:constantData.windows,
+        dishesList:[],
+     };
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
+    handleChange = (event, value) => {
+        this.setState({
+            value
+        });
+    };
 
-  handleChangeIndex = index => {
-    this.setState({ value: index });
-  };
+    handleChangeIndex = index => {
+        this.setState({
+            value: index
+        });
+    };
 
-  handleChangeFloor= (event, index) => {
-      let temp=[];
-      let allwin=constantData.windows;
-      let formData=new FormData();
-      formData.append("restaurant",this.state.canteen);
-      formData.append("floor",this.state.floorList[index]);
-      formData.append("windowID",0);
-
-      fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
-          credentials: 'include',
-          method:'POST',
-          mode:'cors',
-          body:formData,
-      }).then(response2=>{
-          console.log('Request successful',response2);
-          return response2.json().then(result2=>{
-              //alert(result2[0].windowName)
-              this.setState({windows:result2 , floor:this.state.floorList[index]});
-              fetch('http://localhost:8080/Food/FoodsByWindowId',{
-                  credentials: 'include',
-                  method:'POST',
-                  mode:'cors',
-                  body:formData,
-              }).then(response=>{
-                  console.log('Request successful',response);
-                  return response.json().then(result=>{
-                      this.setState({dishesList:result});
-                  })
-              });
-
-          })
-      });
-
-  };
-
-  componentWillMount(){
-      let formData=new FormData();
-      formData.append("restaurant",this.state.canteen);
-      formData.append("floor",0);
-
-      fetch('http://localhost:8080/Window/FloorListByRestaurant',{
-          credentials: 'include',
-          method:'POST',
-          mode:'cors',
-          body:formData,
-      }).then(response=>{
-          console.log('Request successful',response);
-          return response.json().then(result=>{
-              if (result[0]==0){
-                  this.setState({floorList:result});
-              }
-              fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
-                  credentials: 'include',
-                  method:'POST',
-                  mode:'cors',
-                  body:formData,
-              }).then(response2=>{
-                  console.log('Request successful',response2);
-                  return response2.json().then(result2=>{
-                      //alert(result2[0].windowName)
-                      this.setState({windows:result2});
-                  })
-              });
-
-          })
-      });
-
-
-  }//render之前，construct之后
-
-    componentWillReceiveProps(nextProps){
-      this.setState({canteen:nextProps.match.params.key, });
+    handleChangeFloor= (event, index) =>
+    {
+        let floorList = this.state.floorList;
         let formData=new FormData();
-        formData.append("restaurant",nextProps.match.params.key);
-        formData.append("floor",0);
+        formData.append("restaurant",this.state.canteen);
+        formData.append("floor", floorList[index]);
+        formData.append("windowID",0);
+
+        fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',
+        {
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response2=>{
+            console.log('Request successful',response2);
+            return response2.json()
+                .then(result2=>{
+                    this.setState({
+                        windows: result2 ,
+                        floor: floorList[index]
+                    });
+                    fetch('http://localhost:8080/Food/FoodsByWindowId',
+                    {
+                        credentials: 'include',
+                        method:'POST',
+                        mode:'cors',
+                        body:formData,
+                    }
+                    ).then(response=>{
+                        console.log('Request successful',response);
+                        return response.json()
+                            .then(result=>{
+                                this.setState({
+                                    dishesList:result
+                                });
+                            })
+                        });
+                })
+        });
+    };
+
+    componentWillMount(){
+        let formData=new FormData();
+        formData.append("restaurant", this.state.canteen);
+        formData.append("floor", 0);
+
         fetch('http://localhost:8080/Window/FloorListByRestaurant',{
             credentials: 'include',
             method:'POST',
@@ -137,115 +108,116 @@ class Floor extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                if (result[0]==0){
-                    this.setState({floorList:result,floor:0});
+                if (result[0] === 0){
+                    this.setState({
+                        floorList:result
+                    });
                 }
-                fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
+                fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',
+                {
                     credentials: 'include',
                     method:'POST',
                     mode:'cors',
                     body:formData,
                 }).then(response2=>{
                     console.log('Request successful',response2);
-                    return response2.json().then(result2=>{
-                        //alert(result2[0].windowName)
-                        this.setState({windows:result2,value:0});
-                    })
-                });
-
-            })
-        });
-
+                    return response2.json()
+                        .then(result2=>{
+                        this.setState({
+                            windows:result2
+                        });
+                      })
+                  });
+              })
+          });
     }
+    componentWillReceiveProps(nextProps)
+    {
+        this.setState({
+            canteen: nextProps.match.params.key
+        });
+        let formData=new FormData();
+        formData.append("restaurant", nextProps.match.params.key);
+        formData.append("floor", 0);
+        fetch('http://localhost:8080/Window/FloorListByRestaurant',
+        {
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json()
+                .then(result=>{
+                    if (result[0] === 0){
+                        this.setState({
+                            floorList:result,floor:0
+                        });
+                    }
+                    fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',
+                    {
+                        credentials: 'include',
+                        method:'POST',
+                        mode:'cors',
+                        body:formData,
+                    }).then(response2=>{
+                        console.log('Request successful',response2);
+                        return response2.json().then(result2=>{
+                            this.setState({
+                                windows : result2,value:0
+                            });
+                        })
+                    });
+                })
+            });
+    }
+    render()
+    {
+        const {classes, theme} = this.props;
+        return (
+            <div className={classes.root}>
 
-  render() {
-    const { classes, theme,params } = this.props;
+            <AppBar position="static" color="default">
+              <Tabs key = {this.state.canteen}
+                value={this.state.value}
+                onChange={this.handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                fullWidth
+              >
+                  {this.state.floorList.map((item,i) => (
+                      i===0 ?
+                          <Tab label="全部" index={i} onClick={event=>this.handleChangeFloor(event,i)}/>:
+                          <Tab label={item+"楼"} index={i} onClick={event=>this.handleChangeFloor(event,i)}/>
+                    ))
+                  }
 
+              </Tabs>
 
-    return (
-        <div className={classes.root}>
-
-        <AppBar position="static" color="default">
-          <Tabs key = {this.state.canteen}
-            value={this.state.value}
-            onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            fullWidth
-          >
-              {this.state.floorList.map((item,i) => (
-                  i==0?  <Tab label="全部" index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>:
-                  <Tab label={item+"楼"} index={i} onClick={event=>this.handleChangeFloor(event,i)}></Tab>
-                ))
-              }
-
-          </Tabs>
-
-        </AppBar>
-            <SwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                index={this.state.value}
-                onChangeIndex={this.handleChangeIndex}
-            >
-                {this.state.floorList.map((item,i) => (
-                    <TabContainer dir={theme.direction}>
-                        <WindowsMenu key={this.state.canteen+this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
-                ))
-                }
-            </SwipeableViews>
-
-
-      </div>
-    );
-  }
+            </AppBar>
+                <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={this.state.value}
+                    onChangeIndex={this.handleChangeIndex}
+                >
+                    {this.state.floorList.map((item,i) => (
+                        <TabContainer dir={theme.direction}>
+                            <WindowsMenu key={this.state.canteen+this.state.floor}
+                                         canteen={this.state.canteen}
+                                         windowList={this.state.windows}
+                                         index={i}
+                                         floor={this.state.floor}/>
+                        </TabContainer>
+                    ))}
+                </SwipeableViews>
+          </div>
+        );
+    }
 }
 
-Floor.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-
+Floor.propTypes =
+{
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
 };
-
 export default withStyles(styles, { withTheme: true })(Floor);
-
-
-
-
-/*
-* {this.state.floorList.map((item,i) => (
-                <TabContainer dir={theme.direction}>
-                    <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={i} floor={this.state.floor}></WindowsMenu></TabContainer>
-            ))
-            }
-*     <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={0} floor={this.state.floor}></WindowsMenu>
-* */
-
-/*
-    <Tab label="全部" index={0} onClick={event=>this.handleChangeFloor(event,0)}></Tab>
-    <Tab label="一楼" index={1} ></Tab>
-    <Tab label="二楼" index={2}/>
-    <Tab label="三楼" index={3}/>
-    */
-
-/*
-<TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows} index={0}></WindowsMenu></TabContainer>
-<TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows} index={1}/></TabContainer>
-<TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={2}/></TabContainer>
-<TabContainer dir={theme.direction}><WindowsMenu windows={this.state.windows}index={3}/></TabContainer>*/            /*<div>{this.props.match.params.key}</div>*/
-/*
-
-        <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={this.state.value}
-          onChangeIndex={this.handleChangeIndex}
-        >
-            <TabContainer dir={theme.direction}>
-                <WindowsMenu canteen={this.state.canteen} windowList={this.state.windows} index={0} floor={this.state.floor}></WindowsMenu></TabContainer>
-        </SwipeableViews>
-
- <div>
-            {this.state.windows.map((items,i)=>(<div>{items.windowName}</div>)
-            )}
-            </div>
-* */
-
