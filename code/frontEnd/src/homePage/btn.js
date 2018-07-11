@@ -1,0 +1,166 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom'
+import { withStyles } from '@material-ui/core/styles';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import Typography from '@material-ui/core/Typography';
+
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        minWidth: 30,
+        width: '100%',
+    },
+    image: {
+        position: 'relative',
+        margin:35,
+        height: 100,
+        [theme.breakpoints.down('xs')]: {
+            width: '100% !important', // Overrides inline-style
+            height: 20,
+        },
+        '&:hover, &$focusVisible': {
+            zIndex: 1,
+            '& $imageBackdrop': {
+                opacity: 0.15,
+            },
+            '& $imageMarked': {
+                opacity: 0,
+            },
+            '& $imageTitle': {
+                border: '4px solid currentColor',
+            },
+        },
+    },
+    focusVisible: {},
+    imageButton: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: theme.palette.common.white,
+    },
+    imageSrc: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 40%',
+    },
+    imageBackdrop: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundColor: theme.palette.common.black,
+        opacity: 0.4,
+        transition: theme.transitions.create('opacity'),
+    },
+    imageTitle: {
+        position: 'relative',
+
+    },
+    imageMarked: {
+        height: 100,
+        width: 110,
+        opacity:0,
+        backgroundColor: theme.palette.common.white,
+        position: 'absolute',
+        bottom: -2,
+        left:-40,
+        top:-40,
+        transition: theme.transitions.create('opacity'),
+    },
+});
+
+const images = [
+    {
+        url: require('../img/timg-1.jpg'),
+        title: 'canteen one',
+        index:'one',
+        width: '10%',
+    },
+    {
+        url: require('../img/timg-1.jpg'),
+        title: 'canteen two',
+        index:'two',
+        width: '10%',
+    },
+    {
+        url: require('../img/timg-1.jpg'),
+        title: 'canteen three',
+        index:'three',
+        width: '10%',
+    },
+    {
+        url: require('../img/timg-1.jpg'),
+        title: 'canteen four',
+        index:'four',
+        width: '10%',
+    },
+    {
+        url: require('../img/timg-1.jpg'),
+        title: 'canteen five',
+        index:'five',
+        width: '10%',
+    },
+    {
+        url: require('../img/timg-1.jpg'),
+        title: 'canteen six',
+        index:'six',
+        width: '10%',
+    },
+];
+
+function ButtonBases(props) {
+    const { classes } = props;
+
+    return (
+        <div className={classes.root}>
+            {images.map(image => (
+                <ButtonBase
+                    focusRipple
+                    key={image.title}
+                    className={classes.image}
+                    focusVisibleClassName={classes.focusVisible}
+                    style={{
+                        width: image.width,
+                    }}
+                >
+                   <span
+              className={classes.imageSrc}
+              style={{
+                  backgroundImage: `url(${image.url})`,
+              }}
+          />
+                     <span className={classes.imageBackdrop} />
+                    <span className={classes.imageButton}>
+            <Typography
+                component="span"
+                variant="subheading"
+                color="inherit"
+                className={classes.imageTitle}
+            >
+              {image.title}
+                 <Link to={'/floor/'+image.index}><span className={classes.imageMarked} /></Link>
+            </Typography>
+          </span>
+                </ButtonBase>
+            ))}
+        </div>
+    );
+}
+
+ButtonBases.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(ButtonBases);
