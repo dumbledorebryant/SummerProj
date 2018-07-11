@@ -79,11 +79,11 @@ public interface AppService {
     public String updatePic(File imgFile, Integer userid);
     public String newFoodPic(File imageFile,String windowid);
     //data
-    public List<DataEntity> getInitDataByDate(Timestamp date);
+    public List<DataEntity> getInitDataByDate(Timestamp date, int windowId);
 
-    public DataEntity getCurrentData();
+    public DataEntity getCurrentData(int windowId);
 
-    public List<DataEntity> getHistoryDataByDate(Timestamp date);
+    public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId);
 
-    public DataEntity getCurrentHistoryDataByDate(Timestamp date);
+    public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId);
 }

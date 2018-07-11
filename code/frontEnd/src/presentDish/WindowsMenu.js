@@ -6,13 +6,16 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import WindowsFoodList from './WindowsFoodList'
+import Window from './Window';
+
 const styles = theme => ({
     root: {
-        width: '500%',
-        maxWidth: 1260,
+        margin:10,
+        width: '120%',
         backgroundColor: theme.palette.background.paper,
+        flexFlow:1
     },
+
     row: {
         display: 'flex',
         justifyContent: 'center',
@@ -28,18 +31,24 @@ const styles = theme => ({
 
 class WindowsMenu extends React.Component {
     button = null;
-
+    constructor(props) {
+        super(props);
+    }
     state = {
         anchorEl: null,
         selectedIndex: 0,
         content:1,
         floor:this.props.floor,        //上一级传过来的，拿来去后端拿windowList和dishesList，如果是0就取全部
         windowList:this.props.windowList,//渲染windowMenu的按钮
-        dishesList: []      //从后端拿到，传给下一级的windowFoodList
+        dishesList: [],      //从后端拿到，传给下一级的windowFoodList
+        comment:[],
+        windowId:0,
     };
 
     handleClickListItem = event => {
-        this.setState({ anchorEl: event.currentTarget });
+        this.setState({
+            anchorEl: event.currentTarget
+        });
     };
 
     handleMenuItemClick = (event, index, windowId) => {
@@ -59,14 +68,17 @@ class WindowsMenu extends React.Component {
                     dishesList:result,
                     selectedIndex: index,
                     anchorEl: null,
-                    content:index
+                    content:index,
+                    windowId:windowId,
                 });
             })
         });
     };
 
     handleClose = () => {
-        this.setState({ anchorEl: null });
+        this.setState({
+            anchorEl: null
+        });
     };
 
    componentWillMount(){
@@ -82,12 +94,12 @@ class WindowsMenu extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                    this.setState({dishesList:result});
+                    this.setState({
+                        dishesList:result
+                    });
             })
         });
     }//render之前，construct之后*/
-
-
 
     render() {
         const { classes } = this.props;
@@ -104,10 +116,7 @@ class WindowsMenu extends React.Component {
                             onClick={this.handleClickListItem}
                         >
                             <ListItemText
-                                primary={this.state.selectedIndex === 0
-                                ||this.state.selectedIndex > this.props.windowList.length
-                                    ?"All"
-                                    :this.props.windowList[this.state.selectedIndex - 1].windowName}
+                                primary={this.state.selectedIndex===0||this.state.selectedIndex>this.props.windowList.length?"All窗口":this.props.windowList[this.state.selectedIndex-1].windowName+"窗口"}
                             />
                         </ListItem>
                     </List>
@@ -119,7 +128,7 @@ class WindowsMenu extends React.Component {
                     >
                         <MenuItem
                             key="All"
-                            selected={this.props.windowList.length === this.state.selectedIndex}
+                            selected={0 === this.state.selectedIndex}
                             onClick={event => this.handleMenuItemClick(event, 0 , 0)}
                         >
                             All
@@ -127,17 +136,18 @@ class WindowsMenu extends React.Component {
                         {this.props.windowList.map((option, index) => (
                             <MenuItem
                                 key={this.props.canteen+option.windowName}
-                                selected={index === this.state.selectedIndex}
+                                selected={index+1 === this.state.selectedIndex}
                                 onClick={event => this.handleMenuItemClick(event, index+1, option.windowId)}
                             >
                                 {option.windowName}
                             </MenuItem>
                         ))}
                     </Menu>
+
                 </div>
                 <div>
                     <div>
-                        <WindowsFoodList dishesList={this.state.dishesList}/>
+                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId}/>
                     </div>
                 </div>
             </div>

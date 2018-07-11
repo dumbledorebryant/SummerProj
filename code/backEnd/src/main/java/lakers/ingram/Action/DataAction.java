@@ -27,12 +27,13 @@ public class DataAction extends HttpServlet {
 
     @RequestMapping(value = "/Init")
     private void processInit(@RequestParam("time") String time,
+                             @RequestParam("window") Integer windowId,
                               HttpServletResponse response)
             throws Exception {
         PrintWriter out = response.getWriter();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=sdf.parse(time);
-        List<DataEntity> ls=appService.getInitDataByDate(new Timestamp(date.getTime()));
+        List<DataEntity> ls=appService.getInitDataByDate(new Timestamp(date.getTime()),windowId);
         Iterator its=ls.iterator();
         ArrayList<JSONArray> res =new ArrayList<JSONArray>();
         while (its.hasNext()){
@@ -49,10 +50,11 @@ public class DataAction extends HttpServlet {
     }
 
     @RequestMapping(value = "/Current")
-    private void processCurrent(HttpServletResponse response)
+    private void processCurrent(@RequestParam("window") Integer windowId,
+                                HttpServletResponse response)
             throws Exception {
         PrintWriter out = response.getWriter();
-        DataEntity dt=appService.getCurrentData();
+        DataEntity dt=appService.getCurrentData(windowId);
         ArrayList<String> arrayList = new ArrayList<String>();
         arrayList.add(dt.getNumber().toString());
         arrayList.add(dt.getDate().toString());
@@ -64,12 +66,13 @@ public class DataAction extends HttpServlet {
 
     @RequestMapping(value = "/HistoryInit")
     private void processHistory(@RequestParam("time") String time,
+                             @RequestParam("window") Integer windowId,
                              HttpServletResponse response)
             throws Exception {
         PrintWriter out = response.getWriter();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=sdf.parse(time);
-        List<DataEntity> ls=appService.getHistoryDataByDate(new Timestamp(date.getTime()));
+        List<DataEntity> ls=appService.getHistoryDataByDate(new Timestamp(date.getTime()), windowId);
         Iterator its=ls.iterator();
         ArrayList<JSONArray> res =new ArrayList<JSONArray>();
         while (its.hasNext()){
@@ -87,12 +90,13 @@ public class DataAction extends HttpServlet {
 
     @RequestMapping(value = "/HistoryCurrent")
     private void processHistoryCurrent(@RequestParam("time") String time,
+                                       @RequestParam("window") Integer windowId,
                                 HttpServletResponse response)
             throws Exception {
         PrintWriter out = response.getWriter();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=sdf.parse(time);
-        DataEntity res=appService.getCurrentHistoryDataByDate(new Timestamp(date.getTime()));
+        DataEntity res=appService.getCurrentHistoryDataByDate(new Timestamp(date.getTime()),windowId);
         ArrayList<String> arrayList = new ArrayList<String>();
         if (res!=null){
             arrayList.add(res.getNumber().toString());

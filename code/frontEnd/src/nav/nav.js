@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Link} from 'react-router-dom'
+import {  Link,Switch, Route, Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import {MuiThemeProvider,createMuiTheme } from '@material-ui/core/styles';
@@ -26,12 +27,16 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
+import MainPage from '../homePage/mainPage'
 import Footer from './footer'
+import UserPageNav from '../userCenter/userPageNav'
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Accessibility from'@material-ui/icons/Accessibility';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+
+import MailIcon from '@material-ui/icons/Mail';
 
 
 const drawerWidth = 240;
@@ -209,45 +214,33 @@ class MiniDrawer extends React.Component {
 
     //nav
     handleDrawerOpen = () => {
-        this.setState({
-            open: true
-        });
+        this.setState({ open: true });
     };
 
     handleDrawerClose = () => {
-        this.setState({
-            open: false
-        });
+        this.setState({ open: false });
     };
 
     //login
     loginName=null;
     loginId=null;
-
     handleLoginOpen = () =>{
-        this.setState({
-            loginPop: true
-        });
+        this.setState({ loginPop:true});
     };
 
     handleLoginClose = () =>{
-        this.setState({
-            loginPop: false
-        });
+        this.setState({ loginPop:false});
     };
 
     handleChangeTabs = (event, value) => {
-        this.setState({
-            value
-        });
+        this.setState({ value });
     };
 
     handleLogin = () =>{
-
         let un=document.getElementById("username-input");
         let pwd=document.getElementById("password-input");
-
         let formData=new FormData();
+        //formData.append("role",this.state.value.toString());
         if (this.state.value===0){
             formData.append("username",un.value);
             formData.append("password",pwd.value);
@@ -260,30 +253,21 @@ class MiniDrawer extends React.Component {
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.json().then(result=>{
-                    if (result[0] === "-2" ||
-                        result[0] === "-1" ||
-                        result[0] === "0")
-                    {
-                        this.setState({
-                            loginPattern: 2
-                        })
+                    if (result[0]==="-2" || result[0]==="-1" || result[0]==="0"){
+                        this.setState({loginPattern:2})
                     }
                     else{
                         this.loginName=result[1];
                         this.loginId=result[0];
-                        this.setState({
-                            login: true,
-                            loginPattern: 1});
+                        this.setState({login:true,loginPattern:1});
                     }
                 });
             });
         }
-        else if (this.state.value === 1)
-        {
+        else if (this.state.value===1){
             formData.append("id",un.value);
             formData.append("password",pwd.value);
-            fetch('http://localhost:8080/Admin/Login',
-            {
+            fetch('http://localhost:8080/Admin/Login',{
                 credentials: 'include',
                 method:'POST',
                 mode:'cors',
@@ -291,31 +275,22 @@ class MiniDrawer extends React.Component {
 
             }).then(response=>{
                 console.log('Request successful',response);
-                return response.text()
-                    .then(result=>{
-                        if (result==="fail\n"){
-                            this.setState({
-                                loginPattern: 2
-                            })
-                        }
-                        else{
-                            this.loginName=result;
-                            this.loginId=null;
-                            this.setState({
-                                login: true,
-                                loginPattern: 1,
-                                admin: true
-                            });
-                        }
-                    });
+                return response.text().then(result=>{
+                    if (result==="fail\n"){
+                        this.setState({loginPattern:2})
+                    }
+                    else{
+                        this.loginName=result;
+                        this.loginId=null;
+                        this.setState({login:true,loginPattern:1,admin:true});
+                    }
                 });
+            });
         }
-        else
-        {
+        else{
             formData.append("id",un.value);
             formData.append("password",pwd.value);
-            fetch('http://localhost:8080/Worker/Login',
-            {
+            fetch('http://localhost:8080/Worker/Login',{
                 credentials: 'include',
                 method:'POST',
                 mode:'cors',
@@ -323,53 +298,40 @@ class MiniDrawer extends React.Component {
 
             }).then(response=>{
                 console.log('Request successful',response);
-                return response.text()
-                    .then(result=>{
-                        if (result==="fail\n")
-                        {
-                            this.setState({
-                                loginPattern: 2
-                            })
-                        }
-                        else
-                        {
-                            this.loginName=result;
-                            this.loginId=null;
-                            this.setState({
-                                login: true,
-                                loginPattern: 1,
-                                worker: true});
-                        }
-                    });
+                return response.text().then(result=>{
+                    if (result==="fail\n"){
+                        this.setState({loginPattern:2})
+                    }
+                    else{
+                        this.loginName=result;
+                        this.loginId=null;
+                        this.setState({login:true,loginPattern:1,worker:true});
+                    }
                 });
-            }
+            });
+        }
+        //alert(this.state.value+"\n"+un.value+"\n"+pwd.value);
+        //this.setState({login:true,loginPattern:1});
+        //this.setState({loginPattern:2});
     };
 
     handleLoginFail = () =>{
-        this.setState({
-            loginPattern: 0
-        });
+        this.setState({loginPattern:0});
     };
 
     handleLoginSuccess = () =>{
-      this.setState({
-          loginPop: false,
-          loginPattern: 0
-      });
+      this.setState({loginPop:false,loginPattern:0});
     };
 
     //register
-    registerId=null;
 
+    registerId=null;
     handleRegisterOpen = () =>{
-        this.setState({
-            registerPop: true
-        });
+        this.setState({ registerPop:true});
     };
 
     handleRegisterClose = () =>{
-        this.setState({
-            registerPop: false,
+        this.setState({ registerPop:false,
             nameR:"",
             pwdR:"",
             pwdReR:"",
@@ -379,31 +341,24 @@ class MiniDrawer extends React.Component {
             pwdRok:true,
             pwdReRok:true,
             emailRok:true,
-            phoneRok:true
-        });
+            phoneRok:true});
     };
 
     handleRegisterFail = () =>{
-        this.setState({
-            registerPattern: 0
-        });
+        this.setState({registerPattern:0});
     };
 
     handleRegisterSuccess = () =>{
-        this.setState({
-            registerPop: false,
-            registerPattern: 0,
-            nameR: "",
-            pwdR: "",
-            pwdReR: "",
-            emailR: "",
-            phoneR: "",
-            nameRok: true,
-            pwdRok: true,
-            pwdReRok: true,
-            emailRok: true,
-            phoneRok: true
-        });
+        this.setState({registerPop:false,registerPattern:0,nameR:"",
+            pwdR:"",
+            pwdReR:"",
+            emailR:"",
+            phoneR:"",
+            nameRok:true,
+            pwdRok:true,
+            pwdReRok:true,
+            emailRok:true,
+            phoneRok:true});
     };
 
     handleRegister = () => {
@@ -413,8 +368,7 @@ class MiniDrawer extends React.Component {
         formData.append("password",this.state.pwdR);
         formData.append("email",this.state.emailR);
         formData.append("phone",this.state.phoneR);
-        fetch('http://localhost:8080/User/Register',
-        {
+        fetch('http://localhost:8080/User/Register',{
             credentials: 'include',
             method:'POST',
             mode:'cors',
@@ -422,35 +376,25 @@ class MiniDrawer extends React.Component {
 
         }).then(response=>{
             console.log('Request successful',response);
-            return response.json()
-                .then(result=>{
-                    if (result[0]==="0"){
-                        this.setState({
-                            registerPattern: 2
-                        });
-                    }
-                    else
-                    {
-                        this.registerId=result[0];
-                        this.setState({
-                            registerPattern: 1
-                        })
-                    }
-                })
+            return response.json().then(result=>{
+                if (result[0]==="0"){
+                    this.setState({registerPattern:2});
+                }
+                else{
+                    this.registerId=result[0];
+                    this.setState({registerPattern:1})
+                }
+            })
         });
+        //alert(this.state.nameR+"\n"+this.state.pwdR+"\n"+this.state.emailR+"\n"+this.state.phoneR);
     };
 
     handleChangeName = event => {
         if (event.target.value.length > 12){
-            this.setState({
-                nameRok: false,
-                nameR: event.target.value});
+            this.setState({nameRok:false,nameR:event.target.value});
         }
         else{
-            this.setState({
-                nameRok:true,
-                nameR: event.target.value
-            });
+            this.setState({nameRok:true,nameR:event.target.value});
         }
     };
 
@@ -459,74 +403,49 @@ class MiniDrawer extends React.Component {
         let p1=/[0-9]/;
         let p2=/[a-zA-Z]/i;
         if (password.length >=6 && p1.test(password) && p2.test(password) ){
-            this.setState({
-                pwdRok: true,
-                pwdR: event.target.value});
+            this.setState({pwdRok:true,pwdR:event.target.value});
         }
         else{
-            this.setState({
-                pwdRok: false,
-                pwdR: event.target.value});
+            this.setState({pwdRok:false,pwdR:event.target.value});
         }
     };
 
     handleChangePwdRe = event => {
         if (event.target.value !== this.state.pwdR){
-            this.setState({
-                pwdReRok: false,
-                pwdReR: event.target.value
-            });
+            this.setState({pwdReRok:false,pwdReR:event.target.value});
         }
         else{
-            this.setState({
-                pwdReRok: true,
-                pwdReR: event.target.value
-            });
+            this.setState({pwdReRok:true,pwdReR:event.target.value});
         }
     };
 
     handleChangeEmail = event => {
         let email=event.target.value;
-        if (email.indexOf("@") !== -1
-            && (email.indexOf(".com") !== -1
-            || email.indexOf(".cn") !== -1))
-        {
-            this.setState({
-                emailRok: true,emailR:email
-            });
+        if (email.indexOf("@") !== -1 && (email.indexOf(".com") !== -1 || email.indexOf(".cn") !== -1)){
+            this.setState({emailRok:true,emailR:email});
         }
         else{
-            this.setState({
-                emailRok: false,emailR:email
-            });
+            this.setState({emailRok:false,emailR:email});
         }
     };
 
     handleChangePhone = event => {
-        if (event.target.value.length === 11)
-        {
-            this.setState({
-                phoneRok:true,phoneR:event.target.value});
+        if (event.target.value.length === 11){
+            this.setState({phoneRok:true,phoneR:event.target.value});
         }
         else{
-            this.setState({
-                phoneRok: false,
-                phoneR: event.target.value
-            });
+            this.setState({phoneRok:false,phoneR:event.target.value});
         }
     };
 
     //logout
+
     handleLogoutOpen = () => {
-        this.setState({
-            logoutPop: true
-        });
+        this.setState({logoutPop:true});
     };
 
     handleLogoutClose = () => {
-        this.setState({
-            logoutPop: false
-         });
+        this.setState({logoutPop:false});
     };
 
     handleLogout = () =>{
@@ -534,36 +453,29 @@ class MiniDrawer extends React.Component {
             credentials: 'include',
             method:'GET',
             mode:'cors',
+
         }).then(response=>{
             console.log('Request successful',response);
         });
         window.location.href="/";
-        this.setState({
-            login: false,
-            logoutPop: false,
-            admin: false,
-            worker: false
-        });
+        this.setState({login:false,logoutPop:false,admin:false,worker:false});
     };
 
     componentWillMount(){
-        fetch('http://localhost:8080/User/State',
-        {
+        fetch('http://localhost:8080/User/State',{
             credentials: 'include',
             method:'GET',
             mode:'cors',
+
         }).then(response=>{
             console.log('Request successful',response);
-            return response.json()
-                .then(result=>{
-                    if (result[0] !== "-1" ){
-                        this.loginId=result[0];
-                        this.loginName=result[1];
-                        this.setState({
-                            login: true
-                        });
-                    }
-                });
+            return response.json().then(result=>{
+                if (result[0]!=="-1" ){
+                    this.loginId=result[0];
+                    this.loginName=result[1];
+                    this.setState({login:true});
+                }
+            });
         });
     }
 

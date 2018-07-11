@@ -1,5 +1,5 @@
 import React from 'react'
-import ingram from "../../Ingram.jpg"
+import ingram from "../../img/Ingram.jpg"
 import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table";
 import {
     Button,
@@ -12,7 +12,7 @@ import {
     Modal,
     Row
 } from "react-bootstrap";
-import WorkerPage from "../../PicUpload/UploadPic";
+import WorkerPage from "../../canteenWorkCenter/uploadPic";
 
 const singleWindowData = [{"id":1, "name":"DouFu"}, {"id":2, "name":"HuangMengChick"},
     {"id":3, "name":"SuanLaPink"}, {"id":4, "name":"RiceLine"}];

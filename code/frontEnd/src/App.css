@@ -34,17 +34,21 @@
 
 .ct-series-b .ct-line,
 .ct-series-b .ct-point {
+  width:100%;
   stroke: #fb8c00;
   stroke-dasharray: 5,5;
 }
 
 
 .ct-chart{
-  width:1000px;
   height:300px;
   position: relative;
+  overflow: hidden;
+  width: 100%;
 
+margin:20px;
 }
+
 
 .ct-tooltip{
 position:absolute;

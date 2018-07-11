@@ -3,6 +3,7 @@ package lakers.ingram.Dao.impl;
 import lakers.ingram.Dao.UserLikeFoodDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
+import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.ModelEntity.UserlikefoodEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -39,7 +40,7 @@ class UserLikeFoodDaoImpl implements UserLikeFoodDao {
 
         session=HibernateUtil.getSession();
         session.beginTransaction();
-       Query query = session.createQuery("select food " +
+        Query query = session.createQuery("select food " +
                 "from FoodEntity food " +
                 "where foodId = :foodId");
         query.setParameter("foodId", foodId);
@@ -64,7 +65,7 @@ class UserLikeFoodDaoImpl implements UserLikeFoodDao {
         query.setParameter("foodId", foodId);
         FoodEntity food = (FoodEntity) query.list().get(0);
         food.setLikes(food.getLikes()-1);
-     //   System.out.println(food.getLikes()-1);
+        //   System.out.println(food.getLikes()-1);
         session.save(food);
         session.getTransaction().commit();
         return 0;

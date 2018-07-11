@@ -14,5 +14,8 @@
         <property name="date">
             <column name="date" sql-type="datetime" not-null="true"/>
         </property>
+        <property name="windowId">
+            <column name="windowId" sql-type="int(11)" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

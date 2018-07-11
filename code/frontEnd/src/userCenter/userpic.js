@@ -2,8 +2,8 @@ import { Upload, Icon, message } from 'antd';
 import React from 'react';
 
 class Avatar extends React.Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
             loading:false,
             imageUrl:'',

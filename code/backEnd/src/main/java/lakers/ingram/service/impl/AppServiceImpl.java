@@ -184,11 +184,11 @@ public class AppServiceImpl implements AppService {
 
 
     //data
-    public List<DataEntity> getInitDataByDate(Timestamp date){ return dataDao.getInitDataByDate(date); }
+    public List<DataEntity> getInitDataByDate(Timestamp date, int windowId){ return dataDao.getInitDataByDate(date,windowId); }
 
-    public DataEntity getCurrentData(){ return dataDao.getCurrentData(); }
+    public DataEntity getCurrentData(int windowId){ return dataDao.getCurrentData(windowId); }
 
-    public List<DataEntity> getHistoryDataByDate(Timestamp date){ return dataDao.getHistoryDataByDate(date); }
+    public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId); }
 
-    public DataEntity getCurrentHistoryDataByDate(Timestamp date){ return dataDao.getCurrentHistoryDataByDate(date); }
+    public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId); }
 }

@@ -20,24 +20,25 @@ import Paper from '@material-ui/core/Paper';
 const chartStyle= theme => ({
     root:{
         margin:20,
-       // flexGrow: 1,
+        // flexGrow: 1,
         zIndex: 1,
-       // overflow: 'hidden',
+        // overflow: 'hidden',
         //position: 'relative',
-       // display: 'flex',
+        // display: 'flex',
+        width:'100%',
     },
     formControl: {
         margin: 20,
         minWidth: 120,
     },
     paper:{
-        display:'flex',
+       // display:'flex',
         paddingTop:40,
         paddingBottom:20,
-        paddingLeft:20,
+        paddingLeft:0,
         paddingRight:40,
-       // minWidth:900
-        //width: '100%',
+        width: '100%',
+        marginRight:40
     },
     queueInfo:{
 
@@ -52,7 +53,7 @@ const chartStyle= theme => ({
 
 
 
-class TempChart extends React.Component {
+class WindowChart extends React.Component {
     state={
         chartMode:"0",
         currentData:null,
@@ -61,28 +62,13 @@ class TempChart extends React.Component {
         currentLength:0,
         historyCurrentData:null,
         historyTotalData:null,
-        windowId:1,
-        restaurant:"one",
-        windows:[]
+        windowId:this.props.windowId,
     };
 
     componentWillMount(){
-        let formdata=new FormData();
-        formdata.append("restaurant","one");
-        formdata.append("floor",0);
-        fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formdata,
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                this.setState({windows:result});
-            })
-        });
-        this.drawChart(1);
-
+        if (this.props.windowId !== 0) {
+            this.drawChart(this.props.windowId);
+        }
     }
 
     componentDidMount(){
@@ -93,6 +79,11 @@ class TempChart extends React.Component {
             _this.updateChart();
 
         },120000);
+    };
+
+    componentWillReceiveProps=nextProps=>{
+        this.setState({windowId:nextProps.windowId});
+        if (nextProps.windowId !== 0) this.drawChart(nextProps.windowId);
     };
 
     drawChart = windowId =>{
@@ -258,169 +249,170 @@ class TempChart extends React.Component {
     };
 
     updateChart=()=>{
-        let label=this.state.label;
-        let date=new Date();
-        let hourN=date.getHours();
-        let minuteN=date.getMinutes();
-        label.push(hourN.toString()+":"+minuteN.toString());
-        label.shift();
-        let formData = new FormData();
-        let formData2 = new FormData();
-        let formDate = date.getFullYear()+"-";
-        if ((date.getMonth()+1).toString().length===1){formDate += "0"+(date.getMonth()+1).toString()+"-";}
-        else { formDate += (date.getMonth()+1).toString()+"-"; }
-        if (date.getDate().toString().length === 1){formDate += "0"+date.getDate()+" ";}
-        else { formDate += date.getDate()+" "; }
-        if (date.getHours().toString().length === 1){formDate += "0"+date.getHours()+":";}
-        else {formDate += date.getHours()+":";}
-        if (date.getMinutes().toString().length === 1){formDate += "0"+date.getMinutes()+":";}
-        else {formDate += date.getMinutes()+":";}
-        if (date.getSeconds().toString().length === 1){formDate += "0"+date.getSeconds();}
-        else {formDate += date.getSeconds();}
-        formData.append("time",formDate);
-        formData.append("window",this.state.windowId);
-        formData2.append("window",this.state.windowId);
-        let testCurrent=this.state.currentData;
-        let testTotal=this.state.totalData;
-        let testHistoryCurrent=this.state.historyCurrentData;
-        let testHistoryTotal=this.state.historyTotalData;
-        let total=0;
-        let currentLength=0;
-        if (testTotal.length>0){
-            if (testTotal[testTotal.length-1]!=null){
-                total=testTotal[testTotal.length-1];
+        if (this.state.windowId !== 0) {
+            let label = this.state.label;
+            let date = new Date();
+            let hourN = date.getHours();
+            let minuteN = date.getMinutes();
+            label.push(hourN.toString() + ":" + minuteN.toString());
+            label.shift();
+            let formData = new FormData();
+            let formData2 = new FormData();
+            let formDate = date.getFullYear() + "-";
+            if ((date.getMonth() + 1).toString().length === 1) {
+                formDate += "0" + (date.getMonth() + 1).toString() + "-";
             }
-        }
-        let historyTotal=0;
-        if (testHistoryTotal.length>0){
-            if (testHistoryTotal[testHistoryTotal.length-1]!=null){
-                historyTotal=testHistoryTotal[testHistoryTotal.length-1];
+            else {
+                formDate += (date.getMonth() + 1).toString() + "-";
             }
+            if (date.getDate().toString().length === 1) {
+                formDate += "0" + date.getDate() + " ";
+            }
+            else {
+                formDate += date.getDate() + " ";
+            }
+            if (date.getHours().toString().length === 1) {
+                formDate += "0" + date.getHours() + ":";
+            }
+            else {
+                formDate += date.getHours() + ":";
+            }
+            if (date.getMinutes().toString().length === 1) {
+                formDate += "0" + date.getMinutes() + ":";
+            }
+            else {
+                formDate += date.getMinutes() + ":";
+            }
+            if (date.getSeconds().toString().length === 1) {
+                formDate += "0" + date.getSeconds();
+            }
+            else {
+                formDate += date.getSeconds();
+            }
+            formData.append("time", formDate);
+            formData.append("window", this.state.windowId);
+            formData2.append("window", this.state.windowId);
+            let testCurrent = this.state.currentData;
+            let testTotal = this.state.totalData;
+            let testHistoryCurrent = this.state.historyCurrentData;
+            let testHistoryTotal = this.state.historyTotalData;
+            let total = 0;
+            let currentLength = 0;
+            if (testTotal.length > 0) {
+                if (testTotal[testTotal.length - 1] != null) {
+                    total = testTotal[testTotal.length - 1];
+                }
+            }
+            let historyTotal = 0;
+            if (testHistoryTotal.length > 0) {
+                if (testHistoryTotal[testHistoryTotal.length - 1] != null) {
+                    historyTotal = testHistoryTotal[testHistoryTotal.length - 1];
+                }
+            }
+            fetch('http://localhost:8080/Data/Current', {
+                credentials: 'include',
+                method: 'POST',
+                mode: 'cors',
+                body: formData2
+
+            }).then(response => {
+                console.log('Request successful', response);
+                return response.json().then(result => {
+                    if (result != null) {
+                        currentLength = parseInt(result[0]);
+                        testCurrent.push(currentLength);
+                        testCurrent.shift();
+                        total += currentLength;
+                        testTotal.push(total);
+                        testTotal.shift();
+                    }
+                    else {
+                        testCurrent.push(null);
+                        testCurrent.shift();
+                        testTotal.push(null);
+                        testTotal.shift();
+                    }
+                    this.setState({
+                        currentData: testCurrent, totalData: testTotal,
+                        currentLength: currentLength
+                    });
+                });
+            });
+            fetch('http://localhost:8080/Data/HistoryCurrent', {
+                credentials: 'include',
+                method: 'POST',
+                mode: 'cors',
+                body: formData,
+            }).then(response => {
+                console.log('Request successful', response);
+                return response.json().then(result => {
+                    if (result != null) {
+                        testHistoryCurrent.push(parseInt(result[0]));
+                        testHistoryCurrent.shift();
+                        historyTotal += parseInt(result[0]);
+                        testHistoryTotal.push(historyTotal);
+                        testHistoryTotal.shift();
+                    }
+                    else {
+                        testHistoryCurrent.push(null);
+                        testHistoryCurrent.shift();
+                        testHistoryTotal.push(null);
+                        testHistoryTotal.shift();
+                    }
+                    this.setState({historyCurrentData: testHistoryCurrent, historyTotalData: testHistoryTotal,});
+                });
+            });
+
+            this.setState({label: label,});
+            /*let time=label[29];
+            let idx=time.indexOf(":");
+            let hour=parseInt(time.substring(0,idx));
+            let minute=parseInt(time.substring(idx+1));
+            hour=hour+Math.floor((minute+2)/60);
+            minute=(minute+2)%60;
+            label.push(hour.toString()+":"+minute.toString());
+            label.shift();
+            */
+            /*let testCurrent=this.state.currentData;
+            let testData=testCurrent[0]+1;
+            testCurrent.push(testData);
+            testCurrent.shift();
+            let testHistoryCurrent=this.state.historyCurrentData;
+            testHistoryCurrent.push(testData+1);
+            testHistoryCurrent.shift();
+            let testTotal=this.state.totalData;
+            testTotal.push(testTotal[testTotal.length-1]+testData);
+            testTotal.shift();
+            let testHistoryTotal=this.state.historyTotalData;
+            testHistoryTotal.push(testTotal[testTotal.length-1]+testData+4);
+            testHistoryTotal.shift();*/
         }
-        fetch('http://localhost:8080/Data/Current',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData2
-
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                if (result!=null){
-                    currentLength=parseInt(result[0]);
-                    testCurrent.push(currentLength);
-                    testCurrent.shift();
-                    total+=currentLength;
-                    testTotal.push(total);
-                    testTotal.shift();
-                }
-                else {
-                    testCurrent.push(null);
-                    testCurrent.shift();
-                    testTotal.push(null);
-                    testTotal.shift();
-                }
-                this.setState({currentData:testCurrent,totalData:testTotal,
-                    currentLength:currentLength});
-            });
-        });
-        fetch('http://localhost:8080/Data/HistoryCurrent',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body: formData,
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                if (result!=null){
-                    testHistoryCurrent.push(parseInt(result[0]));
-                    testHistoryCurrent.shift();
-                    historyTotal+=parseInt(result[0]);
-                    testHistoryTotal.push(historyTotal);
-                    testHistoryTotal.shift();
-                }
-                else {
-                    testHistoryCurrent.push(null);
-                    testHistoryCurrent.shift();
-                    testHistoryTotal.push(null);
-                    testHistoryTotal.shift();
-                }
-                this.setState({historyCurrentData:testHistoryCurrent,historyTotalData:testHistoryTotal,});
-            });
-        });
-
-        this.setState({label:label,});
-        /*let time=label[29];
-        let idx=time.indexOf(":");
-        let hour=parseInt(time.substring(0,idx));
-        let minute=parseInt(time.substring(idx+1));
-        hour=hour+Math.floor((minute+2)/60);
-        minute=(minute+2)%60;
-        label.push(hour.toString()+":"+minute.toString());
-        label.shift();
-        */
-        /*let testCurrent=this.state.currentData;
-        let testData=testCurrent[0]+1;
-        testCurrent.push(testData);
-        testCurrent.shift();
-        let testHistoryCurrent=this.state.historyCurrentData;
-        testHistoryCurrent.push(testData+1);
-        testHistoryCurrent.shift();
-        let testTotal=this.state.totalData;
-        testTotal.push(testTotal[testTotal.length-1]+testData);
-        testTotal.shift();
-        let testHistoryTotal=this.state.historyTotalData;
-        testHistoryTotal.push(testTotal[testTotal.length-1]+testData+4);
-        testHistoryTotal.shift();*/
-
     };
 
     handleChangeChart= event =>{
         this.setState({chartMode:event.target.value});
     };
 
-    handleChangeRestaurant = event =>{
-        this.setState({restaurant:event.target.value});
-        let formdata=new FormData();
-        formdata.append("restaurant",event.target.value);
-        formdata.append("floor",0);
-        fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formdata,
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                this.setState({windows:result});
-                this.setState({windowId:result[0].windowId});
-                this.drawChart(result[0].windowId);
-            })
-        });
 
-    };
-
-    handleChangeWindow = event =>{
-        this.setState({windowId:event.target.value});
-        this.drawChart(event.target.value);
-    };
 
     render(){
         const { classes, theme } = this.props;
-        return (
-
+        if (this.props.windowId!==0){
+            return (
+                <div className={classes.root}>
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
-                                <ChartistGraph
-                                    className="ct-chart"
-                                    data={this.state.chartMode==="0"?
-                                            {labels:this.state.label,series:[this.state.currentData,this.state.historyCurrentData]}:
-                                            {labels:this.state.label,series:[this.state.totalData,this.state.historyTotalData]}
-                                            }
-                                    type="Line"
-                                    options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                                    listener={dailySalesChart.animation}/>
+                            <ChartistGraph
+
+                                className="ct-chart"
+                                data={this.state.chartMode==="0"?
+                                    {labels:this.state.label,series:[this.state.currentData,this.state.historyCurrentData]}:
+                                    {labels:this.state.label,series:[this.state.totalData,this.state.historyTotalData]}
+                                }
+                                type="Line"
+                                options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
+                                listener={dailySalesChart.animation}/>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -439,61 +431,30 @@ class TempChart extends React.Component {
                                 <option value={1}>Total</option>
                             </Select>
                         </FormControl>
-                        <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor="selectRestaurant">select restaurant</InputLabel>
-                            <Select
-                                native
-                                value={this.state.restaurant}
-                                onChange={this.handleChangeRestaurant}
-                                inputProps={{
-                                    name: 'selectRestaurant',
-                                    id: 'selectRestaurant',
-                                }}
-                            >
-                                <option value={"one"}>Canteen One</option>
-                                <option value={"two"}>Canteen Two</option>
-                                <option value={"three"}>Canteen Three</option>
-                                <option value={"four"}>Canteen Four</option>
-                                <option value={"five"}>Canteen Five</option>
-                                <option value={"six"}>Canteen Six</option>
-                            </Select>
-                        </FormControl>
-                        <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor="selectWindow">select window</InputLabel>
-                            <Select
-                                native
-                                value={this.state.windowId}
-                                onChange={this.handleChangeWindow}
-                                inputProps={{
-                                    name: 'selectWindow',
-                                    id: 'selectWindow',
-                                }}
-                            >
-                                {this.state.windows.map((item,i) =>
-                                    (
-                                        <option key={item.windowId} value={item.windowId}>{item.windowName}</option>
-                                    ))}
-                            </Select>
-                        </FormControl>
                     </Grid>
                     <Grid item xs={6} >
                         <Typography className={classes.queueInfo} color="primary" component="p">
                             the current length of queue is {this.state.currentLength.toString()}
-                            </Typography>
+                        </Typography>
                         <Typography className={classes.updateInfo} component="p" color="secondary">
                             the last time of update: {this.state.label[14]}
                         </Typography>
                     </Grid>
 
                 </Grid>
+                </div>
 
 
-        )
+            )
+        }
+        else {
+            return (<p> </p>)
+        }
     }
 }
 
-TempChart.propTypes = {
+WindowChart.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(chartStyle)(TempChart);
+export default withStyles(chartStyle)(WindowChart);

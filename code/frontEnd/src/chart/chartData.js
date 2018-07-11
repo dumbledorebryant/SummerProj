@@ -16,7 +16,7 @@ const dailySalesChart = {
             tension: 0
         }),
         low: 0,
-        high: 20, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+        high: 30, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
         chartPadding: {
             top: 0,
             right: 0,
@@ -24,7 +24,8 @@ const dailySalesChart = {
             left: 0
         },
         plugins:
-           [ Chartist.plugins.tooltip()]
+           [ Chartist.plugins.tooltip(),
+           ]
 
     },
     options2:{
@@ -32,7 +33,7 @@ const dailySalesChart = {
             tension: 0
         }),
         low: 0,
-        high: 80, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+        high: 300, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
         chartPadding: {
             top: 0,
             right: 0,

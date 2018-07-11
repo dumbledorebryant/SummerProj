@@ -12,12 +12,14 @@ Base = declarative_base()
 
 class CanteenData(Base):
     __tablename__ = 'data'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    dataId = Column(Integer, primary_key=True, autoincrement=True)
     number = Column(Integer)
     date = Column(DATETIME)
+    windowId = Column(Integer)
 
     def __str__(self):
         return '<%r : %r>' % (self.number, self.time)
+
 
 
 Base.metadata.create_all(engine)
@@ -31,7 +33,9 @@ time_now = datetime.now()
 time_temp = 0
 data_total = 0
 data_current = 0
-idx=0
+idx = 0
+time_now_form = 0
+dataid = 0
 while True:
     time_temp = datetime.now()
     if (time_temp-time_now).seconds == 120:
@@ -42,8 +46,11 @@ while True:
         print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         print('number = ' + str(data_current))
         time_now = time_temp
-        data = CanteenData(number=data_current, date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        time_now_form = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        data = CanteenData(number=data_current, date=time_now_form, windowId=1)
+        data2 = CanteenData(number=data_current, date=time_now_form, windowId=2)
         session.add(data)
+        session.add(data2)
         session.commit()
         data_total += int(data_current)
         data_current = 0

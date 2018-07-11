@@ -96,7 +96,7 @@ class FoodDaoImpl implements FoodDao {
         @SuppressWarnings("unchecked")
         List<String> windowNames = query.list();
         session.getTransaction().commit();
-       String windowName = windowNames.size() > 0 ? windowNames.get(0) : null;
+        String windowName = windowNames.size() > 0 ? windowNames.get(0) : null;
         return windowName;
     }
 }

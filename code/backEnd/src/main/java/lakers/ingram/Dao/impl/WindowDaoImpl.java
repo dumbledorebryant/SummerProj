@@ -21,11 +21,13 @@ import java.util.List;
 class WindowDaoImpl implements WindowDao {
 
     public List<Integer> getFloorListByRestaurant(String restaurant){
+
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
         Query query =session.createQuery("select distinct window.floor " +
                 "from WindowEntity window " +
-                "where window.restaurant = :restaurant");
+                "where window.restaurant = :restaurant " +
+                "order by floor ");
         query.setParameter("restaurant", restaurant);
         @SuppressWarnings("unchecked")
 
@@ -46,7 +48,6 @@ class WindowDaoImpl implements WindowDao {
         List<WindowEntity> windows = query.list();
         session.getTransaction().commit();
         return windows;
-
     };
 
     public List<WindowEntity> getAllWindowsByRestaurantAndFloor(String restaurant, int floor){
@@ -71,18 +72,25 @@ class WindowDaoImpl implements WindowDao {
                 "where window.restaurant = :restaurant and " +
                 "window.floor = :floor and " +
                 "window.windowName = :windowName");
-
         query.setParameter("restaurant", restaurant);
         query.setParameter("floor",floor);
         query.setParameter("windowName",windowName);
-
         @SuppressWarnings("unchecked")
         List<WindowEntity> windows = query.list();
         session.getTransaction().commit();
-
         WindowEntity window = windows.size() > 0 ? windows.get(0) : null;
-
         return window;
+    };
+
+    public List<WindowEntity> getAllWindows(){
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query =session.createQuery("select window " +
+                "from WindowEntity window ");
+        @SuppressWarnings("unchecked")
+        List<WindowEntity> windows = query.list();
+        session.getTransaction().commit();
+        return windows;
     };
 
     public WindowEntity getWindowById(int id) {
@@ -98,17 +106,4 @@ class WindowDaoImpl implements WindowDao {
         WindowEntity window = windows.size() > 0 ? windows.get(0) : null;
         return window;
     }
-
-    public List<WindowEntity> getAllWindows(){
-
-        Session session=HibernateUtil.getSession();
-        session.beginTransaction();
-        Query query =session.createQuery("select window " +
-                "from WindowEntity window ");
-        @SuppressWarnings("unchecked")
-        List<WindowEntity> windows = query.list();
-        session.getTransaction().commit();
-        return windows;
-
-    };
 }

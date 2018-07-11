@@ -10,6 +10,7 @@ public class DataEntity {
     private int dataId;
     private Integer number;
     private Timestamp date;
+    private Integer windowId;
 
     @Id
     @Column(name = "dataId", nullable = false)
@@ -55,5 +56,15 @@ public class DataEntity {
     public int hashCode() {
 
         return Objects.hash(dataId, number, date);
+    }
+
+    @Basic
+    @Column(name = "windowId", nullable = true)
+    public Integer getWindowId() {
+        return windowId;
+    }
+
+    public void setWindowId(Integer windowId) {
+        this.windowId = windowId;
     }
 }

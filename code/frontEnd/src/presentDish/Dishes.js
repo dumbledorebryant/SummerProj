@@ -17,10 +17,9 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Grid from '@material-ui/core/Grid';
-
 const styles = theme => ({
     card: {
-        maxWidth: 1600,
+        maxWidth: 1200,
         margin:20
     },
     cardHeader:{
@@ -59,19 +58,16 @@ class Dishes extends React.Component {
     state = {
         userId:-1,
         expanded: false,
-
         like:this.props.like,
         icon:0,
-        picture:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531295582&di=9ea923418530769b7e3f12b8cfd31e7d&imgtype=jpg&er=1&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fc83d70cf3bc79f3d84baeae4b0a1cd11738b298e.jpg"
+        picture:"https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4099675241,2760395260&fm=15&gp=0.jpg"
 
     };
 
     handleExpandClick = () => {
-        this.setState(
-            state => ({
-                expanded: !state.expanded
-            })
-        );
+        this.setState(state => ({
+            expanded: !state.expanded
+        }));
     };
 
     handleLikeClick=()=>{
@@ -85,8 +81,10 @@ class Dishes extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                this.setState({userId: result[0]});
-                if(result === -1){
+                this.setState({
+                    userId: result[0]
+                });
+                if(result==-1){
                     alert("Please Login First");
                 }
                 else {
@@ -100,9 +98,8 @@ class Dishes extends React.Component {
                     }).then(response => {
                         console.log('Request successful', response);
                         return response.json().then(result => {
-                          //  alert(result);
                             this.setState({icon: result});
-                            if(result === 0){
+                            if(result===0){
                                 this.setState({
                                     like:this.state.like+1
                                 })
@@ -130,8 +127,10 @@ class Dishes extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                this.setState({userId: result[0]});
-                if(result === -1){
+                this.setState({
+                    userId: result[0]
+                });
+                if(result===-1){
                 }
                 else {
                     formData.append("userId",result[0]);
@@ -143,13 +142,12 @@ class Dishes extends React.Component {
                         body: formData,
                     }).then(response => {
                         console.log('Request successful', response);
-                        return response.json()
-                            .then(result => {
-                                this.setState({
-                                    icon: result
-                                });
-                            })
-                        });
+                        return response.json().then(result => {
+                            this.setState({
+                                icon: result
+                            });
+                        })
+                    });
                 }
             })
         });
@@ -157,6 +155,7 @@ class Dishes extends React.Component {
 
     render() {
         const { classes } = this.props;
+
         return (
             <div>
                 <Grid>
@@ -215,6 +214,7 @@ class Dishes extends React.Component {
                                 </Typography>
                             </CardContent>
                         </Collapse>
+
                 </Card>
                 </Grid>
             </div>

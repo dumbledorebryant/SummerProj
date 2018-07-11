@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface DataDao {
-    public List<DataEntity> getInitDataByDate(Timestamp date);
-    public DataEntity getCurrentData();
-    public List<DataEntity> getHistoryDataByDate(Timestamp date);
-    public DataEntity getCurrentHistoryDataByDate(Timestamp date);
+    public List<DataEntity> getInitDataByDate(Timestamp date, int windowId);
+    public DataEntity getCurrentData( int windowId);
+    public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId);
+    public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId);
 }

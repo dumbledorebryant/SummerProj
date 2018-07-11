@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -57,23 +58,19 @@ class SwipeableTextMobileStepper extends React.Component {
     };
 
     handleNext = () => {
-        this.setState(
-            prevState => ({
+        this.setState(prevState => ({
             activeStep: prevState.activeStep + 1,
         }));
     };
 
     handleBack = () => {
-        this.setState(
-            prevState => ({
+        this.setState(prevState => ({
             activeStep: prevState.activeStep - 1,
         }));
     };
 
     handleStepChange = activeStep => {
-        this.setState({
-            activeStep
-        });
+        this.setState({ activeStep });
     };
 
     render() {
@@ -99,26 +96,22 @@ class SwipeableTextMobileStepper extends React.Component {
                 <MobileStepper
                     steps={maxSteps}
                     position="static"
-                    activeStep = {activeStep}
-                    className = {classes.mobileStepper}
-                    nextButton =
-                    {
+                    activeStep={activeStep}
+                    className={classes.mobileStepper}
+                    nextButton={
                         <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
                             Next
                             {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                         </Button>
                     }
                     backButton={
-                        <Button size="small"
-                                onClick={this.handleBack}
-                                disabled={activeStep === 0}>
-                            {theme.direction === 'rtl'
-                                ? <KeyboardArrowRight />
-                                : <KeyboardArrowLeft />}
+                        <Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
+                            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                             Back
                         </Button>
                     }
                 />
+
             </div>
             </Paper>
         );
