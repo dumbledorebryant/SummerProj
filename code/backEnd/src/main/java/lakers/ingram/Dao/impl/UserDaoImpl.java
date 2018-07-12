@@ -123,15 +123,33 @@ class UserDaoImpl implements UserDao {
         Query query = session.createQuery("select a from UserEntity a where a.userId= :id").
                 setParameter("id", user.getUserId());
         UserEntity userDB=(UserEntity)query.uniqueResult();
+        Query query2 = session.createQuery("select a from UserEntity a where a.username= :username").
+                setParameter("username", user.getUsername());
+        Query query3 = session.createQuery("select a from UserEntity a where a.phone= :phone").
+                setParameter("phone", user.getPhone());
+        if(query2.list().size()==1){
+            if((((UserEntity) query2.uniqueResult()).getUserId())!=(userDB.getUserId())){
+                transaction.commit();
+                return "The name has been used!";
+            }
+        }
+        if(query3.list().size()==1){
+            System.out.println("phone1:"+((UserEntity) query3.uniqueResult()).getUserId());
+            System.out.println("phone2:"+userDB.getUserId());
+            if((((UserEntity) query3.uniqueResult()).getUserId())!=(userDB.getUserId())){
+                transaction.commit();
+                return "The phone has been used for register!";
+            }
+        }
         String pwd=user.getPassword();
-       // String encodePwd=lakers.ingram.encode.MD5Util.md5Encode(pwd);
-
+        String encodePwd=lakers.ingram.encode.MD5Util.md5Encode(pwd);
         userDB.setEmail(user.getEmail());
         userDB.setPhone(user.getPhone());
         userDB.setUsername(user.getUsername());
-        userDB.setPassword(pwd);
-
+        userDB.setPassword(encodePwd);
         session.update(userDB);
+        System.out.println("email:"+user.getEmail());
+        System.out.println("phone:"+user.getPhone());
         transaction.commit();
         return "success";
     }

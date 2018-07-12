@@ -1,5 +1,6 @@
 import { Upload, Icon, message } from 'antd';
 import React from 'react';
+import pic from '../img/none.jpg'
 
 class Avatar extends React.Component {
     constructor(props){
@@ -23,16 +24,20 @@ class Avatar extends React.Component {
             .then(response=> {
                 console.log('Request successful', response);
                 let blob = response.blob();
-                console.log('blob:', blob);
                 return blob
                     .then(blob => {
-                        let reader = new FileReader();
-                        reader.readAsDataURL(blob);
-                        reader.onloadend = ()=> {
-                            this.setState({
-                                imageUrl:reader.result
-                            })
-                        };
+                        if(blob.size===0){
+                            return;
+                        }
+                        else{
+                            let reader = new FileReader();
+                            reader.readAsDataURL(blob);
+                            reader.onloadend = ()=> {
+                                this.setState({
+                                    imageUrl: reader.result
+                                })
+                            }
+                        }
                     });
             });
     };
@@ -90,8 +95,10 @@ class Avatar extends React.Component {
                 showUploadList={false}
                 beforeUpload={this.beforeUpload}
             >
-                {this.state.imageUrl? <img src={this.state.imageUrl}
-                                           height="120px" width="140px" alt="点击上传头像" /> : uploadButton}
+                {this.state.imageUrl
+                    ? <img src={this.state.imageUrl}
+                                           height="120px" width="140px" alt="aaa"/>
+                    : <img src={pic} height="120px" width="140px"/>}
             </Upload>
 
         );

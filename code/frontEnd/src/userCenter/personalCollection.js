@@ -51,9 +51,9 @@ const info = [];
 const foodIDList = [];
 class PersonalCollection extends React.Component
 {
-    constructor()
+    constructor(props)
     {
-        super();
+        super(props);
         this.state = {
             like: [],
             likeFoodInfo: info,

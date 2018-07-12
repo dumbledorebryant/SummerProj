@@ -166,9 +166,11 @@ public class UserAction extends HttpServlet {
             throws Exception {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        UserEntity user=new UserEntity(userID,username,password,phone,email);
+        UserEntity user=new UserEntity(userID,username,password,email,phone);
         String result=appService.handleUserInfo(user);
         out.print(result);
+        out.flush();
+        out.close();
     }
 
 
@@ -191,6 +193,8 @@ public class UserAction extends HttpServlet {
             file.transferTo(imgFile);
             String result = appService.updatePic(imgFile, userid);
             out.print(result);
+            out.flush();
+            out.close();
         }
     }
 
@@ -205,7 +209,6 @@ public class UserAction extends HttpServlet {
         //GridFSDBFile result = appService.getPic(fileName);
         MongoClient mongo = new MongoClient();
         DB mongodb = mongo.getDB("Portrait");
-
         GridFS gfsPhoto = new GridFS(mongodb, "Images");
         // get image file by it's filename
         GridFSDBFile imageForOutput = gfsPhoto.findOne(userid.toString());
@@ -216,5 +219,27 @@ public class UserAction extends HttpServlet {
         out.close();
         mongo.close();
     }
+
+    @RequestMapping(value = "/PassWordCheck")
+    private void processChangeUserInfo(@RequestParam("userID") Integer userID,
+                                       @RequestParam("password") String password,
+                                       HttpServletRequest request,
+                                       HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        UserEntity user=appService.getUserById(userID);
+        String encodePwd=lakers.ingram.encode.MD5Util.md5Encode(password);
+        String result="success";
+        if(!encodePwd.equals(user.getPassword())){
+           result="fail";
+        }
+        System.out.println("check1:"+user.getPassword());
+        System.out.println("check2:"+encodePwd);
+        out.print(result);
+        out.flush();
+        out.close();
+    }
+
 
 }
