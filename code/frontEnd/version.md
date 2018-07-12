@@ -39,3 +39,7 @@
    2018.7.11
    * chart in window
    * improve css
+   
+### 1.0.2
+   2018.7.12
+   * compare chart

@@ -58,12 +58,14 @@ class SwipeableTextMobileStepper extends React.Component {
     };
 
     handleNext = () => {
+        this.index++;
         this.setState(prevState => ({
             activeStep: prevState.activeStep + 1,
         }));
     };
 
     handleBack = () => {
+        this.index--;
         this.setState(prevState => ({
             activeStep: prevState.activeStep - 1,
         }));
@@ -71,6 +73,22 @@ class SwipeableTextMobileStepper extends React.Component {
 
     handleStepChange = activeStep => {
         this.setState({ activeStep });
+    };
+
+    index = 0;
+    steps = tutorialSteps.length;
+    updateAdver = () =>{
+        this.index++;
+        this.handleStepChange(this.index%this.steps)
+    };
+    componentDidMount(){
+
+        let _this=this;
+        setInterval(function(){
+
+            _this.updateAdver();
+
+        },10000);
     };
 
     render() {

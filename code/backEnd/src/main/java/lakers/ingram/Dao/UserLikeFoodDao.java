@@ -22,7 +22,7 @@ public interface UserLikeFoodDao {
 
     public JSONArray searchUserLike(Integer userID);
 
-    public String updateUserLike(Integer userID,Integer foodID,Integer flag);
+    public String updateUserLike(Integer userID, Integer foodID, Integer flag);
 
 }
 

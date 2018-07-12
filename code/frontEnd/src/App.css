@@ -39,6 +39,10 @@
   stroke-dasharray: 5,5;
 }
 
+.ct-series-c .ct-line,
+.ct-series-c .ct-point {
+  stroke: #47ad70;
+}
 
 .ct-chart{
   height:300px;
@@ -64,6 +68,14 @@ position:absolute;
   z-index: 100;
   transition: opacity .2s linear;
 
+}
+
+#searchBtn{
+  border-radius: 5px;
+  margin:5px;
+}
+#searchBtn:hover{
+  background-color:#63ccff;
 }
 
 

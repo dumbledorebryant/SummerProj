@@ -77,10 +77,10 @@ public interface AppService {
     public JSONObject showTags(String tagName);
 
     public String updatePic(File imgFile, Integer userid);
-    public String newFoodPic(File imageFile,String windowid);
+    public String newFoodPic(File imageFile, String windowid);
 
     public JSONArray searchUserLike(Integer userID);
-    public String updateUserLike(Integer userID,Integer foodID,Integer flag);
+    public String updateUserLike(Integer userID, Integer foodID, Integer flag);
     //data
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId);
 
@@ -105,9 +105,9 @@ public interface AppService {
 
     public int CommentIsValid(int commentId);//返回状态
 
-    public int CommentUpdate(int commentId,int valid);//封禁，解禁
+    public int CommentUpdate(int commentId, int valid);//封禁，解禁
 
-    public List<CommentEntity> CommentListGetByWindowId(int WindowId,byte valid);//拿到窗口的评论
+    public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid);//拿到窗口的评论
 
 
 

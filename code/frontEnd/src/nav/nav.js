@@ -27,15 +27,15 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
-import MainPage from '../homePage/mainPage'
 import Footer from './footer'
-import UserPageNav from '../userCenter/userPageNav'
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import SearchIcon from '@material-ui/icons/Search'
 import Accessibility from'@material-ui/icons/Accessibility';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchRes from './search'
 import MailIcon from '@material-ui/icons/Mail';
 
 
@@ -185,7 +185,12 @@ const styles = theme => ({
     },
     link:{
         fontcolor:'#424242'
-    }
+    },
+    search: {
+        margin: theme.spacing.unit,
+        borderRadius: 3
+    },
+
 });
 
 class MiniDrawer extends React.Component {
@@ -210,6 +215,8 @@ class MiniDrawer extends React.Component {
         admin:false,
         worker:false,
         logoutPop:false, //logout
+        openSearch:false,  //search
+        searchContent:"",
     };
 
     //nav
@@ -321,6 +328,7 @@ class MiniDrawer extends React.Component {
 
     handleLoginSuccess = () =>{
       this.setState({loginPop:false,loginPattern:0});
+      window.location.reload();
     };
 
     //register
@@ -479,6 +487,26 @@ class MiniDrawer extends React.Component {
         });
     }
 
+    onFocusSearch = event =>{
+        event.target.style.boxShadow="0px -2px 0px #006db3 inset";
+    };
+
+    onBlurSearch = event =>{
+        event.target.style.boxShadow=null;
+    };
+
+    onHandleSearch = event =>{
+        let input=document.getElementById("search");
+        //alert(input.value);
+        if (input.value!=="") this.setState({openSearch:true,searchContent:input.value});
+    };
+
+    onCloseSearch = () =>{
+        let input=document.getElementById("search");
+        input.value=null;
+        this.setState({openSearch:false,searchContent:""});
+    };
+
     render() {
         const { classes, theme } = this.props;
 
@@ -501,6 +529,21 @@ class MiniDrawer extends React.Component {
                         <Typography variant="title" color="inherit" className={classes.flex}>
                             Eat Or Not
                         </Typography>
+                        <TextField
+                            className={classes.search}
+                            id="search"
+                            style={{backgroundColor:'#26c3fe' ,paddingLeft:5 }}
+                            InputProps={{
+                                disableUnderline: true,
+                                startAdornment: (
+                                    <InputAdornment  position="start">
+                                        <SearchIcon id="searchBtn" onClick={this.onHandleSearch}/>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            onFocus={this.onFocusSearch}
+                            onBlur={this.onBlurSearch}
+                        />
                         {!this.state.login?<Button color="inherit" onClick={this.handleLoginOpen}>Login</Button>:
                             <Button color="inherit" onClick={this.handleLogoutOpen}>Logout</Button>}
                         {!this.state.login?<Button color="inherit" onClick={this.handleRegisterOpen}>Register</Button>:
@@ -568,7 +611,7 @@ class MiniDrawer extends React.Component {
                     {this.props.children}
                     <Footer/>
                 </main>
-
+                <SearchRes open={this.state.openSearch} content={this.state.searchContent} close={this.onCloseSearch}/>
                 <Dialog
                     open={this.state.loginPop}
                     onClose={this.handleLoginClose}

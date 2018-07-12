@@ -4,7 +4,7 @@ import './App.css';
 import MiniDrawer from './nav/nav'
 import UserPageNav from "./userCenter/userPageNav";
 import MainPage from "./homePage/mainPage";
-import TempChart from "./chart/chart"
+import AllChart from "./chart/allChart"
 import {
     HashRouter,
     Route
@@ -22,7 +22,7 @@ class App extends Component {
               <Route path="/floor/:key" component={Floor}/>
               <Route path="/admin" component={AdminManager}/>
               <Route path="/worker" component={WorkerPage}/>
-              <Route path="/test" component={TempChart}/>
+              <Route path="/test" component={AllChart}/>
           </MiniDrawer>
         </HashRouter>
     );
