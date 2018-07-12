@@ -59,9 +59,8 @@ class Dishes extends React.Component {
         userId:-1,
         expanded: false,
         like:this.props.like,
-        icon:0,
+        icon:1,
         picture:"https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4099675241,2760395260&fm=15&gp=0.jpg"
-
     };
 
     handleExpandClick = () => {
@@ -73,85 +72,90 @@ class Dishes extends React.Component {
     handleLikeClick=()=>{
         let formData=new FormData();
         formData.append("foodId",this.props.foodId);
-        fetch('http://localhost:8080/User/State',{
+        let userId=this.props.userId;
+        if(userId==="-1"){
+            alert("Please Login");
+            return;
+        }
+        formData.append("userId",userId);
+        formData.append("state",1);
+        fetch('http://localhost:8080/UserLikeFood/Save', {
             credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData,
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
+            method: 'POST',
+            mode: 'cors',
+            body: formData,
+        }).then(response => {
+            console.log('Request successful', response);
+            return response.json().then(result => {
                 this.setState({
-                    userId: result[0]
+                    icon: result
                 });
-                if(result==-1){
-                    alert("Please Login First");
+                if(result===0){
+                    this.setState({
+                        like:this.state.like+1
+                    })
                 }
-                else {
-                    formData.append("userId",result[0]);
-                    formData.append("state",1);
-                    fetch('http://localhost:8080/UserLikeFood/Save', {
-                        credentials: 'include',
-                        method: 'POST',
-                        mode: 'cors',
-                        body: formData,
-                    }).then(response => {
-                        console.log('Request successful', response);
-                        return response.json().then(result => {
-                            this.setState({icon: result});
-                            if(result===0){
-                                this.setState({
-                                    like:this.state.like+1
-                                })
-                            }
-                            else{
-                                this.setState({
-                                    like:this.state.like-1
-                                })
-                            }
-                        })
-                    });
+                else{
+                    this.setState({
+                        like:this.state.like-1
+                    })
                 }
-            })
+                })
         });
     };
 
-    componentWillMount(){
+  /*  componentWillMount(){
         let formData=new FormData();
         formData.append("foodId",this.props.foodId);
-        fetch('http://localhost:8080/User/State',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData,
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                this.setState({
-                    userId: result[0]
-                });
-                if(result===-1){
-                }
-                else {
-                    formData.append("userId",result[0]);
-                    formData.append("state",0);
-                    fetch('http://localhost:8080/UserLikeFood/Save', {
-                        credentials: 'include',
-                        method: 'POST',
-                        mode: 'cors',
-                        body: formData,
-                    }).then(response => {
-                        console.log('Request successful', response);
-                        return response.json().then(result => {
-                            this.setState({
-                                icon: result
-                            });
-                        })
-                    });
-                }
-            })
-        });
+        let userId=this.props.userId;
+        if(userId==="-1") {
+            alert("-1");
+        }
+        else {
+            alert(userId);
+            formData.append("userId",userId);
+            formData.append("state",0);
+            fetch('http://localhost:8080/UserLikeFood/Save', {
+                credentials: 'include',
+                method: 'POST',
+                mode: 'cors',
+                body: formData,
+            }).then(response => {
+                console.log('Request successful', response);
+                return response.json().then(result => {
+                    this.setState({
+                        icon: result
+                    });})
+            });
+        }
     }
+*/
+    componentWillReceiveProps(nextProps){
+        let formData=new FormData();
+        formData.append("foodId",this.props.foodId);
+        let userId=this.props.userId;
+        if(userId==="-1"|| userId===this.state.userId) {
+        }
+        else {
+           // alert(userId+" "+this.props.foodId);
+            formData.append("userId",userId);
+            formData.append("state",0);
+            fetch('http://localhost:8080/UserLikeFood/Save', {
+                credentials: 'include',
+                method: 'POST',
+                mode: 'cors',
+                body: formData,
+            }).then(response => {
+                console.log('Request successful', response);
+                return response.json().then(result => {
+                    this.setState({
+                        icon: result,
+                        userId:this.props.userId,
+                    });})
+            });
+        }
+    }
+
 
     render() {
         const { classes } = this.props;
@@ -163,7 +167,7 @@ class Dishes extends React.Component {
                     <CardHeader
                         avatar={
                             <Avatar aria-label="Recipe" className={classes.avatar}>
-                                R
+                                {this.props.userId}
                             </Avatar>
                         }
                         action={

@@ -89,4 +89,26 @@ public interface AppService {
     public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId);
 
     public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId);
+
+    //viewHistory
+    public void saveViewHistory(ViewhistoryEntity viewHistory);
+
+    public void updateViewHistory(ViewhistoryEntity view);
+
+    public ViewhistoryEntity selectView(int userId, int windowId);
+
+
+    //Comment
+    public int CommentSave(CommentEntity comment);//发表评论
+
+    public void CommentDelete(int commentId);//删除评论
+
+    public int CommentIsValid(int commentId);//返回状态
+
+    public int CommentUpdate(int commentId,int valid);//封禁，解禁
+
+    public List<CommentEntity> CommentListGetByWindowId(int WindowId,byte valid);//拿到窗口的评论
+
+
+
 }

@@ -11,9 +11,9 @@ import Window from './Window';
 const styles = theme => ({
     root: {
         margin:10,
-        width: '120%',
+        width: '20%',
         backgroundColor: theme.palette.background.paper,
-        flexFlow:1
+        flexFlow:1,
     },
 
     row: {
@@ -41,7 +41,7 @@ class WindowsMenu extends React.Component {
         floor:this.props.floor,        //上一级传过来的，拿来去后端拿windowList和dishesList，如果是0就取全部
         windowList:this.props.windowList,//渲染windowMenu的按钮
         dishesList: [],      //从后端拿到，传给下一级的windowFoodList
-        comment:[],
+        commentList:[],
         windowId:0,
     };
 
@@ -70,6 +70,19 @@ class WindowsMenu extends React.Component {
                     anchorEl: null,
                     content:index,
                     windowId:windowId,
+                });
+            })
+        });
+        fetch('http://localhost:8080/Comment/AllCommentByWindowId',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response2=>{
+            console.log('Request successful',response2);
+            return response2.json().then(result2=>{
+                this.setState({
+                    commentList:result2,
                 });
             })
         });
@@ -147,7 +160,7 @@ class WindowsMenu extends React.Component {
                 </div>
                 <div>
                     <div>
-                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId}/>
+                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}/>
                     </div>
                 </div>
             </div>

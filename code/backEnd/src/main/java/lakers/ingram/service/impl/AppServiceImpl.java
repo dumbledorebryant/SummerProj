@@ -42,6 +42,13 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private DataDao dataDao;
 
+    @Autowired
+    private ViewHistoryDao viewHistoryDao;
+
+    @Autowired
+    private CommentDao commentDao;
+
+
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -53,6 +60,9 @@ public class AppServiceImpl implements AppService {
     }
     public void setWindowDao(WindowDao windowDao){ this.windowDao = windowDao; }
     public void setDataDao(DataDao dataDao){ this.dataDao = dataDao; }
+    public void setViewHistoryDao(ViewHistoryDao viewHistoryDao){this.viewHistoryDao=viewHistoryDao;}
+    public void setCommentDao(CommentDao commentDao){this.commentDao=commentDao;}
+
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
 
@@ -196,4 +206,33 @@ public class AppServiceImpl implements AppService {
     public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId); }
 
     public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId); }
+
+    //viewHistory
+    public void saveViewHistory(ViewhistoryEntity viewHistory){
+        viewHistoryDao.save(viewHistory);
+    }
+
+
+    public void updateViewHistory(ViewhistoryEntity view){
+        viewHistoryDao.update(view);
+    };
+
+    public ViewhistoryEntity selectView(int userId, int windowId){
+        return viewHistoryDao.select(userId,windowId);
+    };
+
+
+    //Comment
+    public int CommentSave(CommentEntity comment){return commentDao.save(comment);};//发表评论
+
+    public void CommentDelete(int commentId){commentDao.delete(commentId);};//删除评论
+
+    public int CommentIsValid(int commentId){return commentDao.isValid(commentId);};//返回状态
+
+    public int CommentUpdate(int commentId,int valid){return commentDao.update(commentId,valid);};//封禁，解禁
+
+    public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid){return commentDao.GetCommentListByWindowId(WindowId,valid);};//拿到窗口的评论
+
+
+
 }

@@ -35,7 +35,7 @@ class WindowsFoodList extends React.Component {
         selectedIndex: 0,
         content:1,
         windowName:"一餐五楼A窗口",
-
+        userId:-1,
     };
 
     handleClickListItem = event => {
@@ -45,7 +45,6 @@ class WindowsFoodList extends React.Component {
     };
 
     handleMenuItemClick = (event, index) => {
-        alert(index);
         this.setState({
             selectedIndex: index,
             anchorEl: null, content:index
@@ -58,6 +57,8 @@ class WindowsFoodList extends React.Component {
         });
     };
 
+
+
     render() {
         const { classes } = this.props;
         const { anchorEl } = this.state;
@@ -68,7 +69,7 @@ class WindowsFoodList extends React.Component {
                             <Grid container spacing={24} justify="left">
                                 {this.props.dishesList.map((item,i) => (
                                     <Grid>
-                                        <Dishes key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes}picture=""/>
+                                        <Dishes userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""/>
                                     </Grid>))
                                 }
                                 </Grid>
