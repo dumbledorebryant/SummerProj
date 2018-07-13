@@ -96,8 +96,28 @@ class WindowsMenu extends React.Component {
         });
     };
 
+    handleDeleteComment=(event, commentId)=>{
+        let formData=new FormData();
+        formData.append("commentId",commentId);
+        formData.append("windowId",this.state.windowId)
+        fetch('http://localhost:8080/Comment/DeleteComment',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    commentList:result,
+                });
+                alert("DELETE")
+            })
+        });
+    }
 
-   componentWillMount(){
+
+    componentWillMount(){
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.state.floor);
@@ -211,7 +231,7 @@ class WindowsMenu extends React.Component {
                 </div>
                 <div>
                     <div>
-                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}/>
+                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList} handleDeleteComment={this.handleDeleteComment}/>
                     </div>
                 </div>
             </div>

@@ -50,11 +50,17 @@ public class CommentAction extends HttpServlet {
 
     @RequestMapping(value = "/DeleteComment")//删除评论
     private void processDeleteComment(   @RequestParam("commentId") int commentId,
+                                         @RequestParam("windowId") int windowId,
                                        HttpServletRequest request,
                                        HttpServletResponse response)  throws Exception {
 
         PrintWriter out = response.getWriter();
         appService.CommentDelete(commentId);
+        List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,(byte)1);
+        JSONArray arr = JSONArray.fromObject(commentList);
+        JSONArray arr2 = CommentEntityAddHeadPic(arr);
+        out.println(CommentEntityAddUserName(arr2).toString());
+        System.out.println(CommentEntityAddUserName(arr2).toString());
         out.flush();
         out.close();
     }
@@ -64,11 +70,8 @@ public class CommentAction extends HttpServlet {
                                        @RequestParam("valid") int valid,
                                        HttpServletRequest request,
                                        HttpServletResponse response)  throws Exception {
-
        appService.CommentUpdate(commentId,valid);
-
         PrintWriter out = response.getWriter();
-
         out.flush();
         out.close();
     }
@@ -81,15 +84,26 @@ public class CommentAction extends HttpServlet {
         List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,x);
         PrintWriter out = response.getWriter();
         JSONArray arr = JSONArray.fromObject(commentList);
-        out.println(CommentEntityAddUserName(arr).toString());
-        System.out.println(CommentEntityAddUserName(arr).toString());
+        JSONArray arr2 = CommentEntityAddHeadPic(arr);
+        out.println(CommentEntityAddUserName(arr2).toString());
+        System.out.println(CommentEntityAddUserName(arr2).toString());
         out.flush();
         out.close();
     }
 
-    public JSONArray CommentEntityAddUserName(List<CommentEntity>commentList){
-        WindowEntity win = new WindowEntity();
-        JSONArray arr = JSONArray.fromObject(commentList);
+
+    public JSONArray CommentEntityAddHeadPic(JSONArray arr){
+        JSONArray arr2 = new JSONArray();
+        for(int i= 0;i<arr.size();i++){
+            JSONObject comment = arr.getJSONObject(i);
+            //   String userName= appService.getUserById((int)comment.get("userId")).getUsername();
+            comment.put("HeadPic","https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4099675241,2760395260&fm=15&gp=0.jpg");
+            arr2.add(comment);
+        }
+        return arr2;
+    }
+
+    public JSONArray CommentEntityAddUserName(JSONArray arr){
         JSONArray arr2 = new JSONArray();
         for(int i= 0;i<arr.size();i++){
             JSONObject comment = arr.getJSONObject(i);
@@ -99,6 +113,5 @@ public class CommentAction extends HttpServlet {
         }
         return arr2;
     }
-
 
 }

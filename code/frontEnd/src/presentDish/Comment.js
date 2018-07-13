@@ -16,17 +16,18 @@ import ChatIcon from '@material-ui/icons/Chat';
 const styles = theme => ({
     root: {
         padding:10,
-        width:'50%',
-        maxWidth: '50%',
+        width:'80%',
+     //   maxWidth: '50%',
         height:'20%',
         ...theme.mixins.gutters(),
         paddingTop: theme.spacing.unit * 2,
         paddingBottom: theme.spacing.unit * 2,
+
     },
 
     root2: {
-        width: '100%',
-       // maxHeight:10,
+        padding:10,
+        width: '50%',
         backgroundColor: theme.palette.background.paper,
     },
     row: {
@@ -93,11 +94,13 @@ class CommentList extends React.Component {
                                 <ListItem>
                                     <Avatar  src={item.HeadPic}/>
                                     <ListItemText primary={item.userName} secondary={item.commentDate.month+"-"+item.commentDate.date+" "+item.commentDate.hours+":"+ item.commentDate.minutes}/>
+                                    <ListItemText>
                                     {this.props.userId===item.userId.toString()?
-                                        <IconButton className={classes.button} aria-label="Delete" onClick={event=>this.handleDelete(event,item.commentId)}>
+                                        <IconButton className={classes.button} aria-label="Delete" onClick={event=>this.props.handleDelete(event,item.commentId)}>
                                             <DeleteIcon />
                                         </IconButton>:<div/>
                                     }
+                                    </ListItemText>
                                 </ListItem>
                                 <ListItem>
                                     <Paper className={classes.root} elevation={1}>
