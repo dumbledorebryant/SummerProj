@@ -39,6 +39,8 @@ public interface AppService {
 
     public List<WindowEntity> getAllWindows();
 
+    public WindowEntity getWindowById(int id);
+
     //Food
 
     public List<FoodEntity> getAllFood();
@@ -50,6 +52,7 @@ public interface AppService {
     public List<FoodEntity> getAllFoodByWindowid(int window_id);
 
     public String getWindowNameByFoodId(int foodId);
+
 
     //UserLikeFood
 
@@ -109,6 +112,13 @@ public interface AppService {
 
     public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid);//拿到窗口的评论
 
+    //Search
+    public List<FoodEntity> getFoodsByTagId(int tagId);
 
+    public List<FoodEntity> getAllFoodByLikeStr(String str);
+
+    public Integer getWindowIdByFoodIdAndTime(int foodId, int time);
+
+    public List<TagEntity> getTagByLikeName(String tagName);
 
 }

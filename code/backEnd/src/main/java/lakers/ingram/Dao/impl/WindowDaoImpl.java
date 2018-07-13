@@ -106,4 +106,6 @@ class WindowDaoImpl implements WindowDao {
         WindowEntity window = windows.size() > 0 ? windows.get(0) : null;
         return window;
     }
+
+
 }

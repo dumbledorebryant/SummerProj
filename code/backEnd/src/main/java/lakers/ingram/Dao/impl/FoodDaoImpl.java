@@ -99,4 +99,40 @@ class FoodDaoImpl implements FoodDao {
         String windowName = windowNames.size() > 0 ? windowNames.get(0) : null;
         return windowName;
     }
+
+    public List<FoodEntity> getAllFoodByLikeStr(String str){
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query= session.createQuery("select food f" +
+                "rom FoodEntity food where food.foodName like :name or food.tips like :tip")
+                .setParameter("name","%"+str+"%").setParameter("tip","%"+str+"%");
+        @SuppressWarnings("unchecked")
+        List<FoodEntity> lst=query.list();
+        session.getTransaction().commit();
+        return lst;
+    }
+
+    public Integer getWindowIdByFoodIdAndTime(int foodId, int time){
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query= session.createQuery("select food.windowId " +
+                "from TodayfoodEntity food where food.foodId= :id and food.time= :time")
+                .setParameter("id",foodId).setParameter("time",time);
+        @SuppressWarnings("unchecked")
+        List<Integer> lst=query.list();
+        Integer id=lst.size()>0 ? lst.get(0):null;
+        session.getTransaction().commit();
+        return id;
+    }
+
+    public FoodEntity getFoodById(int foodId){
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query= session.createQuery("select food from FoodEntity food where food.foodId= :id")
+                .setParameter("id",foodId);
+        @SuppressWarnings("unchecked")
+        List<FoodEntity> foods=query.list();
+        session.getTransaction().commit();
+        return foods.get(0);
+    }
 }

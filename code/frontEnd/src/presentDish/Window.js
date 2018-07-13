@@ -108,7 +108,8 @@ class Window extends React.Component {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Typography>
-                            <Comment userId={this.state.userId} commentList={this.props.commentList} handleDelete={this.props.handleDeleteComment}/>
+                            <Comment userId={this.state.userId} commentList={this.props.commentList}
+                                     handleDelete={this.props.handleDeleteComment} handleUpdate={this.props.handleUpdateComment} windowId={this.state.windowId}/>
                             <img src="
                            https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531286712762&di=48c770515f83f496ccd715b0137c3a40&imgtype=0&src=http%3A%2F%2Fimg.18183.com%2Fuploads%2Fallimg%2F183%2F180104%2F1A9415638-1.jpg
                            "/>

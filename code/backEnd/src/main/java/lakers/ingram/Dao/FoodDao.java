@@ -16,6 +16,11 @@ public interface FoodDao {
 
     public String getWindowNameByFoodId(int foodId);
 
+    public List<FoodEntity> getAllFoodByLikeStr(String str);
+
+    public Integer getWindowIdByFoodIdAndTime(int foodId, int time);
+
+    public FoodEntity getFoodById(int foodId);
 }
 
 

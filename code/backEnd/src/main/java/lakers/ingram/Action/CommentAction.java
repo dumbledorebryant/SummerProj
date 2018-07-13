@@ -25,14 +25,13 @@ public class CommentAction extends HttpServlet {
     @Autowired
     private AppService appService;
 
-    @RequestMapping(value = "/SaveComment")//发表评论
+    @RequestMapping(value = "/Save")//发表评论
     private void processSaveComment(
-            @RequestParam("userId") int userId,
             @RequestParam("windowId") int windowId,
             @RequestParam("commentContent") String commentContent,
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-
+        Integer userId=Integer.valueOf(request.getSession().getAttribute("userid").toString());
         CommentEntity comment = new CommentEntity();
         comment.setUserId(userId);
         comment.setWindowId(windowId);

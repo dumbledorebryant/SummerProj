@@ -96,10 +96,10 @@ class WindowsMenu extends React.Component {
         });
     };
 
-    handleDeleteComment=(event, commentId)=>{
+    handleDeleteComment= (commentId)=>{
         let formData=new FormData();
         formData.append("commentId",commentId);
-        formData.append("windowId",this.state.windowId)
+        formData.append("windowId",this.state.windowId);
         fetch('http://localhost:8080/Comment/DeleteComment',{
             credentials: 'include',
             method:'POST',
@@ -111,11 +111,13 @@ class WindowsMenu extends React.Component {
                 this.setState({
                     commentList:result,
                 });
-                alert("DELETE")
             })
         });
-    }
+    };
 
+    handleUpdateComment=(comments)=>{
+        this.setState({commentList:comments});
+    };
 
     componentWillMount(){
         let formData=new FormData();
@@ -231,7 +233,8 @@ class WindowsMenu extends React.Component {
                 </div>
                 <div>
                     <div>
-                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList} handleDeleteComment={this.handleDeleteComment}/>
+                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}
+                                handleDeleteComment={this.handleDeleteComment} handleUpdateComment={this.handleUpdateComment}/>
                     </div>
                 </div>
             </div>

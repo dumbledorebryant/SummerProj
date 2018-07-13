@@ -11,6 +11,13 @@
     * user/ admin/ worker/ window DAO
     * service
     * user/ admin/ worker/ window Action 
-    
+
+### 0.3
+2018.7.9
+* DataDao, AppService, DataAction (Init,HistoryInit,Current,HistoryCurrent)
 ### 1.0.0
 2018.7.10
+
+### 1.0.1
+2018.7.13
+* SearchAction (dao/service)

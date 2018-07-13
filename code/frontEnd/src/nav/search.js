@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-
+import SearchResult from './searchResult'
 const styles = {
     appBar: {
         position: 'relative',
@@ -44,16 +44,39 @@ class SearchRes extends React.Component {
         this.props.close();
     };
 
-    handleJump = value => () =>{
-        alert(value);
+    handleJump =  () =>{
         this.setState({ open: false });
         this.props.close();
-        window.location.href="/";
     };
+
+
     componentWillReceiveProps = nextProps =>{
         this.setState({open:nextProps.open,content:nextProps.content});
         if (nextProps.open === true){
+            let formData=new FormData();
+            formData.append("content",nextProps.content);
+            let time=new Date().getHours();
+            if (time >= 6 && time <11){
+                formData.append("time","1");
+            }
+            else if (time >=11 && time <17){
+                formData.append("time","2");
+            }
+            else if (time >=17 && time <22){
+                formData.append("time","3");
+            }
+            fetch('http://localhost:8080/Search/All',{
+                credentials: 'include',
+                method:'POST',
+                mode:'cors',
+                body:formData,
 
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.json().then(result=>{
+                    this.setState({result:result});
+                });
+            });
         }
     };
     render() {
@@ -75,17 +98,24 @@ class SearchRes extends React.Component {
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <List>
+                    {this.state.result.length > 0?<List>
                         {this.state.result.map((item,i) =>
                             (
                                 <div>
-                                    <ListItem key={item[0]} button onClick={this.handleJump(item[0])}>
-                                        <ListItemText primary={item[0]} secondary={item[1]} />
+                                    <ListItem key={item.foodName+item.tag}>
+                                        <ListItemText primary={item.foodName}/>
                                     </ListItem>
+                                    <SearchResult key={item.foodName+item.tag} rid={item.foodName+item.tag}
+                                                  restaurant={item.restaurant} windowName={item.windowName}
+                                                  windowId={item.windowId} foodName={item.foodName} likes={item.likes}
+                                                  price={item.price} tips={item.tips} tag={item.tag} content={this.state.content}
+                                                  close={this.handleJump}
+                                    />
+
                                     <Divider />
                                 </div>
                             ))}
-                    </List>
+                    </List>:<p style={{margin:50}}>no result</p>}
                 </Dialog>
         );
     }

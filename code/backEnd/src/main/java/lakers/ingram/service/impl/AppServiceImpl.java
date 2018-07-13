@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.swing.text.html.HTMLDocument;
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -48,6 +51,8 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private CommentDao commentDao;
 
+    @Autowired
+    private FoodTagDao foodTagDao;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -62,7 +67,7 @@ public class AppServiceImpl implements AppService {
     public void setDataDao(DataDao dataDao){ this.dataDao = dataDao; }
     public void setViewHistoryDao(ViewHistoryDao viewHistoryDao){this.viewHistoryDao=viewHistoryDao;}
     public void setCommentDao(CommentDao commentDao){this.commentDao=commentDao;}
-
+    public void setFoodTagDao(FoodTagDao foodTagDao){this.foodTagDao=foodTagDao;}
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
 
@@ -112,6 +117,7 @@ public class AppServiceImpl implements AppService {
         return windowDao.getAllWindows();
     };
 
+    public WindowEntity getWindowById(int id) { return windowDao.getWindowById(id);}
     //Food
     public List<FoodEntity> getAllFood(){
         return foodDao.getAllFood();
@@ -132,6 +138,8 @@ public class AppServiceImpl implements AppService {
     public String getWindowNameByFoodId(int foodId){
         return foodDao.getWindowNameByFoodId(foodId);
     };
+
+
 
     //  UserLikeFood
 
@@ -233,6 +241,21 @@ public class AppServiceImpl implements AppService {
 
     public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid){return commentDao.GetCommentListByWindowId(WindowId,valid);};//拿到窗口的评论
 
+    //Search
+    public List<FoodEntity> getFoodsByTagId(int tagId) {
+        List<Integer> ids=foodTagDao.getFoodsByTagId(tagId);
+        List<FoodEntity> res= new ArrayList<FoodEntity>();
+        Iterator<Integer> it=ids.iterator();
+        while (it.hasNext()){
+            Integer id=it.next();
+            res.add(foodDao.getFoodById(id));
+        }
+        return res;
+    }
 
+    public List<FoodEntity> getAllFoodByLikeStr(String str){ return foodDao.getAllFoodByLikeStr(str); }
 
+    public Integer getWindowIdByFoodIdAndTime(int foodId, int time){ return foodDao.getWindowIdByFoodIdAndTime(foodId,time); }
+
+    public List<TagEntity> getTagByLikeName(String tagName){ return tagDao.getTagByLikeName(tagName); }
 }

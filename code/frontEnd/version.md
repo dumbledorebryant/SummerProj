@@ -43,3 +43,8 @@
 ### 1.0.2
    2018.7.12
    * compare chart
+
+### 1.0.3
+   2018.7.13
+   * search
+   * add comment
