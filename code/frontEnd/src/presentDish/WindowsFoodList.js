@@ -27,9 +27,9 @@ const styles = theme => ({
 
 class WindowsFoodList extends React.Component {
     button = null;
-    constructor(props) {
+   /* constructor(props) {
         super(props);
-    }
+    }*/
     state = {
         anchorEl: null,
         selectedIndex: 0,
@@ -61,7 +61,7 @@ class WindowsFoodList extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { anchorEl } = this.state;
+        //const { anchorEl } = this.state;
         return (
             <div>
                 <div>

@@ -31,9 +31,11 @@ const styles = theme => ({
 
 class WindowsMenu extends React.Component {
     button = null;
+    /*
     constructor(props) {
         super(props);
     }
+    */
     state = {
         anchorEl: null,
         selectedIndex: 0,
@@ -94,11 +96,25 @@ class WindowsMenu extends React.Component {
         });
     };
 
+
    componentWillMount(){
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.state.floor);
-        formData.append("windowId",0);
+        if (this.props.windowId !== null){
+            formData.append("windowId",this.props.windowId);
+            let i=0;
+            let temp=this.state.windowList;
+            for (i;i<temp.length;i++){
+                if (temp[i].window_id===this.props.windowId ||temp[i].windowd===this.props.windowId){
+                    this.setState({selectedIndex:i+1,windowId:this.props.windowId});
+                    break;
+                }
+            }
+        }
+        else{
+            formData.append("windowId",0);
+        }
         fetch('http://localhost:8080/Food/FoodsByWindowId',{
             credentials: 'include',
             method:'POST',
@@ -113,6 +129,41 @@ class WindowsMenu extends React.Component {
             })
         });
     }//render之前，construct之后*/
+
+    componentWillReceiveProps = (nextProps)=>{
+        let formData=new FormData();
+        formData.append("restaurant",this.props.canteen);
+        formData.append("floor",this.state.floor);
+        if (nextProps.windowId !== null){
+            formData.append("windowId",nextProps.windowId);
+            let i=0;
+            let temp=nextProps.windowList;
+            for (i;i<temp.length;i++){
+                if (temp[i].window_id===nextProps.windowId || temp[i].windowd===parseInt(this.props.windowId)){
+                    this.setState({selectedIndex:i+1,windowId:nextProps.windowId});
+                    break;
+                }
+            }
+        }
+        else{
+            formData.append("windowId",0);
+            this.setState({selectedIndex:0,windowId:0});
+        }
+        fetch('http://localhost:8080/Food/FoodsByWindowId',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    dishesList:result
+                });
+            })
+        });
+
+    };
 
     render() {
         const { classes } = this.props;

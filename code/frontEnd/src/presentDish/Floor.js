@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import SwipeableViews from 'react-swipeable-views';
+//import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Nav from '@material-ui/core/Tab';
+//import Nav from '@material-ui/core/Tab';
 import constantData from './window.json';
 import Typography from '@material-ui/core/Typography';
 import WindowsMenu from './WindowsMenu';
-import {Link,hashHistory} from 'react-router';
+//import {Link,hashHistory} from 'react-router';
 
 
 function TabContainer({ children, dir }) {
@@ -38,9 +38,10 @@ const styles = theme => ({
 });
 
 class Floor extends React.Component {
+    /*
     constructor(props) {
         super(props);
-    }
+    }*/
 
   state = {
       value: 0,
@@ -49,6 +50,7 @@ class Floor extends React.Component {
       floor:0,                      //默认是0, 后面通过点击某一层，传递楼层给windowsMenu
       windows:constantData.windows,
       dishesList:[],
+      windowId:null,
   };
 
   handleChange = (event, value) => {
@@ -64,8 +66,8 @@ class Floor extends React.Component {
   };
 
   handleChangeFloor= (event, index) => {
-      let temp=[];
-      let allwin=constantData.windows;
+    //  let temp=[];
+   //   let allwin=constantData.windows;
       let formData=new FormData();
       formData.append("restaurant",this.state.canteen);
       formData.append("floor",this.state.floorList[index]);
@@ -103,8 +105,20 @@ class Floor extends React.Component {
   };
 
   componentWillMount(){
+      let addr=this.state.canteen;
+      let idx=addr.indexOf(":");
+      let canteen=null;
+      let window=null;
       let formData=new FormData();
-      formData.append("restaurant",this.state.canteen);
+      if (idx === -1){
+        formData.append("restaurant",addr);
+      }
+      else{
+          canteen=addr.substring(0,idx);
+          window=addr.substring(idx+1);
+          this.setState({canteen:canteen,windowId:window});
+          formData.append("restaurant",canteen)
+      }
       formData.append("floor",0);
 
       fetch('http://localhost:8080/Window/FloorListByRestaurant',{
@@ -141,11 +155,29 @@ class Floor extends React.Component {
   }//render之前，construct之后
 
     componentWillReceiveProps(nextProps){
-      this.setState({
-          canteen:nextProps.match.params.key,
-      });
+      let addr=nextProps.match.params.key;
+      let idx=addr.indexOf(":");
+      let canteen=null;
+      let window=null;
         let formData=new FormData();
-        formData.append("restaurant",nextProps.match.params.key);
+      if (idx !== -1){
+          canteen=addr.substring(0,idx);
+          window=addr.substring(idx+1);
+          this.setState({
+              canteen:canteen,
+              windowId:window,
+          });
+          formData.append("restaurant",canteen);
+      }
+      else{
+          this.setState({
+              windowId:null,
+              canteen:addr,
+          });
+          formData.append("restaurant",addr);
+      }
+
+
         formData.append("floor",0);
         fetch('http://localhost:8080/Window/FloorListByRestaurant',{
             credentials: 'include',
@@ -180,7 +212,7 @@ class Floor extends React.Component {
     }
 
   render() {
-    const { classes, theme,params } = this.props;
+    const { classes /*,theme,params*/ } = this.props;
     return (
         <div className={classes.root}>
             <AppBar position="static" color="default">
@@ -198,7 +230,8 @@ class Floor extends React.Component {
                     }
                 </Tabs>
             </AppBar>
-            <WindowsMenu key={this.state.canteen+this.state.floor} canteen={this.state.canteen} windowList={this.state.windows} floor={this.state.floor}/>
+            <WindowsMenu key={this.state.canteen+this.state.floor}
+                         canteen={this.state.canteen} windowList={this.state.windows} floor={this.state.floor} windowId={this.state.windowId}/>
       </div>
     );
   }

@@ -28,7 +28,7 @@ const styles = theme => ({
 
 class Window extends React.Component {
     state = {
-        expanded:"panel1",
+        expanded:"panel3",
         commentList:[],
         FoodList:[],
         windowId:0,
