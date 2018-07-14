@@ -48,3 +48,7 @@
    2018.7.13
    * search
    * add comment
+   
+## 1.0.4
+   2018.7.14
+   * predict chart

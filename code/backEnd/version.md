@@ -21,3 +21,7 @@
 ### 1.0.1
 2018.7.13
 * SearchAction (dao/service)
+
+### 1.0.2
+2018.7.14
+* predict data

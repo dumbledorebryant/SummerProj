@@ -72,7 +72,7 @@ public class DataAction extends HttpServlet {
         PrintWriter out = response.getWriter();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=sdf.parse(time);
-        List<DataEntity> ls=appService.getHistoryDataByDate(new Timestamp(date.getTime()), windowId);
+        List<DataEntity> ls=appService.getYesterdayDataByDate(new Timestamp(date.getTime()), windowId);
         Iterator its=ls.iterator();
         ArrayList<JSONArray> res =new ArrayList<JSONArray>();
         while (its.hasNext()){
@@ -96,11 +96,64 @@ public class DataAction extends HttpServlet {
         PrintWriter out = response.getWriter();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=sdf.parse(time);
-        DataEntity res=appService.getCurrentHistoryDataByDate(new Timestamp(date.getTime()),windowId);
+        DataEntity res=appService.getCurrentYesterdayDataByDate(new Timestamp(date.getTime()),windowId);
         ArrayList<String> arrayList = new ArrayList<String>();
         if (res!=null){
             arrayList.add(res.getNumber().toString());
             arrayList.add(res.getDate().toString());
+        }
+        JSONArray rest=JSONArray.fromObject(arrayList);
+        out.println(rest);
+        out.flush();
+        out.close();
+    }
+
+    //suppose no data lost
+    @RequestMapping(value = "/HopeInit")
+    private void processHope(@RequestParam("time") String time,
+                                @RequestParam("window") Integer windowId,
+                                HttpServletResponse response)
+            throws Exception {
+        PrintWriter out = response.getWriter();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sdf.parse(time);
+        List<DataEntity> ls1=appService.getDataByDate1(new Timestamp(date.getTime()), windowId);
+        List<DataEntity> ls2=appService.getDataByDate2(new Timestamp(date.getTime()), windowId);
+        List<DataEntity> ls3=appService.getDataByDate3(new Timestamp(date.getTime()), windowId);
+
+        ArrayList<JSONArray> res =new ArrayList<JSONArray>();
+        for (int i=0;i<ls3.size();i++){
+            DataEntity data1=ls1.get(i);
+            DataEntity data2=ls2.get(i);
+            DataEntity data3=ls3.get(i);
+            ArrayList<String> arrayList = new ArrayList<String>();
+            int number=(data1.getNumber()+data2.getNumber()+data3.getNumber())/3;
+            arrayList.add(String.valueOf(number));
+            arrayList.add(data1.getDate().toString());
+            res.add(JSONArray.fromObject(arrayList));
+        }
+        JSONArray rest=JSONArray.fromObject(res.toArray());
+        out.println(rest);
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/HopeCurrent")
+    private void processHopeCurrent(@RequestParam("time") String time,
+                                       @RequestParam("window") Integer windowId,
+                                       HttpServletResponse response)
+            throws Exception {
+        PrintWriter out = response.getWriter();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sdf.parse(time);
+        DataEntity data1=appService.getCurrentDataByDate1(new Timestamp(date.getTime()),windowId);
+        DataEntity data2=appService.getCurrentDataByDate2(new Timestamp(date.getTime()),windowId);
+        DataEntity data3=appService.getCurrentDataByDate3(new Timestamp(date.getTime()),windowId);
+        ArrayList<String> arrayList = new ArrayList<String>();
+        if (data1!=null && data2!=null && data3!=null){
+            int number=(data1.getNumber()+data2.getNumber()+data3.getNumber())/3;
+            arrayList.add(String.valueOf(number));
+            arrayList.add(data1.getDate().toString());
         }
         JSONArray rest=JSONArray.fromObject(arrayList);
         out.println(rest);

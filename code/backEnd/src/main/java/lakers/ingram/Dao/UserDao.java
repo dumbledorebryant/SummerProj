@@ -11,10 +11,6 @@ public interface UserDao{
 
     public Integer save(UserEntity user);
 
-    void freeze(UserEntity user);
-
-    void activate(UserEntity user);
-
     public void delete(UserEntity user);
 
     public void update(UserEntity user);
@@ -30,6 +26,10 @@ public interface UserDao{
     public JSONObject showUserInfo(Integer userID);
     public String handleUserInfo(UserEntity user) throws Exception;
     public String updatePic(File imgFile, Integer userid);
+
+    void freeze(UserEntity user);
+
+    void activate(UserEntity user);
 }
 
 

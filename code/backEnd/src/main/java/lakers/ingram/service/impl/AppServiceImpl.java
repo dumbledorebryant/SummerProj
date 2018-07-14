@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.swing.text.html.HTMLDocument;
 import java.io.File;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,8 +54,10 @@ public class AppServiceImpl implements AppService {
     private CommentDao commentDao;
 
     @Autowired
-    private TodayFoodDao todayFoodDao;
+    private FoodTagDao foodTagDao;
 
+    @Autowired
+    private TodayFoodDao todayFoodDao;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -68,7 +72,7 @@ public class AppServiceImpl implements AppService {
     public void setDataDao(DataDao dataDao){ this.dataDao = dataDao; }
     public void setViewHistoryDao(ViewHistoryDao viewHistoryDao){this.viewHistoryDao=viewHistoryDao;}
     public void setCommentDao(CommentDao commentDao){this.commentDao=commentDao;}
-
+    public void setFoodTagDao(FoodTagDao foodTagDao){this.foodTagDao=foodTagDao;}
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
 
@@ -89,6 +93,16 @@ public class AppServiceImpl implements AppService {
     public UserEntity getUserByPhone(String phone){ return userDao.getUserByPhone(phone); }
 
     public List<UserEntity> getAllUsers(){ return userDao.getAllUsers(); }
+
+    @Override
+    public void freezeUser(UserEntity user) {
+        userDao.freeze(user);
+    }
+
+    @Override
+    public void activateUser(UserEntity user) {
+        userDao.activate(user);
+    }
 
     //admin
     public AdminEntity getAdminById(int id){ return adminDao.getAdminById(id); }
@@ -118,6 +132,7 @@ public class AppServiceImpl implements AppService {
         return windowDao.getAllWindows();
     };
 
+    public WindowEntity getWindowById(int id) { return windowDao.getWindowById(id);}
     //Food
     public List<FoodEntity> getAllFood(){
         return foodDao.getAllFood();
@@ -138,6 +153,8 @@ public class AppServiceImpl implements AppService {
     public String getWindowNameByFoodId(int foodId){
         return foodDao.getWindowNameByFoodId(foodId);
     };
+
+
 
     //  UserLikeFood
 
@@ -205,19 +222,31 @@ public class AppServiceImpl implements AppService {
     }
 
     //data
+        // today
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId){ return dataDao.getInitDataByDate(date,windowId); }
-
     public DataEntity getCurrentData(int windowId){ return dataDao.getCurrentData(windowId); }
 
-    public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId); }
+        // one day ago
+    public List<DataEntity> getYesterdayDataByDate(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId,86400000); }
+    public DataEntity getCurrentYesterdayDataByDate(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId,86400000); }
 
-    public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId); }
+        // one week ago
+    public List<DataEntity> getDataByDate1(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId,604800000); }
+    public DataEntity getCurrentDataByDate1(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId,604800000);}
+
+        // two weeks ago
+    public List<DataEntity> getDataByDate2(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId,2*604800000); }
+    public DataEntity getCurrentDataByDate2(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId,2*604800000);}
+
+        // three weeks ago
+    public List<DataEntity> getDataByDate3(Timestamp date, int windowId){ return dataDao.getHistoryDataByDate(date,windowId,3*604800000); }
+    public DataEntity getCurrentDataByDate3(Timestamp date, int windowId){ return dataDao.getCurrentHistoryDataByDate(date,windowId,3*604800000);}
+
 
     //viewHistory
     public void saveViewHistory(ViewhistoryEntity viewHistory){
         viewHistoryDao.save(viewHistory);
     }
-
 
     public void updateViewHistory(ViewhistoryEntity view){
         viewHistoryDao.update(view);
@@ -239,15 +268,23 @@ public class AppServiceImpl implements AppService {
 
     public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid){return commentDao.GetCommentListByWindowId(WindowId,valid);};//拿到窗口的评论
 
-    @Override
-    public void freezeUser(UserEntity user) {
-        userDao.freeze(user);
+    //Search
+    public List<FoodEntity> getFoodsByTagId(int tagId) {
+        List<Integer> ids=foodTagDao.getFoodsByTagId(tagId);
+        List<FoodEntity> res= new ArrayList<FoodEntity>();
+        Iterator<Integer> it=ids.iterator();
+        while (it.hasNext()){
+            Integer id=it.next();
+            res.add(foodDao.getFoodById(id));
+        }
+        return res;
     }
 
-    @Override
-    public void activateUser(UserEntity user) {
-        userDao.activate(user);
-    }
+    public List<FoodEntity> getAllFoodByLikeStr(String str){ return foodDao.getAllFoodByLikeStr(str); }
+
+    public Integer getWindowIdByFoodIdAndTime(int foodId, int time){ return foodDao.getWindowIdByFoodIdAndTime(foodId,time); }
+
+    public List<TagEntity> getTagByLikeName(String tagName){ return tagDao.getTagByLikeName(tagName); }
 
 
 

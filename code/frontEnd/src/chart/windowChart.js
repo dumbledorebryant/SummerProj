@@ -56,12 +56,15 @@ const chartStyle= theme => ({
 class WindowChart extends React.Component {
     state={
         chartMode:"0",
+        historyMode:"0",
         currentData:null,
         totalData:null,
         label:null,
         currentLength:0,
         historyCurrentData:null,
         historyTotalData:null,
+        hopeCurrentData:null,
+        hopeTotalData:null,
         windowId:this.props.windowId,
     };
 
@@ -102,6 +105,9 @@ class WindowChart extends React.Component {
         let testHistoryCurrentData=[];
         let testHistoryTotalData=[];
         let testHistoryTotal=0;
+        let testHopeCurrentData=[];
+        let testHopeTotalData=[];
+        let testHopeTotal=0;
         let currentLength=0;
         while (hour!==topHour || minute!==topMin){
             if (minute<10 && hour<10) { time="0"+hour.toString()+":0"+minute.toString();}
@@ -109,11 +115,6 @@ class WindowChart extends React.Component {
             else if (hour<10) {time="0"+hour.toString()+":"+minute.toString();}
             else {time=hour.toString()+":"+minute.toString();}
             timeLabel.push(time);
-            //if (hour*60+minute<hourN*60+minuteN) testCurrentData.push(minute/3);
-            //testHistoryCurrentData.push(minute/3+1);
-            //testTotal+=minute/3;
-            //if (hour*60+minute<hourN*60+minuteN) testTotalData.push(testTotal);
-            //testHistoryTotalData.push(testTotal+1);
             hour=hour+Math.floor((minute+2)/60);
             minute=(minute+2)%60;
         }
@@ -245,6 +246,71 @@ class WindowChart extends React.Component {
                 this.setState({historyCurrentData:testHistoryCurrentData,historyTotalData:testHistoryTotalData,});
             });
         });
+        fetch('http://localhost:8080/Data/HopeInit',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result.length === 0){
+                    let idx=0;
+                    while (idx<30){
+                        testHopeCurrentData.push(null);
+                        testHopeTotalData.push(null);
+                        idx++;
+                    }
+                }
+                else{
+                    let idx=0;
+                    let iidx=0;
+                    while (iidx < result.length && idx < 29 && !(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
+                        result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])) {
+                        testHopeCurrentData.push(null);
+                        testHopeTotalData.push(null);
+                        idx++;
+                    }
+                    if (iidx < result.length){
+                        testHopeCurrentData.push(parseInt(result[iidx][0]));
+                        testHopeTotal+=parseInt(result[iidx][0]);
+                        testHopeTotalData.push(testHopeTotal);
+                        idx++;
+                        iidx++;
+                        while (iidx < result.length){
+                            /* if (!(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
+                                     result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])){
+                                 testHopeCurrentData.push(null);
+                                 testHopeTotalData.push(null);
+                                 idx++;
+                             }
+                             else{*/
+                            testHopeCurrentData.push(parseInt(result[iidx][0]));
+                            testHopeTotal+=parseInt(result[iidx][0]);
+                            testHopeTotalData.push(testHopeTotal);
+                            idx++;
+                            iidx++;
+                            //}
+                        }
+                        while (idx < 30){
+                            testHopeCurrentData.push(null);
+                            testHopeTotalData.push(null);
+                            idx++;
+                        }
+                    }
+                    else{
+                        while (idx < 30){
+                            testHopeCurrentData.push(null);
+                            testHopeTotalData.push(null);
+                            idx++;
+                        }
+                    }
+                }
+                this.setState({hopeCurrentData:testHopeCurrentData,hopeTotalData:testHopeTotalData,});
+            });
+        });
+
         this.setState({label:timeLabel,});
     };
 
@@ -296,6 +362,8 @@ class WindowChart extends React.Component {
             let testTotal = this.state.totalData;
             let testHistoryCurrent = this.state.historyCurrentData;
             let testHistoryTotal = this.state.historyTotalData;
+            let testHopeCurrent=this.state.hopeCurrentData;
+            let testHopeTotal=this.state.hopeTotalData;
             let total = 0;
             let currentLength = 0;
             if (testTotal.length > 0) {
@@ -307,6 +375,12 @@ class WindowChart extends React.Component {
             if (testHistoryTotal.length > 0) {
                 if (testHistoryTotal[testHistoryTotal.length - 1] != null) {
                     historyTotal = testHistoryTotal[testHistoryTotal.length - 1];
+                }
+            }
+            let hopeTotal=0;
+            if (testHopeTotal.length>0){
+                if (testHopeTotal[testHopeTotal.length-1]!=null){
+                    hopeTotal=testHopeTotal[testHopeTotal.length-1];
                 }
             }
             fetch('http://localhost:8080/Data/Current', {
@@ -362,30 +436,32 @@ class WindowChart extends React.Component {
                     this.setState({historyCurrentData: testHistoryCurrent, historyTotalData: testHistoryTotal,});
                 });
             });
-
+            fetch('http://localhost:8080/Data/HopeCurrent',{
+                credentials: 'include',
+                method:'POST',
+                mode:'cors',
+                body: formData,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.json().then(result=>{
+                    if (result!=null){
+                        testHopeCurrent.push(parseInt(result[0]));
+                        testHopeCurrent.shift();
+                        hopeTotal+=parseInt(result[0]);
+                        testHopeTotal.push(hopeTotal);
+                        testHopeTotal.shift();
+                    }
+                    else {
+                        testHopeCurrent.push(null);
+                        testHopeCurrent.shift();
+                        testHopeTotal.push(null);
+                        testHopeTotal.shift();
+                    }
+                    this.setState({hopeCurrentData:testHopeCurrent,hopeTotalData:testHopeTotal,});
+                });
+            });
             this.setState({label: label,});
-            /*let time=label[29];
-            let idx=time.indexOf(":");
-            let hour=parseInt(time.substring(0,idx));
-            let minute=parseInt(time.substring(idx+1));
-            hour=hour+Math.floor((minute+2)/60);
-            minute=(minute+2)%60;
-            label.push(hour.toString()+":"+minute.toString());
-            label.shift();
-            */
-            /*let testCurrent=this.state.currentData;
-            let testData=testCurrent[0]+1;
-            testCurrent.push(testData);
-            testCurrent.shift();
-            let testHistoryCurrent=this.state.historyCurrentData;
-            testHistoryCurrent.push(testData+1);
-            testHistoryCurrent.shift();
-            let testTotal=this.state.totalData;
-            testTotal.push(testTotal[testTotal.length-1]+testData);
-            testTotal.shift();
-            let testHistoryTotal=this.state.historyTotalData;
-            testHistoryTotal.push(testTotal[testTotal.length-1]+testData+4);
-            testHistoryTotal.shift();*/
+
         }
     };
 
@@ -393,7 +469,9 @@ class WindowChart extends React.Component {
         this.setState({chartMode:event.target.value});
     };
 
-
+    handleChangeHistory= event =>{
+        this.setState({historyMode:event.target.value});
+    };
 
     render(){
         const { classes, theme } = this.props;
@@ -403,7 +481,7 @@ class WindowChart extends React.Component {
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
-                            <ChartistGraph
+                            {this.state.historyMode === "0" &&<ChartistGraph
 
                                 className="ct-chart"
                                 data={this.state.chartMode==="0"?
@@ -412,7 +490,17 @@ class WindowChart extends React.Component {
                                 }
                                 type="Line"
                                 options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                                listener={dailySalesChart.animation}/>
+                                listener={dailySalesChart.animation}/>}
+                            {this.state.historyMode === "1" &&<ChartistGraph
+
+                                className="ct-chart"
+                                data={this.state.chartMode==="0"?
+                                    {labels:this.state.label,series:[this.state.currentData,this.state.hopeCurrentData]}:
+                                    {labels:this.state.label,series:[this.state.totalData,this.state.hopeTotalData]}
+                                }
+                                type="Line"
+                                options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
+                                listener={dailySalesChart.animation}/>}
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -431,7 +519,23 @@ class WindowChart extends React.Component {
                                 <option value={1}>Total</option>
                             </Select>
                         </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="chartMode">History mode</InputLabel>
+                            <Select
+                                native
+                                value={this.state.historyMode}
+                                onChange={this.handleChangeHistory}
+                                inputProps={{
+                                    name: 'historyMode',
+                                    id: 'historyMode',
+                                }}
+                            >
+                                <option value={0}>Yesterday</option>
+                                <option value={1}>Predict</option>
+                            </Select>
+                        </FormControl>
                     </Grid>
+
                     <Grid item xs={6} >
                         <Typography className={classes.queueInfo} color="primary" component="p">
                             the current length of queue is {this.state.currentLength.toString()}

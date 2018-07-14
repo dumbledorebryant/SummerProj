@@ -25,14 +25,13 @@ public class CommentAction extends HttpServlet {
     @Autowired
     private AppService appService;
 
-    @RequestMapping(value = "/SaveComment")//发表评论
+    @RequestMapping(value = "/Save")//发表评论
     private void processSaveComment(
-            @RequestParam("userId") int userId,
             @RequestParam("windowId") int windowId,
             @RequestParam("commentContent") String commentContent,
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-
+        Integer userId=Integer.valueOf(request.getSession().getAttribute("userid").toString());
         CommentEntity comment = new CommentEntity();
         comment.setUserId(userId);
         comment.setWindowId(windowId);
@@ -70,7 +69,7 @@ public class CommentAction extends HttpServlet {
                                        @RequestParam("valid") int valid,
                                        HttpServletRequest request,
                                        HttpServletResponse response)  throws Exception {
-        appService.CommentUpdate(commentId,valid);
+       appService.CommentUpdate(commentId,valid);
         PrintWriter out = response.getWriter();
         out.flush();
         out.close();
@@ -92,7 +91,7 @@ public class CommentAction extends HttpServlet {
     }
 
 
-    private JSONArray CommentEntityAddHeadPic(JSONArray arr){
+    public JSONArray CommentEntityAddHeadPic(JSONArray arr){
         JSONArray arr2 = new JSONArray();
         for(int i= 0;i<arr.size();i++){
             JSONObject comment = arr.getJSONObject(i);
@@ -103,7 +102,7 @@ public class CommentAction extends HttpServlet {
         return arr2;
     }
 
-    private JSONArray CommentEntityAddUserName(JSONArray arr){
+    public JSONArray CommentEntityAddUserName(JSONArray arr){
         JSONArray arr2 = new JSONArray();
         for(int i= 0;i<arr.size();i++){
             JSONObject comment = arr.getJSONObject(i);

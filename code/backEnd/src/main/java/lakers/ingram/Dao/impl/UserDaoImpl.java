@@ -51,32 +51,6 @@ class UserDaoImpl implements UserDao {
         session.getTransaction().commit();
     }
 
-    @Override
-    public void freeze(UserEntity user)
-    {
-        Session session = HibernateUtil.getSession();
-        Transaction transaction = session.beginTransaction();
-
-        user.setValid((byte) 0);
-        session.update(user);
-
-        transaction.commit();
-        session.close();
-    }
-
-    @Override
-    public void activate(UserEntity user)
-    {
-        Session session = HibernateUtil.getSession();
-        Transaction transaction = session.beginTransaction();
-
-        user.setValid((byte) 1);
-        session.update(user);
-
-        transaction.commit();
-        session.close();
-    }
-
     public UserEntity getUserById(int id) {
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
@@ -196,5 +170,31 @@ class UserDaoImpl implements UserDao {
             mongo.close();
             return "Success";
         }
+    }
+
+    @Override
+    public void freeze(UserEntity user)
+    {
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+
+        user.setValid((byte) 0);
+        session.update(user);
+
+        transaction.commit();
+        session.close();
+    }
+
+    @Override
+    public void activate(UserEntity user)
+    {
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+
+        user.setValid((byte) 1);
+        session.update(user);
+
+        transaction.commit();
+        session.close();
     }
 }

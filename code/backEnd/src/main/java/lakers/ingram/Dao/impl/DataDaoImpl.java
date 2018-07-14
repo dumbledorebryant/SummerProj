@@ -40,11 +40,12 @@ public class DataDaoImpl implements DataDao {
         return d;
     }
 
-    public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId){
+    public List<DataEntity> getHistoryDataByDate(Timestamp date, int windowId, long period){
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
         long time=date.getTime();
-        time=time-86400000;
+        //time=time-86400000;
+        time=time-period;
         Query query =session.createQuery("select data from DataEntity data " +
                 "where data.windowId = :id and data.date <= :dt and data.date >= :ds order by date asc")
                 .setParameter("id",windowId)
@@ -56,11 +57,12 @@ public class DataDaoImpl implements DataDao {
         return ds;
     }
 
-    public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId){
+    public DataEntity getCurrentHistoryDataByDate(Timestamp date, int windowId, long period){
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
         long time=date.getTime();
-        time=time-86400000;
+        //time=time-86400000;
+        time =time-period;
         Query query =session.createQuery("select data from DataEntity data " +
                 "where data.windowId = :id and data.date <= :dt and data.date >= :ds order by date desc")
                 .setParameter("id",windowId)
@@ -72,4 +74,5 @@ public class DataDaoImpl implements DataDao {
         session.getTransaction().commit();
         return dt;
     }
+
 }

@@ -35,6 +35,18 @@ public class TagDaoImpl implements TagDao {
         TagEntity tag=(TagEntity) query.uniqueResult();
         JSONObject object=JSONObject.fromObject(tag);
         System.out.println("new object:"+object);
+        session.getTransaction().commit();
         return object;
+    }
+
+    public List<TagEntity> getTagByLikeName(String tagName){
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query =session.createQuery("select tag from TagEntity tag where tag.tagName like :name")
+                .setParameter("name","%"+tagName+"%");
+        @SuppressWarnings("unchecked")
+        List<TagEntity> lst=query.list();
+        session.getTransaction().commit();
+        return lst;
     }
 }

@@ -1,13 +1,22 @@
 package lakers.ingram.Dao.impl;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSInputFile;
 import lakers.ingram.Dao.CommentDao;
+import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.CommentEntity;
+import lakers.ingram.ModelEntity.UserEntity;
+import net.sf.json.JSONObject;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.List;
 
 @Repository("CommentDao")
@@ -30,7 +39,7 @@ class CommentDaoImpl implements CommentDao {
         session.beginTransaction();
         session.delete(comment);
         session.getTransaction().commit();
-    }//删除评论
+    };//删除评论
 
     public int isValid(int commentId){
         Session session=HibernateUtil.getSession();
@@ -62,7 +71,7 @@ class CommentDaoImpl implements CommentDao {
         return valid;
     };//封禁，解禁
 
-    public List<CommentEntity> GetCommentListByWindowId(int WindowId, byte valid){
+    public List<CommentEntity> GetCommentListByWindowId(int WindowId,byte valid){
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
         Query query =session.createQuery("select comment " +
