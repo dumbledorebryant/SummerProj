@@ -105,7 +105,7 @@ public class UserAction extends HttpServlet {
             }
         }
         else{  //repeat phone
-            ur.add("0");
+            ur.add("-1");
 
         }
 

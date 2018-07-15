@@ -203,11 +203,11 @@ class MiniDrawer extends React.Component {
         pwdReR:"",
         emailR:"",
         phoneR:"",
-        nameRok:true,
-        pwdRok:true,
-        pwdReRok:true,
-        emailRok:true,
-        phoneRok:true,
+        nameRok:false,
+        pwdRok:false,
+        pwdReRok:false,
+        emailRok:false,
+        phoneRok:false,
         loginPop:false,  //login
         value:0,  //logintabs
         loginPattern:0,
@@ -260,8 +260,14 @@ class MiniDrawer extends React.Component {
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.json().then(result=>{
-                    if (result[0]==="-2" || result[0]==="-1" || result[0]==="0"){
+                    if (result[0]==="0"){
                         this.setState({loginPattern:2})
+                    }
+                    else if (result[0]==="-1"){
+                        this.setState({loginPattern:3})
+                    }
+                    else if (result[0]==="-2"){
+                        this.setState({loginPattern:4})
                     }
                     else{
                         this.loginName=result[1];
@@ -387,6 +393,9 @@ class MiniDrawer extends React.Component {
             return response.json().then(result=>{
                 if (result[0]==="0"){
                     this.setState({registerPattern:2});
+                }
+                else if (result[0]==="-1"){
+                    this.setState({registerPattern:3});
                 }
                 else{
                     this.registerId=result[0];
@@ -697,9 +706,17 @@ class MiniDrawer extends React.Component {
                            }
                         {this.state.loginPattern===2 &&
                             <Typography component="p">
-                                login fail.
+                                wrong password.
                             </Typography>
                         }
+                        {this.state.loginPattern===3 &&
+                            <Typography component="p">
+                                username doesn't exist.
+                            </Typography>}
+                        {this.state.loginPattern===4 &&
+                            <Typography component="p">
+                                invalid username.
+                            </Typography>}
                     </DialogContent>
                     {this.state.loginPattern===0 &&
                         <DialogActions>
@@ -721,7 +738,7 @@ class MiniDrawer extends React.Component {
                             <Link to='/worker'><Button onClick={this.handleLoginSuccess} color="primary"> OK</Button></Link>}
                         </DialogActions>
                     }
-                    {this.state.loginPattern===2 &&
+                    {this.state.loginPattern>=2 &&
                         <DialogActions>
                             <Button onClick={this.handleLoginClose} color="secondary"> Cancel </Button>
                             <Button onClick={this.handleLoginFail} color="primary"> Try again</Button>
@@ -849,7 +866,12 @@ class MiniDrawer extends React.Component {
                         }
                         {this.state.registerPattern===2 &&
                             <Typography component="p">
-                                register fail.
+                                repeat username.
+                            </Typography>
+                        }
+                        {this.state.registerPattern===3 &&
+                            <Typography component="p">
+                                repeat phone number.
                             </Typography>
                         }
                     </DialogContent>
@@ -858,9 +880,15 @@ class MiniDrawer extends React.Component {
                             <Button onClick={this.handleRegisterClose} color="secondary">
                                 Cancel
                             </Button>
-                            <Button onClick={this.handleRegister} color="primary">
+                            {this.state.nameRok===true &&
+                            this.state.pwdRok===true&&
+                            this.state.pwdReRok===true&&
+                            this.state.emailRok===true&&
+                            this.state.phoneRok===true?<Button onClick={this.handleRegister} color="primary">
                                 Register
-                            </Button>
+                            </Button>:<Button onClick={this.handleRegister} color="primary" disabled>
+                                Register
+                            </Button>}
                         </DialogActions>
                     }
                     {this.state.registerPattern===1 &&
@@ -868,7 +896,7 @@ class MiniDrawer extends React.Component {
                             <Button onClick={this.handleRegisterSuccess} color="primary"> OK</Button>
                         </DialogActions>
                     }
-                    {this.state.registerPattern===2 &&
+                    {this.state.registerPattern>=2 &&
                     <DialogActions>
                         <Button onClick={this.handleRegisterClose} color="secondary"> Cancel </Button>
                         <Button onClick={this.handleRegisterFail} color="primary"> Try again</Button>
