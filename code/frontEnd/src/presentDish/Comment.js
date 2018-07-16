@@ -67,7 +67,8 @@ const styles = theme => ({
 class CommentList extends React.Component {
     constructor(props) {
         super(props);
-        this.handleShowComment=this.handleShowComment.bind(this);
+      //  this.handleShowComment=this.handleShowComment.bind(this);
+     //   this.handleSubmitEditor1=this.handleSubmitEditor1.bind(this);
     }
     state = {
         userId:"-1",
@@ -103,7 +104,6 @@ class CommentList extends React.Component {
             credentials: 'include',
             method:'GET',
             mode:'cors',
-
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
@@ -118,23 +118,45 @@ class CommentList extends React.Component {
         this.setState({windowId:nextProps.windowId,commentList:nextProps.commentList});
     };
 
-
+/*
     handleShowComment=()=>{
-        this.props.commentList.map((item) => {
+        this.state.commentList.map((item) => {
             let d=document.getElementById("comment"+this.state.windowId+item.commentId);
             d.innerHTML=item.commentContent;
         });
-        let s=document.getElementById("comments");
-        s.style.display="block";
+        alert(2);
+       // let s=document.getElementById("comments");
+       // s.style.display="block";
     };
+*/
 
     handleChangeEditor =(value)=>{
         this.setState({commentContent:value});
     };
-
+/*
     handleDelete = commentId => () =>{
         this.props.handleDelete(commentId);
-    }
+    };
+*/
+    handleDelete = commentId=>()=>{
+        let formData=new FormData();
+        formData.append("commentId",commentId);
+        formData.append("windowId",this.state.windowId);
+        fetch('http://localhost:8080/Comment/DeleteComment',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    commentList:result,
+                });
+            })
+        });
+    };
+
 
     handleSubmitEditor = () =>{
         let formData = new FormData();
@@ -145,15 +167,17 @@ class CommentList extends React.Component {
             method:'POST',
             mode:'cors',
             body:formData,
-
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                this.props.handleUpdate(result);
+               // this.props.handleUpdate(result);
+                this.setState({commentList:result});
             });
         });
         this.setState({editorPop:false});
+    //    alert(1);
     };
+
 
     handleEditorClose = () =>{
        this.setState({editorPop:false});
@@ -166,60 +190,63 @@ class CommentList extends React.Component {
     render() {
         const { classes } = this.props;
         const { anchorEl } = this.state;
-        return (
-            <div>
-                <div className={classes.root2}>
-
-                    {this.state.windowId !== 0 && this.state.login && <Button variant="fab" color="secondary" aria-label="edit" className={classes.button} onClick={this.handleEditorOpen}>
-                        <ChatIcon/>
-                    </Button>}
-                    {this.state.windowId !== 0 &&<Button variant="fab" color="secondary" aria-label="edit" className={classes.button}  onClick={this.handleShowComment}>
-                        <ListIcon/>
-                    </Button>}
-                    <List id="comments" style={{display:"none"}}>
-                        {this.state.commentList.map((item,i) => (
-                            <div>
-                                <ListItem>
-                                    <Avatar  src={item.HeadPic}/>
-                                    <ListItemText primary={item.userName} secondary={item.commentDate.month+"-"+item.commentDate.date+" "+item.commentDate.hours+":"+ item.commentDate.minutes}/>
-                                    <ListItemText>
-                                    {this.state.userId===item.userId.toString()?
-                                        <IconButton className={classes.button} aria-label="Delete" onClick={this.handleDelete(item.commentId)}>
-                                            <DeleteIcon />
-                                        </IconButton>:<div/>
+        return <div>
+            <div className={classes.root2}>
+                {this.state.windowId !== 0 && this.state.login &&
+                <Button variant="fab" color="secondary" aria-label="edit" className={classes.button}
+                        onClick={this.handleEditorOpen}>
+                    <ChatIcon/>
+                </Button>}
+                {this.state.windowId !== 0 &&
+                <Button variant="fab" color="secondary" aria-label="edit" className={classes.button}
+                        onClick={this.handleShowComment}>
+                    <ListIcon/>
+                </Button>}
+                <List id="comments" style={{display: "block"}}>
+                    {this.state.commentList.map((item, i) => (//   <List id="comments" style={{display: "none"}}>
+                        <div>
+                            <ListItem>
+                                <Avatar src={item.HeadPic}/>
+                                <ListItemText primary={item.userName}
+                                              secondary={item.commentDate.month + "-" + item.commentDate.date + " " + item.commentDate.hours + ":" + item.commentDate.minutes}/>
+                                <ListItemText>
+                                    {this.state.userId === item.userId.toString() ?
+                                        <IconButton className={classes.button} aria-label="Delete"
+                                                    onClick={this.handleDelete(item.commentId)}>
+                                            <DeleteIcon/>
+                                        </IconButton> : <div/>
                                     }
-                                    </ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                    <Paper className={classes.root} elevation={1}>
-                                        <Typography id={"comment"+this.state.windowId+item.commentId} className={classes.root}> </Typography>
-
-                                    </Paper>
-                                </ListItem>
-                                <Divider/>
-                            </div>
-                        ))}
-                    </List>
-                    <Dialog
-                        open={this.state.editorPop}
-                        onClose={this.handleEditorClose}
-                        aria-labelledby="form-dialog-title"
-                        className={classes.editor}
-                    >
-                        <DialogTitle id="form-dialog-title">Create Comment</DialogTitle>
-                        <DialogContent>
-                             <ReactQuill modules={{ toolbar:this.toolbarOptions}} style={{height:"200px"}} value={this.state.commentContent}
-                                onChange={this.handleChangeEditor} />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleEditorClose}>cancel</Button>
-                            <Button onClick={this.handleSubmitEditor}>submit</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
+                                </ListItemText>
+                            </ListItem>
+                            <ListItem>
+                                <Paper className={classes.root} elevation={1}>
+                                    <Typography id={"comment" + this.state.windowId + item.commentId}
+                                                className={classes.root}><p dangerouslySetInnerHTML={{__html: item.commentContent}}/></Typography>
+                                </Paper>
+                            </ListItem>
+                            <Divider/>
+                        </div>
+                    ))}
+                </List>
+                <Dialog
+                    open={this.state.editorPop}
+                    onClose={this.handleEditorClose}
+                    aria-labelledby="form-dialog-title"
+                    className={classes.editor}
+                >
+                    <DialogTitle id="form-dialog-title">Create Comment</DialogTitle>
+                    <DialogContent>
+                        <ReactQuill modules={{toolbar: this.toolbarOptions}} style={{height: "200px"}}
+                                    value={this.state.commentContent}
+                                    onChange={this.handleChangeEditor}/>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleEditorClose}>cancel</Button>
+                        <Button onClick={this.handleSubmitEditor}>submit</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
-
-        );
+        </div>;
     }
 }
 CommentList.propTypes = {

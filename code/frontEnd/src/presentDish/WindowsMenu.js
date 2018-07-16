@@ -95,7 +95,7 @@ class WindowsMenu extends React.Component {
             anchorEl: null
         });
     };
-
+/*
     handleDeleteComment= (commentId)=>{
         let formData=new FormData();
         formData.append("commentId",commentId);
@@ -115,9 +115,10 @@ class WindowsMenu extends React.Component {
         });
     };
 
+    /*
     handleUpdateComment=(comments)=>{
         this.setState({commentList:comments});
-    };
+    };*/
 
     componentWillMount(){
         let formData=new FormData();
@@ -233,8 +234,7 @@ class WindowsMenu extends React.Component {
                 </div>
                 <div>
                     <div>
-                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}
-                                handleDeleteComment={this.handleDeleteComment} handleUpdateComment={this.handleUpdateComment}/>
+                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}/>
                     </div>
                 </div>
             </div>

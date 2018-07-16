@@ -137,7 +137,7 @@ class Dishes extends React.Component {
         if(userId==="-1"|| userId===this.state.userId) {
         }
         else {
-           // alert(userId+" "+this.props.foodId);
+            //alert(userId+" "+this.props.foodId);
             formData.append("userId",userId);
             formData.append("state",0);
             fetch('http://localhost:8080/UserLikeFood/Save', {

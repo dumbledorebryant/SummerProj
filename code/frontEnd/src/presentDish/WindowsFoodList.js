@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Dishes from './Dishes';
 
 const styles = theme => ({
@@ -11,7 +14,7 @@ const styles = theme => ({
 
     },
     row: {
-       display: 'flex',
+        display: 'flex',
         justifyContent: 'center',
     },
     avatar: {
@@ -24,6 +27,14 @@ const styles = theme => ({
 
 });
 
+const option=[
+    "默认排序",
+    "收藏量从低到高",
+    "收藏量从高到低",
+    "价格从低到高",
+    "价格从高到低",
+];
+
 
 class WindowsFoodList extends React.Component {
     button = null;
@@ -32,22 +43,39 @@ class WindowsFoodList extends React.Component {
     }*/
     state = {
         anchorEl: null,
-        selectedIndex: 0,
-        content:1,
+//        selectedIndex: 0,
+//        content:1,
+        dishesList:this.props.dishesList,
         windowName:"一餐五楼A窗口",
         userId:-1,
+        sort:"默认排序",
     };
 
-    handleClickListItem = event => {
+    handleClick = event => {
         this.setState({
             anchorEl: event.currentTarget
         });
     };
 
     handleMenuItemClick = (event, index) => {
-        this.setState({
-            selectedIndex: index,
-            anchorEl: null, content:index
+        let formData=new FormData();
+        var s = JSON.stringify(this.state.dishesList);
+        formData.append("foodList",s);
+        formData.append("type",index);
+        fetch('http://localhost:8080/Food/SortFood',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    dishesList:result,
+                    anchorEl: event.currentTarget, //content:index
+                    sort:option[index]
+                });
+            })
         });
     };
 
@@ -57,19 +85,45 @@ class WindowsFoodList extends React.Component {
         });
     };
 
+    componentWillReceiveProps = (nextProps) =>{
+        this.setState({
+            userId:this.state.userId,
+            dishesList:this.props.dishesList
+        });
+    };
 
 
     render() {
         const { classes } = this.props;
-        //const { anchorEl } = this.state;
+        const { anchorEl } = this.state;
         return (
             <div>
                 <div>
+                    <Button
+                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                    >
+                        {this.state.sort}
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={this.handleClose}
+                    >
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
+
+                    </Menu>
                     <Grid container className={classes.root} spacing={16} >
                             <Grid container spacing={24} justify="left">
-                                {this.props.dishesList.map((item,i) => (
+                                {this.state.dishesList.map((item,i) => (
                                     <Grid>
-                                        <Dishes userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""/>
+                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""/>
                                     </Grid>))
                                 }
                                 </Grid>

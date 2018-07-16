@@ -39,10 +39,12 @@ public class CommentAction extends HttpServlet {
         comment.setValid((byte)1);
         appService.CommentSave(comment);
 
-        List<CommentEntity> commentList = appService.CommentListGetByWindowId(windowId,(byte)1);
         PrintWriter out = response.getWriter();
+        List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,(byte)1);
         JSONArray arr = JSONArray.fromObject(commentList);
-        out.println(CommentEntityAddUserName(arr).toString());
+        JSONArray arr2 = CommentEntityAddHeadPic(arr);
+        out.println(CommentEntityAddUserName(arr2).toString());
+        System.out.println(CommentEntityAddUserName(arr2).toString());
         out.flush();
         out.close();
     }
@@ -91,7 +93,7 @@ public class CommentAction extends HttpServlet {
     }
 
 
-    public JSONArray CommentEntityAddHeadPic(JSONArray arr){
+    private JSONArray CommentEntityAddHeadPic(JSONArray arr){
         JSONArray arr2 = new JSONArray();
         for(int i= 0;i<arr.size();i++){
             JSONObject comment = arr.getJSONObject(i);
@@ -102,7 +104,7 @@ public class CommentAction extends HttpServlet {
         return arr2;
     }
 
-    public JSONArray CommentEntityAddUserName(JSONArray arr){
+    private JSONArray CommentEntityAddUserName(JSONArray arr){
         JSONArray arr2 = new JSONArray();
         for(int i= 0;i<arr.size();i++){
             JSONObject comment = arr.getJSONObject(i);
