@@ -3,6 +3,7 @@ import TextFields from './personalInfo';
 import {Tab, Tabs} from 'react-bootstrap';
 import PersonalSetting from "./personalSetting";
 import PersonalCollection from "./personalCollection";
+import ViewHistoryTable from "./viewhistory";
 
 class UserPageNav extends Component {
     render() {
@@ -20,6 +21,9 @@ class UserPageNav extends Component {
                         </Tab>
                         <Tab eventKey={3} title="我的收藏" >
                             <PersonalCollection userid={this.props.match.params.key}/>
+                        </Tab>
+                        <Tab eventKey={4} title="历史浏览记录" >
+                            <ViewHistoryTable userid={this.props.match.params.key}/>
                         </Tab>
                     </Tabs>
                 </div>

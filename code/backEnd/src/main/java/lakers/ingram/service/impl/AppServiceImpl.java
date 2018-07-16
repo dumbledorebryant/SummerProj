@@ -220,7 +220,12 @@ public class AppServiceImpl implements AppService {
     public String updateUserLike(Integer userID,Integer foodID,Integer flag){
         return userLikeFoodDao.updateUserLike(userID,foodID,flag);
     }
-
+    public JSONArray getViewHistory(Integer userId){
+        return viewHistoryDao.getViewHistory(userId);
+    }
+    public String updateViewHistory(Integer userId,JSONArray deleteId){
+        return viewHistoryDao.updateViewHistory(userId,deleteId);
+    }
     //data
         // today
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId){ return dataDao.getInitDataByDate(date,windowId); }

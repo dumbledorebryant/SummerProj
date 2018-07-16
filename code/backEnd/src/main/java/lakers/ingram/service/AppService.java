@@ -89,6 +89,8 @@ public interface AppService {
 
     public JSONArray searchUserLike(Integer userID);
     public String updateUserLike(Integer userID, Integer foodID, Integer flag);
+    public JSONArray getViewHistory(Integer userId);
+    public String updateViewHistory(Integer userId,JSONArray deleteId);
 
     //data
         //today

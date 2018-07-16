@@ -69,5 +69,48 @@ public class TestUserAction {
         Assert.assertEquals(responseString,"[\"-1\"]\n");
     }
 
+    @Test
+    public void testUpdateErrorPhone() throws Exception{
+        String responseString = mockMvc.perform(
+                post("/User/HandleUserInfoChange")
+                        .param("userID","8")
+                        .param("username","winny")
+                        .param("password","llh123")
+                        .param("phone","18217323156")
+                        .param("email","544271599@qq.com"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+        Assert.assertEquals(responseString,"The phone has been used for register!");
+    }
+
+    @Test
+    public void testUpdateErrorName() throws Exception{
+        String responseString = mockMvc.perform(
+                post("/User/HandleUserInfoChange")
+                        .param("userID","8")
+                        .param("username","kobe")
+                        .param("password","llh123")
+                        .param("phone","18217323156")
+                        .param("email","544271599@qq.com"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+        Assert.assertEquals(responseString,"The name has been used!");
+    }
+
+    @Test
+    public void testUpdateErrorPwd() throws Exception{
+        String responseString = mockMvc.perform(
+                post("/User/PassWordCheck")
+                        .param("userID","8")
+                        .param("password","111"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+        Assert.assertEquals(responseString,"fail");
+    }
+
+
 
 }
