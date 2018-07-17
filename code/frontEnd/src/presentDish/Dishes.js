@@ -17,6 +17,8 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
+
 const styles = theme => ({
     card: {
         maxWidth: 1200,
@@ -51,7 +53,10 @@ const styles = theme => ({
     },
     avatar:{
         backgroundColor:'#fb8c00'
-    }
+    },
+    chip: {
+        margin: theme.spacing.unit / 2,
+    },
 });
 
 class Dishes extends React.Component {
@@ -64,6 +69,7 @@ class Dishes extends React.Component {
     };
 
     handleExpandClick = () => {
+      //  alert(this.props.Tags);
         this.setState(state => ({
             expanded: !state.expanded
         }));
@@ -161,13 +167,12 @@ class Dishes extends React.Component {
         const { classes } = this.props;
 
         return (
-            <div>
-                <Grid>
-                    <Card className={classes.card}>
+            <Grid>
+                <Card className={classes.card}>
                     <CardHeader
                         avatar={
                             <Avatar aria-label="Recipe" className={classes.avatar}>
-                                {this.props.userId}
+
                             </Avatar>
                         }
                         action={
@@ -188,6 +193,7 @@ class Dishes extends React.Component {
                         <Typography component="p">
                             Price:{this.props.price}￥
                         </Typography>
+
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton aria-label="Add to favorites" onClick={this.handleLikeClick}>
@@ -215,13 +221,24 @@ class Dishes extends React.Component {
                                 </Typography>
                                 <Typography paragraph>
                                     {this.props.tips}
+                                    {this.props.Tags.map(data => {
+                                        let avatar = null;
+                                        return (
+                                            <Chip
+                                                key={data.tagId}
+                                                avatar={avatar}
+                                                label={data.tagName}
+                                                className={classes.chip}
+                                            />
+                                        );
+                                    })}
                                 </Typography>
                             </CardContent>
                         </Collapse>
 
                 </Card>
                 </Grid>
-            </div>
+
         );
     }
 }

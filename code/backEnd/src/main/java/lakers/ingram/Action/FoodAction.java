@@ -1,6 +1,7 @@
 package lakers.ingram.Action;
 
 import lakers.ingram.ModelEntity.FoodEntity;
+import lakers.ingram.ModelEntity.TagEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.HTML;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -87,8 +89,8 @@ public class FoodAction extends HttpServlet {
         }
         PrintWriter out = response.getWriter();
         JSONArray arr3 = FoodEntityAddWindowName(Foods);
-        System.out.println(arr3.toString());
-        out.println(arr3.toString());
+        JSONArray arr4 = FoodEntityAddTag(arr3);
+        out.println(arr4.toString());
         out.flush();
         out.close();
     }
@@ -108,20 +110,6 @@ public class FoodAction extends HttpServlet {
         out.flush();
         out.close();
     }
-
-    private JSONArray FoodEntityAddWindowName(List<FoodEntity>foodList){
-        WindowEntity win = new WindowEntity();
-        JSONArray arr = JSONArray.fromObject(foodList);
-        JSONArray arr2 = new JSONArray();
-        for(int i= 0;i<arr.size();i++){
-            JSONObject food = arr.getJSONObject(i);
-            String windowName= appService.getWindowNameByFoodId((int)food.get("foodId"));
-            food.put("windowName",windowName);
-            arr2.add(food);
-        }
-        return arr2;
-    }
-
 
     private void SortFoodList(JSONArray arr, int type){//1-likes升序，2-likes降序，3-price升序，4-price降序
         JSONObject ob = (JSONObject) arr.get(0);
@@ -164,4 +152,44 @@ public class FoodAction extends HttpServlet {
         System.out.println("-------------------SORT-------------");
         System.out.println(arr.toString());
     }
+    private JSONArray FoodEntityAddTag(JSONArray foodList){
+        JSONArray arr = JSONArray.fromObject(foodList);
+        JSONArray arr2 = new JSONArray();
+        for(int i= 0;i<arr.size();i++){
+            JSONObject food = arr.getJSONObject(i);
+            List<TagEntity> tags = appService.getTagByFoodId((int)food.get("foodId"));
+            JSONArray tag = JSONArray.fromObject(tags);
+            food.put("Tags",tags);
+            arr2.add(food);
+        }
+        System.out.println(arr2.toString());
+        return arr2;
+    }
+    private JSONArray FoodEntityAddWindowName(List<FoodEntity>foodList){
+        WindowEntity win = new WindowEntity();
+        JSONArray arr = JSONArray.fromObject(foodList);
+        JSONArray arr2 = new JSONArray();
+        for(int i= 0;i<arr.size();i++){
+            JSONObject food = arr.getJSONObject(i);
+            String windowName= appService.getWindowNameByFoodId((int)food.get("foodId"));
+            food.put("windowName",windowName);
+            arr2.add(food);
+        }
+        return arr2;
+    }
+
+    @RequestMapping(value = "/AllTags")
+    private void processAllTags(HttpServletRequest request,
+                                HttpServletResponse response)  throws Exception {
+        PrintWriter out = response.getWriter();
+        List<TagEntity> tagList = appService.getAllTags();
+        out.println(JSONArray.fromObject(tagList));
+        System.out.println(JSONArray.fromObject(tagList));
+        out.flush();
+        out.close();
+    }
+
+
+
+
 }

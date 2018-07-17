@@ -190,7 +190,7 @@ class CommentList extends React.Component {
     render() {
         const { classes } = this.props;
         const { anchorEl } = this.state;
-        return <div>
+        return (
             <div className={classes.root2}>
                 {this.state.windowId !== 0 && this.state.login &&
                 <Button variant="fab" color="secondary" aria-label="edit" className={classes.button}
@@ -246,7 +246,7 @@ class CommentList extends React.Component {
                     </DialogActions>
                 </Dialog>
             </div>
-        </div>;
+            )
     }
 }
 CommentList.propTypes = {

@@ -5,7 +5,15 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Toolbar from '@material-ui/core/Toolbar';
+import CloseIcon from '@material-ui/icons/Close';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
 import Dishes from './Dishes';
+import TagList from './Tag';
 
 const styles = theme => ({
     root: {
@@ -34,6 +42,15 @@ const option=[
     "价格从低到高",
     "价格从高到低",
 ];
+
+const tagtype=[
+    "taste",
+    "country",
+    "food",
+    "taboo"
+];
+
+
 
 
 class WindowsFoodList extends React.Component {
@@ -119,11 +136,116 @@ class WindowsFoodList extends React.Component {
                         <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
 
                     </Menu>
+                    <div>
+                        <TagList/>
+                    </div>
+
+                    <TextField
+                        className={classes.search}
+                        id="search"
+                        style={{backgroundColor:'#26c3fe' ,paddingLeft:5 }}
+                        InputProps={{
+                            disableUnderline: true,
+                            startAdornment: (
+                                <InputAdornment  position="start">
+                                    <SearchIcon id="searchBtn" onClick={this.onHandleSearch}/>
+                                </InputAdornment>
+                            ),
+                        }}
+                        onFocus={this.onFocusSearch}
+                        onBlur={this.onBlurSearch}
+                    />
+
+
+                    <Button
+                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                    >
+                        {tagtype[0]}
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={this.handleClose}
+                    >
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
+
+                    </Menu>
+
+                    <Button
+                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                    >
+                        {tagtype[1]}
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={this.handleClose}
+                    >
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
+
+                    </Menu>
+
+                    <Button
+                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                    >
+                        {tagtype[2]}
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={this.handleClose}
+                    >
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
+
+                    </Menu>
+
+                    <Button
+                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleClick}
+                    >
+                        {tagtype[3]}
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={this.handleClose}
+                    >
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
+                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
+
+                    </Menu>
+
                     <Grid container className={classes.root} spacing={16} >
                             <Grid container spacing={24} justify="left">
                                 {this.state.dishesList.map((item,i) => (
                                     <Grid>
-                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""/>
+                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""Tags={item.Tags}/>
                                     </Grid>))
                                 }
                                 </Grid>
