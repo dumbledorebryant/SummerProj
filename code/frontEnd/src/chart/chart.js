@@ -16,6 +16,7 @@ import Grid from '@material-ui/core/Grid';
 import dailySalesChart from './chartData'
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 
 const chartStyle= theme => ({
     root:{
@@ -42,11 +43,19 @@ const chartStyle= theme => ({
     queueInfo:{
 
         marginTop:20,
-        fontSize:24
+        marginRight:10,
+        fontSize:20
     },
     updateInfo:{
         marginTop:20,
-        fontSize:24
+        marginRight:10,
+        fontSize:20
+    },
+    waitInfo:{
+        marginTop:20,
+        marginRight:10,
+        fontSize:20,
+        float:'left',
     }
 });
 
@@ -66,7 +75,9 @@ class TempChart extends React.Component {
         hopeTotalData:null,
         windowId:1,
         restaurant:"one",
-        windows:[]
+        windows:[],
+        time:null,
+        currentWaitTime:'N/A',
     };
 
     componentWillMount(){
@@ -84,8 +95,20 @@ class TempChart extends React.Component {
                 this.setState({windows:result});
             })
         });
+        let formdata2=new FormData();
+        formdata2.append("window",1);
+        fetch('http://localhost:8080/Data/GetTime',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata2,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                this.setState({time:result});
+            })
+        });
         this.drawChart(1);
-
     }
 
     componentDidMount(){
@@ -98,7 +121,7 @@ class TempChart extends React.Component {
         },120000);
     };
 
-    drawChart = windowId =>{
+    drawChart = (windowId) =>{
         let date=new Date();
         let hourN=date.getHours();
         let minuteN=date.getMinutes();
@@ -186,6 +209,7 @@ class TempChart extends React.Component {
                 }
                 this.setState({currentData:testCurrentData,totalData:testTotalData,
                     currentLength:currentLength});
+                this.initWaitTime(testCurrentData);
 
             });
         });
@@ -322,6 +346,7 @@ class TempChart extends React.Component {
         });
 
         this.setState({label:timeLabel,});
+
     };
 
     updateChart=()=>{
@@ -397,6 +422,8 @@ class TempChart extends React.Component {
                 }
                 this.setState({currentData:testCurrent,totalData:testTotal,
                     currentLength:currentLength});
+                this.initWaitTime(testCurrent);
+
             });
         });
         fetch('http://localhost:8080/Data/HistoryCurrent',{
@@ -451,6 +478,48 @@ class TempChart extends React.Component {
 
     };
 
+    handleWaitTime = ()=>{
+      let date=new Date(this.state.time);
+      let avgCost=date.getMinutes()*60+date.getSeconds();
+      let totalCost=0;
+      let temp=0;
+      let i=0;
+      let numberData=this.state.currentData;
+      while (i<15){
+          let number=numberData[i]==null?0:numberData[i];
+          temp=number*avgCost+totalCost-120;
+          totalCost=temp<0? 0:temp;
+          i++;
+      }
+      totalCost=new Date(totalCost*1000);
+      let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+      let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+      this.setState({currentWaitTime:"00:"+min+":"+second});
+
+       // this.setState({currentWaitTime:totalCost});
+    };
+
+    initWaitTime = (data)=>{
+        let date=new Date(this.state.time);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=data;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
+    };
+
     handleChangeChart= event =>{
         this.setState({chartMode:event.target.value});
     };
@@ -473,7 +542,7 @@ class TempChart extends React.Component {
             console.log('Request successful',response);
             return response.json().then(result=>{
                 this.setState({windows:result});
-                this.setState({windowId:result[0].windowId});
+                this.setState({windowId:result.length>0?result[0].windowId:null});
                 this.drawChart(result[0].windowId);
             })
         });
@@ -482,7 +551,22 @@ class TempChart extends React.Component {
 
     handleChangeWindow = event =>{
         this.setState({windowId:event.target.value});
+        let formdata2=new FormData();
+        formdata2.append("window",event.target.value);
+        fetch('http://localhost:8080/Data/GetTime',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata2,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                this.setState({time:result});
+            })
+        });
         this.drawChart(event.target.value);
+
+
     };
 
     render(){
@@ -583,12 +667,15 @@ class TempChart extends React.Component {
                     </Grid>
                     <Grid item xs={4} >
                         <Typography className={classes.queueInfo} color="primary" component="p">
-                            the current length of queue is {this.state.currentLength.toString()}
+                            the number of newly coming people: {this.state.currentLength.toString()}
                             </Typography>
                         <Typography className={classes.updateInfo} component="p" color="secondary">
                             the last time of update: {this.state.label[14]}
                         </Typography>
-                    </Grid>
+                        <Typography className={classes.waitInfo} component="p" color="primary">
+                            time to wait: {this.state.currentWaitTime}
+                        </Typography>
+                          </Grid>
 
                 </Grid>
 
@@ -602,3 +689,6 @@ TempChart.propTypes = {
 };
 
 export default withStyles(chartStyle)(TempChart);
+
+
+//<Button style={{marginTop:20}} size="small" variant="outlined" color="primary" onClick={this.handleWaitTime}>refresh</Button>

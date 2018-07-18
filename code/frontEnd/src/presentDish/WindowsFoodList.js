@@ -137,7 +137,7 @@ class WindowsFoodList extends React.Component {
 
                     </Menu>
                     <div>
-                        <TagList/>
+
                     </div>
 
                     <TextField

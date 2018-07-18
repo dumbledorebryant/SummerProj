@@ -52,6 +52,7 @@
         <mapping resource="entity/DataEntity.hbm.xml"/>
         <mapping class="lakers.ingram.ModelEntity.ViewhistoryEntity"/>
         <mapping resource="entity/ViewhistoryEntity.hbm.xml"/>
+        <mapping resource="entity/WindowEntity.hbm.xml"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>

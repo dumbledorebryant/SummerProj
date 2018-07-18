@@ -25,3 +25,7 @@
 ### 1.0.2
 2018.7.14
 * predict data
+
+### 1.0.3
+2018.7.18
+* getTimeByWindow

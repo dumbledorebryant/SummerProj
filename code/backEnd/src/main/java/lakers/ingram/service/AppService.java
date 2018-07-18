@@ -6,9 +6,11 @@ import net.sf.json.JSONObject;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.sql.Time;
 
 public interface AppService {
     public Integer addUser(UserEntity user);
@@ -45,6 +47,8 @@ public interface AppService {
     public List<WindowEntity> getAllWindows();
 
     public WindowEntity getWindowById(int id);
+
+    public Timestamp getTimeByWindowId(int windowId);
 
     //Food
 
@@ -89,6 +93,7 @@ public interface AppService {
 
     public JSONArray searchUserLike(Integer userID);
     public String updateUserLike(Integer userID, Integer foodID, Integer flag);
+
     public JSONArray getViewHistory(Integer userId);
     public String updateViewHistory(Integer userId,JSONArray deleteId);
 
@@ -128,7 +133,6 @@ public interface AppService {
 
     public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid);//拿到窗口的评论
 
-    List<CommentEntity> getAllComments();
 
     //Search
     public List<FoodEntity> getFoodsByTagId(int tagId);
@@ -143,10 +147,9 @@ public interface AppService {
     void RegisterWindow();
     Map<String, String> ShowWindowFood(int windowID);
     void getNewPicByWindowID(int windowID, OutputStream out);
+    List<CommentEntity> getAllComments();
 
-    //FoodTag
+    //foodtag
     public List<TagEntity> getTagByFoodId(int foodId);
-
     public List<TagEntity> getAllTags();
-
 }

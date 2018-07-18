@@ -12,12 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.sql.Time;
 
 @RestController
 @RequestMapping(value = "/Data")
@@ -157,6 +159,16 @@ public class DataAction extends HttpServlet {
         }
         JSONArray rest=JSONArray.fromObject(arrayList);
         out.println(rest);
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/GetTime")
+    private void processGetTime(@RequestParam("window")Integer windowId,
+                                HttpServletResponse response) throws Exception{
+        PrintWriter out = response.getWriter();
+        Timestamp time=appService.getTimeByWindowId(windowId);
+        out.println(time.toString());
         out.flush();
         out.close();
     }

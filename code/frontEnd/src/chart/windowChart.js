@@ -16,6 +16,7 @@ import Grid from '@material-ui/core/Grid';
 import dailySalesChart from './chartData'
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 
 const chartStyle= theme => ({
     root:{
@@ -43,12 +44,18 @@ const chartStyle= theme => ({
     queueInfo:{
 
         marginTop:20,
-        fontSize:24
+        fontSize:20
     },
     updateInfo:{
         marginTop:20,
-        fontSize:24
-    }
+        fontSize:20,
+    },
+    waitInfo:{
+        marginTop:20,
+        fontSize:20,
+        float:'left',
+    },
+
 });
 
 
@@ -66,11 +73,26 @@ class WindowChart extends React.Component {
         hopeCurrentData:null,
         hopeTotalData:null,
         windowId:this.props.windowId,
+        time:null,
+        currentWaitTime:'N/A',
     };
 
     componentWillMount(){
         if (this.props.windowId !== 0) {
-            this.drawChart(this.props.windowId);
+            this.drawChart(this.props.windowId,null);
+            let formdata2=new FormData();
+            formdata2.append("window",this.props.windowId);
+            fetch('http://localhost:8080/Data/GetTime',{
+                credentials: 'include',
+                method:'POST',
+                mode:'cors',
+                body:formdata2,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.text().then(result=>{
+                    this.setState({time:result});
+                })
+            });
         }
     }
 
@@ -84,12 +106,69 @@ class WindowChart extends React.Component {
         },120000);
     };
 
-    componentWillReceiveProps=nextProps=>{
-        this.setState({windowId:nextProps.windowId});
-        if (nextProps.windowId !== 0) this.drawChart(nextProps.windowId);
+    handleWaitTime = event=>{
+        let date=new Date(this.state.time);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=this.state.currentData;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
     };
 
-    drawChart = windowId =>{
+    initWaitTime = (data,time)=>{
+        let date=new Date(time);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=data;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
+    };
+
+    componentWillReceiveProps=nextProps=>{
+        this.setState({windowId:nextProps.windowId});
+        if (nextProps.windowId !== 0) {
+            let formdata2=new FormData();
+            formdata2.append("window",nextProps.windowId);
+            fetch('http://localhost:8080/Data/GetTime',{
+                credentials: 'include',
+                method:'POST',
+                mode:'cors',
+                body:formdata2,
+            }).then(response=>{
+                console.log('Request successful',response);
+                return response.text().then(result=>{
+                    this.setState({time:result});
+                })
+            });
+            this.drawChart(nextProps.windowId,this.state.time);
+        }
+    };
+
+    drawChart = (windowId,result0) =>{
         let date=new Date();
         let hourN=date.getHours();
         let minuteN=date.getMinutes();
@@ -177,6 +256,7 @@ class WindowChart extends React.Component {
                 }
                 this.setState({currentData:testCurrentData,totalData:testTotalData,
                     currentLength:currentLength});
+                if (result0) this.initWaitTime(testCurrentData,result0);
 
             });
         });
@@ -410,6 +490,7 @@ class WindowChart extends React.Component {
                         currentData: testCurrent, totalData: testTotal,
                         currentLength: currentLength
                     });
+                    this.initWaitTime(testCurrent,this.state.time);
                 });
             });
             fetch('http://localhost:8080/Data/HistoryCurrent', {
@@ -538,10 +619,13 @@ class WindowChart extends React.Component {
 
                     <Grid item xs={6} >
                         <Typography className={classes.queueInfo} color="primary" component="p">
-                            the current length of queue is {this.state.currentLength.toString()}
+                            the number of newly coming people: {this.state.currentLength.toString()}
                         </Typography>
                         <Typography className={classes.updateInfo} component="p" color="secondary">
                             the last time of update: {this.state.label[14]}
+                        </Typography>
+                        <Typography className={classes.waitInfo} component="p" color="primary">
+                            time to wait: {this.state.currentWaitTime}
                         </Typography>
                     </Grid>
 

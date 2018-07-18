@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository("WindowDao")
@@ -108,4 +110,17 @@ class WindowDaoImpl implements WindowDao {
     }
 
 
+    public Timestamp getTimeByWindowId(int windowId){
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        Query query =session.createQuery("select window " +
+                "from WindowEntity window " +
+                "where window.windowId= :id");
+        query.setParameter("id", windowId);
+        @SuppressWarnings("unchecked")
+        List<WindowEntity> windows = query.list();
+        session.getTransaction().commit();
+       Timestamp time = windows.size() > 0 ? windows.get(0).getAvgTime() : null;
+        return time;
+    }
 }

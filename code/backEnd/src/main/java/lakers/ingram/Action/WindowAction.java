@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.sql.Time;
 
 @RestController
 @RequestMapping(value = "/Window")
@@ -58,6 +59,7 @@ public class WindowAction extends HttpServlet {
                 Windows = appService.getAllWindowsByRestaurantAndFloor(restaurant,floor);
             }
             PrintWriter out = response.getWriter();
+
              System.out.println(JSONArray.fromObject(Windows));
              out.println(JSONArray.fromObject(Windows));
              out.flush();

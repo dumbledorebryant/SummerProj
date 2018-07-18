@@ -1,6 +1,8 @@
 package lakers.ingram.ModelEntity;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "window", schema = "SummerProj", catalog = "")
@@ -9,6 +11,7 @@ public class WindowEntity {
     private String restaurant;
     private String windowName;
     private int floor;
+    private Timestamp avgTime;
 
     @Id
     @Column(name = "window_id", nullable = false)
@@ -50,6 +53,16 @@ public class WindowEntity {
         this.floor = floor;
     }
 
+    @Basic
+    @Column(name = "avgTime", nullable = true)
+    public Timestamp getAvgTime() {
+        return avgTime;
+    }
+
+    public void setAvgTime(Timestamp avgTime) {
+        this.avgTime = avgTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,4 +86,5 @@ public class WindowEntity {
         result = 31 * result + floor;
         return result;
     }
+
 }

@@ -17,5 +17,8 @@
         <property name="floor">
             <column name="floor" sql-type="int(11)"/>
         </property>
+        <property name="avgTime">
+            <column name="avgTime" sql-type="datetime" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

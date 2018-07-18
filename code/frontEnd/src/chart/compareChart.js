@@ -46,7 +46,11 @@ const chartStyle= theme => ({
     },
     updateInfo:{
         marginTop:20,
-        fontSize:24
+        fontSize:20
+    },
+    waitInfo:{
+        marginTop:20,
+        fontSize:20
     }
 });
 
@@ -67,6 +71,10 @@ class CompareChart extends React.Component {
         windowId2:2,
         restaurant2:"one",
         windows2:[],
+        time1:null,
+        time2:null,
+        currentWaitTime1:null,
+        currentWaitTime2:null,
     };
 
     componentWillMount(){
@@ -110,6 +118,47 @@ class CompareChart extends React.Component {
     }
 
 
+    initWaitTime1 = (data)=>{
+        let date=new Date(this.state.time1);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=data;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime1:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
+    };
+
+    initWaitTime2 = (data)=>{
+        let date=new Date(this.state.time2);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=data;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime2:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
+    };
 
     drawChart = (windowId,windowId2) =>{
         let date=new Date();
@@ -197,7 +246,7 @@ class CompareChart extends React.Component {
 
                 }
                 this.setState({currentData:testCurrentData,totalData:testTotalData});
-
+                this.initWaitTime1(testCurrentData);
             });
         });
 
@@ -248,7 +297,7 @@ class CompareChart extends React.Component {
 
                 }
                 this.setState({currentData2:testCurrentData2,totalData2:testTotalData2});
-
+                this.initWaitTime2(testCurrentData2);
             });
         });
 
@@ -313,8 +362,79 @@ class CompareChart extends React.Component {
     };
 
     handleCompare =()=>{
+        let formdata=new FormData();
+        formdata.append("window",this.state.windowId);
+        fetch('http://localhost:8080/Data/GetTime',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                this.setState({time1:result});
+            })
+        });
+        let formdata2=new FormData();
+        formdata2.append("window",this.state.windowId2);
+        fetch('http://localhost:8080/Data/GetTime',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata2,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                this.setState({time2:result});
+            })
+        });
+
         this.drawChart(this.state.windowId,this.state.windowId2);
+
     };
+
+    handleWaitTime = ()=>{
+        let date=new Date(this.state.time1);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=this.state.currentData;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime1:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
+    };
+
+    handleWaitTime2 = ()=>{
+        let date=new Date(this.state.time2);
+        let avgCost=date.getMinutes()*60+date.getSeconds();
+        let totalCost=0;
+        let temp=0;
+        let i=0;
+        let numberData=this.state.currentData2;
+        while (i<15){
+            let number=numberData[i]==null?0:numberData[i];
+            temp=number*avgCost+totalCost-120;
+            totalCost=temp<0? 0:temp;
+            i++;
+        }
+        totalCost=new Date(totalCost*1000);
+        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
+        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
+        this.setState({currentWaitTime2:"00:"+min+":"+second});
+
+        // this.setState({currentWaitTime:totalCost});
+    };
+
 
     render(){
         const { classes, theme } = this.props;
@@ -428,6 +548,12 @@ class CompareChart extends React.Component {
                 <Grid item xs={12} >
                     <Typography className={classes.updateInfo} component="p" color="secondary">
                         the last time of update: {this.state.label[14]}
+                    </Typography>
+                    <Typography className={classes.waitInfo} component="p" color="primary">
+                        time to wait: {this.state.currentWaitTime1}
+                    </Typography>
+                    <Typography className={classes.waitInfo} component="p" color="#47ad70">
+                        time to wait: {this.state.currentWaitTime2}
                     </Typography>
                 </Grid>
             </Grid>

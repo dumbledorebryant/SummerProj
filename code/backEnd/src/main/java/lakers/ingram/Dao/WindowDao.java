@@ -2,6 +2,8 @@ package lakers.ingram.Dao;
 
 import lakers.ingram.ModelEntity.WindowEntity;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface WindowDao {
@@ -21,6 +23,6 @@ public interface WindowDao {
 
     public List<WindowEntity> getAllWindows();
 
-
+    public Timestamp getTimeByWindowId(int windowId);
 
 }

@@ -17,7 +17,7 @@ public interface ViewHistoryDao {
     public ViewhistoryEntity select(int userId, int windowId);
 
     public JSONArray getViewHistory(Integer userId);
-    public String updateViewHistory(Integer userId,JSONArray deleteId);
+    public String updateViewHistory(Integer userId, JSONArray deleteId);
 
 }
 
