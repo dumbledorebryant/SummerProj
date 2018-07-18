@@ -58,19 +58,6 @@ public class WindowAction extends HttpServlet {
                 Windows = appService.getAllWindowsByRestaurantAndFloor(restaurant,floor);
             }
             PrintWriter out = response.getWriter();
-
-            Iterator it = Windows.iterator();
-            ArrayList<JSONArray> qJ = new ArrayList<JSONArray>();
-            WindowEntity win = new WindowEntity();
-
-            WindowEntity ALLwindow = new WindowEntity();
-            ALLwindow.setFloor(floor);
-            ALLwindow.setRestaurant(restaurant);
-            ALLwindow.setWindowName("ALL");
-             while (it.hasNext()) {
-                 WindowEntity w= (WindowEntity) it.next();
-                 qJ.add(JSONArray.fromObject(w));
-             }
              System.out.println(JSONArray.fromObject(Windows));
              out.println(JSONArray.fromObject(Windows));
              out.flush();
