@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 @RestController
-@RequestMapping(value = "/UserCenter")
+@RequestMapping(value = "/UserTag")
 public class UserTagAction {
     @Autowired
     private AppService appService;
@@ -33,30 +33,26 @@ public class UserTagAction {
         PrintWriter out = response.getWriter();
         Integer userid=Integer.parseInt(userID);
         JSONArray result=appService.listUserTag(userid);
-        System.out.println("result:"+result);
         out.print(result);
     }
 
-
-
     @RequestMapping(value = "/ChooseTag")
     private void processLogin(@RequestParam("tagArray") JSONArray tagArray,
-                              @RequestParam("userID") String userID,
+                              @RequestParam("userID") Integer userID,
                               HttpServletRequest request,
                               HttpServletResponse response)
             throws Exception {
         response.setContentType("text/html;charset=utf-8");
         System.out.println("array:"+tagArray);
         PrintWriter out = response.getWriter();
-        Integer userid=Integer.parseInt(userID);
-        String result=appService.sendTags(userid,tagArray);
+        String result=appService.sendTags(userID,tagArray);
         out.print(result);
     }
 
     @RequestMapping(value = "/ShowTags")
     private void processLogin(
-                              HttpServletRequest request,
-                              HttpServletResponse response)
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws Exception {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
@@ -75,5 +71,33 @@ public class UserTagAction {
         JSONObject result=appService.showTags(tagName);
         out.print(result);
     }
+
+    @RequestMapping(value = "/UserTagRelatedFood/search")
+    private void processLogin(
+            @RequestParam("userId") Integer userId,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        JSONArray result=appService.searchUserTagRelatedFood(userId);
+        out.print(result);
+    }
+
+    @RequestMapping(value = "/UpdateUserDislikeTag")
+    private void processLogin(
+            @RequestParam("userId") Integer userId,
+            @RequestParam("dislikeTags") JSONArray dislikeTags,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        String result=appService.updateUserDislikeTag(userId,dislikeTags);
+        out.print(result);
+    }
+
+
+
 }
 

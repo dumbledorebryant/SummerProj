@@ -6,11 +6,9 @@ import net.sf.json.JSONObject;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-import java.sql.Time;
 
 public interface AppService {
     public Integer addUser(UserEntity user);

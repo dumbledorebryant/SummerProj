@@ -32,7 +32,6 @@ const theme2=createMuiTheme({
         },
 
     },
-
 });
 const tasteTemp=[];
 const countryTemp=[];
@@ -109,7 +108,7 @@ class PersonalSetting extends React.Component {
     };
 
     showTags= () => {
-        fetch('http://localhost:8080/UserCenter/ShowTags',
+        fetch('http://localhost:8080/UserTag/ShowTags',
             {
                 credentials: 'include',
                 method: 'GET',
@@ -123,12 +122,10 @@ class PersonalSetting extends React.Component {
                         countryTemp.splice(0,countryTemp.size);
                         tabooTemp.splice(0,tabooTemp.size);
                         foodTemp.splice(0,foodTemp.size);
-                        console.log("All:"+ result[0].tagType);
                         for(let i in result){
                             this.state.checkBool.push(false);
                             let add={"tagType":result[i].tagType,
                                 "tagId":result[i].tagId,"tagName":result[i].tagName};
-
                             if(result[i].tagType==='taste'){
                                 tasteTemp.push(add);
                             }
@@ -162,7 +159,7 @@ class PersonalSetting extends React.Component {
     };
 
     searchSavedTag= () => {
-        fetch('http://localhost:8080/UserCenter/SearchSavedTag?' +
+        fetch('http://localhost:8080/UserTag/SearchSavedTag?' +
             'userID='+this.props.userid,
             {
                 credentials: 'include',
@@ -203,7 +200,7 @@ class PersonalSetting extends React.Component {
             sendArr.push(this.state.chooseName);
         }
         console.log("array:" + sendArr + '\n');
-        fetch('http://localhost:8080/UserCenter/ChooseTag?' +
+        fetch('http://localhost:8080/UserTag/ChooseTag?' +
             'userID='+this.props.userid+
             '&tagArray='+sendArr,
             {
@@ -226,7 +223,8 @@ class PersonalSetting extends React.Component {
     };
 
     searchNewAddTag=()=>{
-        fetch('http://localhost:8080/UserCenter/SearchNewAddTag?tagName='+this.state.chooseName,
+        fetch('http://localhost:8080/UserTag/SearchNewAddTag?' +
+            'tagName='+this.state.chooseName,
             {
                 credentials: 'include',
                 method:'POST',
@@ -300,109 +298,109 @@ class PersonalSetting extends React.Component {
                 </Navbar>
 
                 <MuiThemeProvider theme={theme2}>
-                <Row>
-                    <Col md={2}>
-                        <div className={classes.formControl3}>
-                        {"自定义标签设置"}
-                        </div>
-                    </Col>
+                    <Row>
+                        <Col md={2}>
+                            <div className={classes.formControl3}>
+                                {"自定义标签设置"}
+                            </div>
+                        </Col>
 
-                    <Col md={2}>
-                        <form autoComplete="off">
-                            <FormControl className={classes.formControl2}>
-                                <Select
-                                    open={this.state.open}
-                                    onClose={this.handleClose}
-                                    onOpen={this.handleOpen}
-                                    value={this.state.choose}
-                                    onChange={this.handleChange}
-                                    inputProps={{
-                                        name: 'choose',
-                                        id: 'demo-controlled-open-select',
-                                    }}
-                                >
-                                    <MenuItem value='taste'>口味</MenuItem>
-                                    <MenuItem value='country'>国家</MenuItem>
-                                    <MenuItem value='taboo'>禁忌</MenuItem>
-                                    <MenuItem value='food'>食材</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </form>
-                    </Col>
-                    <Col md={2}>
-                        <Input bsSize="large"
-                               placeholder="输入自定义标签"
-                               className={classes.input}
-                               onChange={this.handleChange3}
-                        />
-                    </Col>
-                </Row>
+                        <Col md={2}>
+                            <form autoComplete="off">
+                                <FormControl className={classes.formControl2}>
+                                    <Select
+                                        open={this.state.open}
+                                        onClose={this.handleClose}
+                                        onOpen={this.handleOpen}
+                                        value={this.state.choose}
+                                        onChange={this.handleChange}
+                                        inputProps={{
+                                            name: 'choose',
+                                            id: 'demo-controlled-open-select',
+                                        }}
+                                    >
+                                        <MenuItem value='taste'>口味</MenuItem>
+                                        <MenuItem value='country'>国家</MenuItem>
+                                        <MenuItem value='taboo'>禁忌</MenuItem>
+                                        <MenuItem value='food'>食材</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </form>
+                        </Col>
+                        <Col md={2}>
+                            <Input bsSize="large"
+                                   placeholder="输入自定义标签"
+                                   className={classes.input}
+                                   onChange={this.handleChange3}
+                            />
+                        </Col>
+                    </Row>
                 </MuiThemeProvider>
                 <br/>
                 <div className={classes.root} >
                     <FormControl component="fieldset" required className={classes.formControl}>
                         <Row>
-                        <Col md={3}>
-                        <FormLabel component="legend"><h5>口味</h5></FormLabel>
-                        <FormGroup className={classes.group}>{
-                            this.state.tasteTags.map(function (item) {
-                                return <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            color="primary"
-                                            checked={this.state.checkBool[item.tagId-1]}
-                                            onChange={this.handleChange1(item.tagId-1)}
-                                            id={item.tagId-1}
-                                            key={item.tagName}
-                                            value={item.tagName}
+                            <Col md={3}>
+                                <FormLabel component="legend"><h5>口味</h5></FormLabel>
+                                <FormGroup className={classes.group}>{
+                                    this.state.tasteTags.map(function (item) {
+                                        return <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={this.state.checkBool[item.tagId-1]}
+                                                    onChange={this.handleChange1(item.tagId-1)}
+                                                    id={item.tagId-1}
+                                                    key={item.tagName}
+                                                    value={item.tagName}
+                                                />
+                                            }
+                                            label={<h4>{item.tagName}</h4>}
                                         />
-                                    }
-                                    label={<h4>{item.tagName}</h4>}
-                                />
-                            },this)
-                        }
-                        </FormGroup>
-                        </Col>
-                        <Col md={3}>
-                        <FormLabel component="legend"><h5>种类</h5></FormLabel>
-                            <FormGroup className={classes.group}>{
-                                this.state.countryTags.map(function (item) {
-                                    return <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                color="primary"
-                                                checked={this.state.checkBool[item.tagId-1]}
-                                                onChange={this.handleChange1(item.tagId-1)}
-                                                id={item.tagId-1}
-                                                value={item.tagName}
-                                            />
-                                        }
-                                        label={<h4>{item.tagName}</h4>}
-                                    />
-                                },this)
-                            }
-                            </FormGroup>
-                        </Col>
-                    <Col md={3}>
-                        <FormLabel component="legend"><h5>禁忌</h5></FormLabel>
-                        <FormGroup className={classes.group}>{
-                            this.state.tabooTags.map(function (item) {
-                                return <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            color="primary"
-                                            checked={this.state.checkBool[item.tagId-1]}
-                                            onChange={this.handleChange1(item.tagId-1)}
-                                            id={item.tagId-1}
-                                            value={item.tagName}
+                                    },this)
+                                }
+                                </FormGroup>
+                            </Col>
+                            <Col md={3}>
+                                <FormLabel component="legend"><h5>种类</h5></FormLabel>
+                                <FormGroup className={classes.group}>{
+                                    this.state.countryTags.map(function (item) {
+                                        return <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={this.state.checkBool[item.tagId-1]}
+                                                    onChange={this.handleChange1(item.tagId-1)}
+                                                    id={item.tagId-1}
+                                                    value={item.tagName}
+                                                />
+                                            }
+                                            label={<h4>{item.tagName}</h4>}
                                         />
-                                    }
-                                    label={<h4>{item.tagName}</h4>}
-                                />
-                            },this)
-                        }
-                        </FormGroup>
-                    </Col>
+                                    },this)
+                                }
+                                </FormGroup>
+                            </Col>
+                            <Col md={3}>
+                                <FormLabel component="legend"><h5>禁忌</h5></FormLabel>
+                                <FormGroup className={classes.group}>{
+                                    this.state.tabooTags.map(function (item) {
+                                        return <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={this.state.checkBool[item.tagId-1]}
+                                                    onChange={this.handleChange1(item.tagId-1)}
+                                                    id={item.tagId-1}
+                                                    value={item.tagName}
+                                                />
+                                            }
+                                            label={<h4>{item.tagName}</h4>}
+                                        />
+                                    },this)
+                                }
+                                </FormGroup>
+                            </Col>
                             <Col md={3}>
                                 <FormLabel component="legend"><h5>食材</h5></FormLabel>
                                 <FormGroup className={classes.group}>{

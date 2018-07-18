@@ -7,12 +7,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
-import javax.swing.text.html.HTMLDocument;
 import java.io.File;
 import java.io.OutputStream;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,6 +56,9 @@ public class AppServiceImpl implements AppService {
 
     @Autowired
     private TodayFoodDao todayFoodDao;
+
+    @Autowired
+    private UserTagDislikeDao userTagDislikeDao;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -232,7 +231,12 @@ public class AppServiceImpl implements AppService {
     public String updateViewHistory(Integer userId,JSONArray deleteId){
         return viewHistoryDao.updateViewHistory(userId,deleteId);
     }
-
+    public JSONArray searchUserTagRelatedFood(Integer userId){
+        return userTagDao.searchUserTagRelatedFood(userId);
+    }
+    public String updateUserDislikeTag(Integer userId,JSONArray dislikeTags){
+        return userTagDislikeDao.updateUserDislikeTag(userId,dislikeTags);
+    }
     //data
         // today
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId){ return dataDao.getInitDataByDate(date,windowId); }
