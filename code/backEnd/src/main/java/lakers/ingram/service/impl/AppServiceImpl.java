@@ -326,4 +326,15 @@ public class AppServiceImpl implements AppService {
         return commentDao.showAllComments();
     }
 
+    //FoodTag
+    public List<TagEntity> getTagByFoodId(int foodId){
+        return foodTagDao.getTagByFoodId(foodId);
+    };
+
+    public List<TagEntity> getAllTags(){
+        return foodTagDao.getAllTags();
+    }
+
+
+
 }

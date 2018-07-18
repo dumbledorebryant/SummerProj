@@ -128,6 +128,8 @@ public interface AppService {
 
     public List<CommentEntity> CommentListGetByWindowId(int WindowId, byte valid);//拿到窗口的评论
 
+    List<CommentEntity> getAllComments();
+
     //Search
     public List<FoodEntity> getFoodsByTagId(int tagId);
 
@@ -141,5 +143,10 @@ public interface AppService {
     void RegisterWindow();
     Map<String, String> ShowWindowFood(int windowID);
     void getNewPicByWindowID(int windowID, OutputStream out);
-    List<CommentEntity> getAllComments();
+
+    //FoodTag
+    public List<TagEntity> getTagByFoodId(int foodId);
+
+    public List<TagEntity> getAllTags();
+
 }
