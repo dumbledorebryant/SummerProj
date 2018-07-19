@@ -2,6 +2,7 @@ package lakers.ingram.Action;
 
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.TagEntity;
+import lakers.ingram.ModelEntity.ViewhistoryEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
@@ -85,6 +86,28 @@ public class FoodAction extends HttpServlet {
             if(windowId==0) Foods = appService.getAllFoodByRestaurantAndFloor(restaurant,floor);
             else {
                 Foods = appService.getAllFoodByWindowid(windowId);
+                Object obj=request.getSession().getAttribute("userid");
+                if (obj==null){
+                    System.out.println("---------------------1----------------------------");
+                }
+                else{
+                    int userId=Integer.parseInt(obj.toString());
+                    if(userId!=-1){
+                        ViewhistoryEntity viewHistory = appService.selectView(userId,windowId);
+                        if(viewHistory==null){
+                            ViewhistoryEntity view = new ViewhistoryEntity();
+                            view.setUserId(userId);
+                            view.setWindowId(windowId);
+                            System.out.println("userId:"+ userId);
+                            view.setCount(1);
+                            appService.saveViewHistory(view);
+                        }
+                        else {
+                            viewHistory.setCount(viewHistory.getCount()+1);
+                            appService.updateViewHistory(viewHistory);
+                        }
+                    }
+                }
             }
         }
         PrintWriter out = response.getWriter();
