@@ -237,6 +237,9 @@ public class AppServiceImpl implements AppService {
     public String updateUserDislikeTag(Integer userId,JSONArray dislikeTags){
         return userTagDislikeDao.updateUserDislikeTag(userId,dislikeTags);
     }
+    public JSONArray allFoodTags(){
+        return foodTagDao.allFoodTags();
+    }
     //data
         // today
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId){ return dataDao.getInitDataByDate(date,windowId); }

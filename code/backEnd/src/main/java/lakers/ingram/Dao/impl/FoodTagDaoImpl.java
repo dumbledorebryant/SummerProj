@@ -3,13 +3,18 @@ package lakers.ingram.Dao.impl;
 import lakers.ingram.Dao.FoodTagDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
+import lakers.ingram.ModelEntity.FoodtagEntity;
 import lakers.ingram.ModelEntity.TagEntity;
+import net.sf.json.JSONArray;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Repository("FoodTagDao")
 @Transactional
@@ -77,5 +82,26 @@ public class FoodTagDaoImpl implements FoodTagDao {
         if(list3.size()==0){ session.getTransaction().commit();return null;}
         session.getTransaction().commit();
         return list3;
+    }
+
+    public JSONArray allFoodTags(){
+        Session session= HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        Set<Integer> tagSet=new TreeSet<>();
+        Query query =session.createQuery("select a " +
+                "from FoodtagEntity a ");
+        for(int i=0;i<query.list().size();i++){
+            tagSet.add(((FoodtagEntity)query.list().get(i)).getTagId());
+        }
+        JSONArray jsonArray=new JSONArray();
+        for(Integer tagId:tagSet){
+            Query query2 =session.createQuery("select a " +
+                    "from TagEntity a " +
+                    "where a.tagId=:tagId").setParameter("tagId",tagId);
+            TagEntity tag=(TagEntity) query2.uniqueResult();
+            jsonArray.add(tag);
+        }
+        transaction.commit();
+        return jsonArray;
     }
 }

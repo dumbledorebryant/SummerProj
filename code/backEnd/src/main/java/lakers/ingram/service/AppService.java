@@ -94,7 +94,9 @@ public interface AppService {
 
     public JSONArray getViewHistory(Integer userId);
     public String updateViewHistory(Integer userId,JSONArray deleteId);
-
+    public JSONArray searchUserTagRelatedFood(Integer userId);
+    public String updateUserDislikeTag(Integer userId,JSONArray dislikeTags);
+    public JSONArray allFoodTags();
     //data
         //today
     public List<DataEntity> getInitDataByDate(Timestamp date, int windowId);
