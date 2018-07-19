@@ -89,15 +89,17 @@ class TagList extends React.Component {
     };
 
     handleClick (tagId){
+        //this.props.AddClickTag(tagId);
         let temp = this.state.ChooseTag;
         temp.push(tagId);
         this.setState({
             ChooseTag :temp
         })
-        //alert("add"+temp.length);
     };
 
+
     DeleteClick (tagId){
+        //this.props.DeleteClickTag(tagId);
         let temp = this.state.ChooseTag;
         let index=0;
         for(let i=0;i<temp.length;i++){
@@ -107,8 +109,6 @@ class TagList extends React.Component {
         this.setState({
             ChooseTag :temp
         })
-        //alert("del"+temp.length);
-
     };
 
     render() {

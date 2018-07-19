@@ -45,6 +45,7 @@ class WindowsMenu extends React.Component {
         dishesList: [],      //从后端拿到，传给下一级的windowFoodList
         commentList:[],
         windowId:0,
+        ChooseTag:[],
     };
 
     handleClickListItem = event => {
@@ -72,6 +73,7 @@ class WindowsMenu extends React.Component {
                     anchorEl: null,
                     content:index,
                     windowId:windowId,
+                    floor:this.props.floor,
                 });
             })
         });
@@ -90,35 +92,33 @@ class WindowsMenu extends React.Component {
         });
     };
 
+
+    AddClickTag (tagId){
+        let temp = this.state.ChooseTag;
+        temp.push(tagId);
+        this.setState({
+            ChooseTag :temp
+        })
+    };
+
+    DeleteClickTag (tagId){
+        let temp = this.state.ChooseTag;
+        let index=0;
+        for(let i=0;i<temp.length;i++){
+            if(tagId===temp[i]){index=i;}
+        }
+        temp.splice(index);
+        this.setState({
+            ChooseTag :temp
+        })
+    };
+
+
     handleClose = () => {
         this.setState({
             anchorEl: null
         });
     };
-/*
-    handleDeleteComment= (commentId)=>{
-        let formData=new FormData();
-        formData.append("commentId",commentId);
-        formData.append("windowId",this.state.windowId);
-        fetch('http://localhost:8080/Comment/DeleteComment',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData,
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                this.setState({
-                    commentList:result,
-                });
-            })
-        });
-    };
-
-    /*
-    handleUpdateComment=(comments)=>{
-        this.setState({commentList:comments});
-    };*/
 
     componentWillMount(){
         let formData=new FormData();
@@ -130,7 +130,10 @@ class WindowsMenu extends React.Component {
             let temp=this.state.windowList;
             for (i;i<temp.length;i++){
                 if (temp[i].window_id===this.props.windowId ||temp[i].windowd===this.props.windowId){
-                    this.setState({selectedIndex:i+1,windowId:this.props.windowId});
+                    this.setState({
+                        selectedIndex:i+1,
+                        windowId:this.props.windowId
+                    });
                     break;
                 }
             }
@@ -163,14 +166,20 @@ class WindowsMenu extends React.Component {
             let temp=nextProps.windowList;
             for (i;i<temp.length;i++){
                 if (temp[i].window_id===nextProps.windowId || temp[i].windowId===parseInt(nextProps.windowId)){
-                    this.setState({selectedIndex:i+1,windowId:nextProps.windowId});
+                    this.setState({
+                        selectedIndex:i+1,
+                        windowId:nextProps.windowId
+                    });
                     break;
                 }
             }
         }
         else{
             formData.append("windowId",0);
-            this.setState({selectedIndex:0,windowId:0});
+            this.setState({
+                selectedIndex:0,
+                windowId:0
+            });
         }
         fetch('http://localhost:8080/Food/FoodsByWindowId',{
             credentials: 'include',
@@ -181,11 +190,10 @@ class WindowsMenu extends React.Component {
             console.log('Request successful',response);
             return response.json().then(result=>{
                 this.setState({
-                    dishesList:result
+                    dishesList:result,
                 });
             })
         });
-
     };
 
     render() {
@@ -230,7 +238,6 @@ class WindowsMenu extends React.Component {
                             </MenuItem>
                         ))}
                     </Menu>
-
                 </div>
                 <div>
                     <div>

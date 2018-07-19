@@ -66,13 +66,10 @@ class Floor extends React.Component {
   };
 
   handleChangeFloor= (event, index) => {
-    //  let temp=[];
-   //   let allwin=constantData.windows;
       let formData=new FormData();
       formData.append("restaurant",this.state.canteen);
       formData.append("floor",this.state.floorList[index]);
       formData.append("windowID",0);
-
       fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{
           credentials: 'include',
           method:'POST',
@@ -176,8 +173,6 @@ class Floor extends React.Component {
           });
           formData.append("restaurant",addr);
       }
-
-
         formData.append("floor",0);
         fetch('http://localhost:8080/Window/FloorListByRestaurant',{
             credentials: 'include',
@@ -189,7 +184,8 @@ class Floor extends React.Component {
             return response.json().then(result=>{
                 if (result[0]===0){
                     this.setState({
-                        floorList:result,floor:0
+                        floorList:result,
+                        floor:0
                     });
                 }
                 fetch('http://localhost:8080/Window/WindowsByRestaurantFloor',{

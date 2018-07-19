@@ -50,9 +50,6 @@ const tagtype=[
     "taboo"
 ];
 
-
-
-
 class WindowsFoodList extends React.Component {
     button = null;
    /* constructor(props) {
@@ -137,7 +134,7 @@ class WindowsFoodList extends React.Component {
 
                     </Menu>
                     <div>
-
+                        <TagList/>
                     </div>
 
                     <TextField
@@ -164,19 +161,6 @@ class WindowsFoodList extends React.Component {
                     >
                         {tagtype[0]}
                     </Button>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                    >
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
-
-                    </Menu>
 
                     <Button
                         aria-owns={this.state.anchorE1? 'simple-menu' : null}
@@ -185,19 +169,6 @@ class WindowsFoodList extends React.Component {
                     >
                         {tagtype[1]}
                     </Button>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                    >
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
-
-                    </Menu>
 
                     <Button
                         aria-owns={this.state.anchorE1? 'simple-menu' : null}
@@ -206,19 +177,6 @@ class WindowsFoodList extends React.Component {
                     >
                         {tagtype[2]}
                     </Button>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                    >
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
-
-                    </Menu>
 
                     <Button
                         aria-owns={this.state.anchorE1? 'simple-menu' : null}
@@ -227,19 +185,6 @@ class WindowsFoodList extends React.Component {
                     >
                         {tagtype[3]}
                     </Button>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={this.handleClose}
-                    >
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,0)}>{option[0]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,1)}>{option[1]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,2)}>{option[2]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
-                        <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
-
-                    </Menu>
 
                     <Grid container className={classes.root} spacing={16} >
                             <Grid container spacing={24} justify="left">
