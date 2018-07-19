@@ -51,15 +51,31 @@ public class FoodTagDaoImpl implements FoodTagDao {
         return Tags;
     };
 
-   /* public List<Integer> getFoodsByTags(Array tagIdList){
+    public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food){
+        if(Food.size()==0||tagIdList.size()==0)return null;
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
-        Query query =session.createQuery("select foodTag.foodId " +
-                "from FoodtagEntity foodTag where foodTag.tagId in :tagIdList").setParameter("tagIdList",tagIdList);
-        @SuppressWarnings("unchecked")
-        List<Integer> foodId=query.list();
+        Query query1 =session.createQuery("select foodId " +
+                "from FoodtagEntity food " +
+                "where food.tagId in :tagIdList");
+        query1.setParameter("tagIdList", tagIdList);
+        List<Integer> list1 = query1.list();
+        if(list1.size()==0){ session.getTransaction().commit();return null;}
+        Query query2 =session.createQuery("select food " +
+                "from FoodEntity food " +
+                "where food.foodId in :foodIdList");
+        query2.setParameter("foodIdList", list1);
+        List<FoodEntity> list2 = query2.list();
+        if(list2.size()==0){ session.getTransaction().commit();return null;}
+
+        Query query3 = session.createQuery("select food " +
+                "from FoodEntity food " +
+                "where food in :Food and food in :list2");
+        query3.setParameter("Food", Food);
+        query3.setParameter("list2", list2);
+        List<FoodEntity> list3 = query3.list();
+        if(list3.size()==0){ session.getTransaction().commit();return null;}
         session.getTransaction().commit();
-        return foodId;
+        return list3;
     }
-*/
 }

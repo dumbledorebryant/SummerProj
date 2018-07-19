@@ -30,8 +30,8 @@ class Tag extends React.Component{
     }
 
     handleClick = data => () => {
-        if(!this.state.ifPick)this.props.Choose(data.tagId);
-        else this.props.DelChoose(data.tagId);
+        if(!this.state.ifPick)this.props.addClickTag(data.tagId);
+        else this.props.delClickTag(data.tagId);
         this.setState({
             ifPick:!this.state.ifPick
         });
@@ -43,6 +43,7 @@ class Tag extends React.Component{
 
     render() {
         const { anchorEl } = this.state;
+
         return(
             <Chip
                 key = {this.state.data.tagId}
@@ -50,6 +51,7 @@ class Tag extends React.Component{
                     <Avatar><TagFacesIcon  /></Avatar>:null}
                 label={this.state.data.tagName}
                 onClick={this.handleClick(this.state.data)}
+
             />
         )
     }
@@ -60,8 +62,8 @@ class Tag extends React.Component{
 class TagList extends React.Component {
     constructor(props) {
         super(props);
-        this.handleClick=this.handleClick.bind(this)
-        this.DeleteClick=this.DeleteClick.bind(this)
+        this.addClickTag=this.addClickTag.bind(this)
+        this.delClickTag=this.delClickTag.bind(this)
     }
     state = {
         TagList:[],
@@ -88,18 +90,22 @@ class TagList extends React.Component {
 
     };
 
-    handleClick (tagId){
-        //this.props.AddClickTag(tagId);
+    addClickTag (tagId){
+     //   alert(1);
+        this.props.addClickTag(tagId);
+        /*
         let temp = this.state.ChooseTag;
         temp.push(tagId);
         this.setState({
             ChooseTag :temp
         })
+        */
     };
 
 
-    DeleteClick (tagId){
-        //this.props.DeleteClickTag(tagId);
+    delClickTag (tagId){
+        this.props.delClickTag(tagId);
+        /*
         let temp = this.state.ChooseTag;
         let index=0;
         for(let i=0;i<temp.length;i++){
@@ -109,6 +115,7 @@ class TagList extends React.Component {
         this.setState({
             ChooseTag :temp
         })
+        */
     };
 
     render() {
@@ -118,7 +125,7 @@ class TagList extends React.Component {
             <Paper className={classes.root}>
                 {this.state.TagList.map(data => {
                     return (
-                        <Tag data={data} key={data.tagId} Choose={this.handleClick} DelChoose={this.DeleteClick}/>
+                        <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}/>
                     );
                 })}
                 </Paper>
@@ -128,5 +135,7 @@ class TagList extends React.Component {
 TagList.propTypes = {
     classes: PropTypes.object.isRequired,
 };
+
+
 export default withStyles(styles)(TagList);
 

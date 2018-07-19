@@ -31,11 +31,13 @@ const styles = theme => ({
 
 class WindowsMenu extends React.Component {
     button = null;
-    /*
+
     constructor(props) {
         super(props);
+        this.addClickTag=this.addClickTag.bind(this)
+        this.delClickTag=this.delClickTag.bind(this)
     }
-    */
+
     state = {
         anchorEl: null,
         selectedIndex: 0,
@@ -59,6 +61,7 @@ class WindowsMenu extends React.Component {
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.props.floor);
         formData.append("windowId",windowId);
+        formData.append("tagList",this.state.ChooseTag);
         fetch('http://localhost:8080/Food/FoodsByWindowId',{
             credentials: 'include',
             method:'POST',
@@ -93,24 +96,66 @@ class WindowsMenu extends React.Component {
     };
 
 
-    AddClickTag (tagId){
+    addClickTag (tagId){
+     //   alert(4);
         let temp = this.state.ChooseTag;
         temp.push(tagId);
         this.setState({
             ChooseTag :temp
         })
+    //    alert(temp);
+        let formData=new FormData();
+        formData.append("restaurant",this.props.canteen);
+        formData.append("floor",this.props.floor);
+        formData.append("windowId",this.state.windowId);
+        formData.append("tagList",temp);
+        fetch('http://localhost:8080/Food/FoodsByWindowId',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    dishesList:result,
+                });
+            })
+
+        });
     };
 
-    DeleteClickTag (tagId){
+    delClickTag (tagId){
+       // alert(tagId);
         let temp = this.state.ChooseTag;
         let index=0;
         for(let i=0;i<temp.length;i++){
             if(tagId===temp[i]){index=i;}
         }
-        temp.splice(index);
+        temp.splice(index,1);
         this.setState({
             ChooseTag :temp
         })
+    //    alert(temp);
+        let formData=new FormData();
+        formData.append("restaurant",this.props.canteen);
+        formData.append("floor",this.props.floor);
+        formData.append("windowId",this.state.windowId);
+        formData.append("tagList",temp);
+        fetch('http://localhost:8080/Food/FoodsByWindowId',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formData,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    dishesList:result,
+                });
+            })
+        });
+  //      alert(this.state.dishesList.size());
     };
 
 
@@ -124,6 +169,7 @@ class WindowsMenu extends React.Component {
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.state.floor);
+        formData.append("tagList",this.state.ChooseTag);
         if (this.props.windowId !== null){
             formData.append("windowId",this.props.windowId);
             let i=0;
@@ -160,13 +206,14 @@ class WindowsMenu extends React.Component {
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);
         formData.append("floor",this.state.floor);
+        formData.append("tagList",this.state.ChooseTag);
         if (nextProps.windowId !== null){
             formData.append("windowId",nextProps.windowId);
             let i=0;
             let temp=nextProps.windowList;
             for (i;i<temp.length;i++){
                 if (temp[i].window_id===nextProps.windowId || temp[i].windowId===parseInt(nextProps.windowId)){
-                    this.setState({
+                    this.setStatek({
                         selectedIndex:i+1,
                         windowId:nextProps.windowId
                     });
@@ -240,9 +287,8 @@ class WindowsMenu extends React.Component {
                     </Menu>
                 </div>
                 <div>
-                    <div>
-                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}/>
-                    </div>
+                        <Window dishesList={this.state.dishesList} windowId={this.state.windowId} commentList={this.state.commentList}
+                                addClickTag={this.addClickTag} delClickTag={this.delClickTag}/>
                 </div>
             </div>
         );

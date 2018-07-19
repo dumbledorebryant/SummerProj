@@ -346,4 +346,9 @@ public class AppServiceImpl implements AppService {
         return foodTagDao.getAllTags();
     }
 
+    public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food){
+        return foodTagDao.getFoodsByTags(tagIdList,Food);
+    };
+
+
 }

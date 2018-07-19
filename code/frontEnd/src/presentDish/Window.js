@@ -83,7 +83,7 @@ class Window extends React.Component {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Typography>
-                            <WindowsFoodList userId={this.state.userId} dishesList={this.props.dishesList}/>
+                            <WindowsFoodList userId={this.state.userId} dishesList={this.props.dishesList}addClickTag={this.props.addClickTag} delClickTag={this.props.delClickTag}/>
                         </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

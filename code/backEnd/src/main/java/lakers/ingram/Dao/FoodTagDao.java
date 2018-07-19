@@ -12,6 +12,6 @@ public interface FoodTagDao {
 
     public List<TagEntity> getAllTags();
 
-   // public List<Integer> getFoodsByTags(Array tagIdList);
+    public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food);
 
 }

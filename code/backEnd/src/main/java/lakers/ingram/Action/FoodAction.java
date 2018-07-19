@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.swing.text.html.HTML;
 import java.io.PrintWriter;
 import java.util.*;
@@ -37,47 +38,19 @@ public class FoodAction extends HttpServlet {
         out.close();
     }
 
-    @RequestMapping(value = "/FoodListByRestaurant")
-    private void processFoodByRestaurant(@RequestParam("restaurant") String restaurant,
-                                         HttpServletRequest request,
-                                         HttpServletResponse response)
-            throws Exception {
-        PrintWriter out = response.getWriter();
-        List<FoodEntity> foodList = appService.getAllFoodByRestaurant(restaurant);
-        Iterator it = foodList.iterator();
-        ArrayList<FoodEntity> arrayList = new ArrayList<FoodEntity>();
-        out.println(JSONArray.fromObject(foodList));
-        out.flush();
-        out.close();
-    }
-
-    @RequestMapping(value = "/FoodListByRestaurantFloor")
-    private void processFoodByRestaurantAndFloor(@RequestParam("restaurant") String restaurant,
-                                                 @RequestParam("floor") int floor,
-                                                 HttpServletRequest request,
-                                                 HttpServletResponse response)  throws Exception {
-
-        PrintWriter out = response.getWriter();
-
-        List<FoodEntity> foodList = appService.getAllFoodByRestaurantAndFloor(restaurant,floor );
-
-        Iterator it = foodList.iterator();
-        ArrayList<FoodEntity> arrayList = new ArrayList<FoodEntity>();
-        out.println(JSONArray.fromObject(foodList));
-        out.flush();
-        out.close();
-
-    }
-
     @RequestMapping(value = "/FoodsByWindowId")
     private void processFoodByWindowid(@RequestParam("restaurant") String restaurant,
                                        @RequestParam("floor") int floor,
                                        @RequestParam("windowId") int windowId,
+                                       @RequestParam("tagList") ArrayList<Integer> tagList,
                                        HttpServletRequest request,
-                                       HttpServletResponse response)  throws Exception {
+                                       HttpServletResponse response)  throws Exception
+    {
         System.out.println("restaurant:"+restaurant);
         System.out.println("floor:"+floor);
         System.out.println("windowId:"+windowId);
+        System.out.println("tagList"+tagList.size());
+        PrintWriter out = response.getWriter();
         List<FoodEntity> Foods = new ArrayList<FoodEntity>();
         if(floor==0 && windowId==0 ) {
             Foods = appService.getAllFoodByRestaurant(restaurant);
@@ -88,7 +61,7 @@ public class FoodAction extends HttpServlet {
                 Foods = appService.getAllFoodByWindowid(windowId);
                 Object obj=request.getSession().getAttribute("userid");
                 if (obj==null){
-                    System.out.println("---------------------1----------------------------");
+                    System.out.println("---------------------1-----------------");
                 }
                 else{
                     int userId=Integer.parseInt(obj.toString());
@@ -110,10 +83,25 @@ public class FoodAction extends HttpServlet {
                 }
             }
         }
-        PrintWriter out = response.getWriter();
+
+        if(tagList.size()!=0) {
+            List<Integer> tagId = tagList;
+            Foods = appService.getFoodsByTags(tagId,Foods);
+            if(Foods==null){
+                out.println("[]");
+                out.flush();
+                out.close();
+                System.out.println("[]");
+                return;
+            }
+        }
+
         JSONArray arr3 = FoodEntityAddWindowName(Foods);
         JSONArray arr4 = FoodEntityAddTag(arr3);
         out.println(arr4.toString());
+
+        HttpSession session=request.getSession();
+        session.setAttribute("foodList",Foods);
         out.flush();
         out.close();
     }
@@ -211,8 +199,6 @@ public class FoodAction extends HttpServlet {
         out.flush();
         out.close();
     }
-
-
 
 
 }

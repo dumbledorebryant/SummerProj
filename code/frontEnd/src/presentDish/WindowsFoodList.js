@@ -52,9 +52,9 @@ const tagtype=[
 
 class WindowsFoodList extends React.Component {
     button = null;
-   /* constructor(props) {
+    constructor(props) {
         super(props);
-    }*/
+    }
     state = {
         anchorEl: null,
 //        selectedIndex: 0,
@@ -99,10 +99,10 @@ class WindowsFoodList extends React.Component {
         });
     };
 
-    componentWillReceiveProps = (nextProps) =>{
+    componentWillReceiveProps(nextProps){
         this.setState({
             userId:this.state.userId,
-            dishesList:this.props.dishesList
+            dishesList:nextProps.dishesList
         });
     };
 
@@ -134,15 +134,37 @@ class WindowsFoodList extends React.Component {
 
                     </Menu>
                     <div>
-                        <TagList/>
+                        <TagList addClickTag={this.props.addClickTag} delClickTag={this.props.delClickTag}/>
                     </div>
 
+
+                    <Grid container className={classes.root} spacing={16} >
+                            <Grid container spacing={24} justify="left">
+                                {this.state.dishesList.map((item,i) => (
+                                    <Grid>
+                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""Tags={item.Tags}/>
+                                    </Grid>))
+                                }
+                                </Grid>
+                    </Grid>
+                </div>
+            </div>
+        );
+    }
+}
+WindowsFoodList.propTypes = {
+    classes: PropTypes.object.isRequired,
+
+};
+export default withStyles(styles)(WindowsFoodList);
+/*
+*
                     <TextField
                         className={classes.search}
                         id="search"
                         style={{backgroundColor:'#26c3fe' ,paddingLeft:5 }}
                         InputProps={{
-                            disableUnderline: true,
+                             disableUnderline: true,
                             startAdornment: (
                                 <InputAdornment  position="start">
                                     <SearchIcon id="searchBtn" onClick={this.onHandleSearch}/>
@@ -185,23 +207,4 @@ class WindowsFoodList extends React.Component {
                     >
                         {tagtype[3]}
                     </Button>
-
-                    <Grid container className={classes.root} spacing={16} >
-                            <Grid container spacing={24} justify="left">
-                                {this.state.dishesList.map((item,i) => (
-                                    <Grid>
-                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""Tags={item.Tags}/>
-                                    </Grid>))
-                                }
-                                </Grid>
-                    </Grid>
-                </div>
-            </div>
-        );
-    }
-}
-WindowsFoodList.propTypes = {
-    classes: PropTypes.object.isRequired,
-
-};
-export default withStyles(styles)(WindowsFoodList);
+* */
