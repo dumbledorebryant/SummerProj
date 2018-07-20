@@ -136,7 +136,7 @@ class FoodDaoImpl implements FoodDao {
         @SuppressWarnings("unchecked")
         List<FoodEntity> foods=query.list();
         session.getTransaction().commit();
-        return foods.get(0);
+        return foods.size()>0?foods.get(0):null;
     }
 
     @Override

@@ -54,11 +54,10 @@ class WindowsFoodList extends React.Component {
     button = null;
     constructor(props) {
         super(props);
+         this.clickLike=this.clickLike.bind(this);
     }
     state = {
         anchorEl: null,
-//        selectedIndex: 0,
-//        content:1,
         dishesList:this.props.dishesList,
         windowName:"一餐五楼A窗口",
         userId:-1,
@@ -106,6 +105,15 @@ class WindowsFoodList extends React.Component {
         });
     };
 
+    clickLike(index,action){
+        let temp = this.state.dishesList;
+        var a = this.state.dishesList[index].likes+action;
+        temp[index].likes=a;
+        this.setState({
+            dishesList:temp,
+        })
+    }
+
 
     render() {
         const { classes } = this.props;
@@ -140,9 +148,12 @@ class WindowsFoodList extends React.Component {
 
                     <Grid container className={classes.root} spacing={16} >
                             <Grid container spacing={24} justify="left">
-                                {this.state.dishesList.map((item,i) => (
+                                {this.state.dishesList.map((item, i) => (
                                     <Grid>
-                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId} foodId={item.foodId} foodname={item.foodName}price={item.price}tips={item.tips}window_name={item.windowName} like={item.likes} picture=""Tags={item.Tags}/>
+                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId}
+                                                foodId={item.foodId} foodname={item.foodName} price={item.price}
+                                                tips={item.tips} window_name={item.windowName} like={item.likes}
+                                                picture="" Tags={item.Tags} clickLike={this.clickLike} idx={i}/>
                                     </Grid>))
                                 }
                                 </Grid>

@@ -97,6 +97,17 @@ public class UserTagAction {
         out.print(result);
     }
 
+    @RequestMapping(value = "/ShowFoodTags")
+    private void showFoodTags(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws Exception {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        JSONArray result=appService.allFoodTags();
+        out.print(result);
+    }
+
 
 
 }

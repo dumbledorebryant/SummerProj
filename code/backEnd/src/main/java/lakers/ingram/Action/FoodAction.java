@@ -28,6 +28,7 @@ public class FoodAction extends HttpServlet {
 
     @RequestMapping(value = "/AllFoodList")
     private void processAllFoodList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         List<FoodEntity> foodList = appService.getAllFood();
         Iterator it = foodList.iterator();
@@ -50,6 +51,8 @@ public class FoodAction extends HttpServlet {
         System.out.println("floor:"+floor);
         System.out.println("windowId:"+windowId);
         System.out.println("tagList"+tagList.size());
+
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         List<FoodEntity> Foods = new ArrayList<FoodEntity>();
         if(floor==0 && windowId==0 ) {
@@ -65,7 +68,7 @@ public class FoodAction extends HttpServlet {
                 }
                 else{
                     int userId=Integer.parseInt(obj.toString());
-                    if(userId!=-1){
+                    if(userId!=-1) {
                         ViewhistoryEntity viewHistory = appService.selectView(userId,windowId);
                         if(viewHistory==null){
                             ViewhistoryEntity view = new ViewhistoryEntity();
@@ -111,6 +114,7 @@ public class FoodAction extends HttpServlet {
                              @RequestParam("type") int type,
                              HttpServletRequest request,
                              HttpServletResponse response)  throws Exception {
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         System.out.println("========sort==========");
         System.out.println(foodList);
@@ -146,7 +150,7 @@ public class FoodAction extends HttpServlet {
             Collections.sort(arr, new Comparator<JSONObject>() {
                 @Override
                 public int compare(JSONObject o1, JSONObject o2) {//升序
-                    if((double)o1.get("price")>(double)o2.get("price"))return 1;
+                    if( o1.getDouble("price")>o2.getDouble("price"))return 1;
                     return -1;
                 }
             });
@@ -155,7 +159,8 @@ public class FoodAction extends HttpServlet {
             Collections.sort(arr, new Comparator<JSONObject>() {
                 @Override
                 public int compare(JSONObject o1, JSONObject o2) {//降序
-                    if((double)o1.get("price")>(double)o2.get("price"))return -1;
+                    System.out.println("000"+o2.getDouble("price"));
+                    if(o1.getDouble("price")>o2.getDouble("price"))return -1;
                     return 1;
                 }
             });
@@ -192,6 +197,7 @@ public class FoodAction extends HttpServlet {
     @RequestMapping(value = "/AllTags")
     private void processAllTags(HttpServletRequest request,
                                 HttpServletResponse response)  throws Exception {
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         List<TagEntity> tagList = appService.getAllTags();
         out.println(JSONArray.fromObject(tagList));
@@ -199,6 +205,4 @@ public class FoodAction extends HttpServlet {
         out.flush();
         out.close();
     }
-
-
 }
