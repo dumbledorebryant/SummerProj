@@ -1,0 +1,10 @@
+diff a/code/frontEnd/src/presentDish/Floor.js b/code/frontEnd/src/presentDish/Floor.js	(rejected hunks)
+@@ -6,7 +6,7 @@
+ import Tabs from '@material-ui/core/Tabs';
+ import Tab from '@material-ui/core/Tab';
+ //import Nav from '@material-ui/core/Tab';
+-import constantData from './window.json';
++//import constantData from './window.json';
+ import Typography from '@material-ui/core/Typography';
+ import WindowsMenu from './WindowsMenu';
+ //import {Link,hashHistory} from 'react-router';
