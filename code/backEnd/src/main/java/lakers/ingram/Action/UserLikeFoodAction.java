@@ -116,7 +116,9 @@ public class UserLikeFoodAction extends HttpServlet {
         GridFS gfsPhoto = new GridFS(mongodb, "Images");
         // get image file by it's filename
         GridFSDBFile imageForOutput = gfsPhoto.findOne(foodID);
-        imageForOutput.writeTo(out);
+        if (imageForOutput!=null){
+            imageForOutput.writeTo(out);
+        }
         out.flush();
         out.close();
         mongo.close();

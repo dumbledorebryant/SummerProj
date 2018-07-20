@@ -33,9 +33,7 @@ const theme2=createMuiTheme({
 
     },
 });
-const tasteTemp=[];
-const countryTemp=[];
-const tabooTemp=[];
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -62,8 +60,11 @@ const styles = theme => ({
     },
 });
 
-const tag=[];
+
 const foodTemp=[];
+const tasteTemp=[];
+const countryTemp=[];
+const tabooTemp=[];
 class PersonalSetting extends React.Component {
     constructor(props) {
         super(props);
@@ -78,7 +79,7 @@ class PersonalSetting extends React.Component {
     }
     state = {
         name:[],
-        checkBool:tag,
+        checkBool:[],
         arr:[],
         allTags:'',
         tasteTags:tasteTemp,
@@ -118,12 +119,13 @@ class PersonalSetting extends React.Component {
             .then(response => {
                 response.json()
                     .then(result => {
-                        tasteTemp.splice(0,tasteTemp.size);
-                        countryTemp.splice(0,countryTemp.size);
-                        tabooTemp.splice(0,tabooTemp.size);
-                        foodTemp.splice(0,foodTemp.size);
+                        let tasteTemp=[];
+                        let countryTemp=[];
+                        let tabooTemp=[];
+                        let foodTemp=[];
+                        let checkBoolTemp=[];
                         for(let i in result){
-                            this.state.checkBool.push(false);
+                            checkBoolTemp[result[i].tagId]=false;
                             let add={"tagType":result[i].tagType,
                                 "tagId":result[i].tagId,"tagName":result[i].tagName};
                             if(result[i].tagType==='taste'){
@@ -140,7 +142,9 @@ class PersonalSetting extends React.Component {
                             }
                         }
                         this.setState({
-                            tasteTags:tasteTemp, coutryTags:countryTemp,
+                            checkBool:checkBoolTemp,
+                            tasteTags:tasteTemp,
+                            countryTags:countryTemp,
                             foodTags:foodTemp,
                             tabooTags:tabooTemp }, () => {
                             this.searchSavedTag()
@@ -149,13 +153,13 @@ class PersonalSetting extends React.Component {
             })
     };
 
-    handleChange1 = name => event => {
-        console.log("clickBefore:"+this.state.checkBool);
-        let i=document.getElementById(name);
+    handleChange1 = item => event => {
+        console.log("checkBoolBefore:"+this.state.checkBool);
+        console.log("checkBoolItem:"+item.checked);
         let temp=this.state.checkBool;
-        temp[name]=i.checked;
+        let ele = document.getElementById(item.tagId);
+        temp[item.tagId]=ele.checked;
         this.setState({checkBool:temp});
-        console.log("clickAfter:"+this.state.checkBool);
     };
 
     searchSavedTag= () => {
@@ -170,12 +174,10 @@ class PersonalSetting extends React.Component {
             .then(response => {
                 response.json()
                     .then(result => {
-                        console.log("result: ", result);
                         let temp=this.state.checkBool;
-                        for(var i in result){
-                            console.log("tagID:"+result[i].tagId);
+                        for(let i in result){
                             let idx=result[i].tagId;
-                            temp[idx-1]=true;
+                            temp[idx]=true;
                         }
                         this.setState({
                             checkBool:temp
@@ -186,25 +188,19 @@ class PersonalSetting extends React.Component {
 
     sendTag= () => {
         let sendArr=[];
-        let idx=0;
         for(let i in this.state.checkBool){
-            idx++;
-            console.log("index:" + this.state.checkBool[i] + '\n');
             if(this.state.checkBool[i]===true){
-                console.log("num:" + idx + '\n');
-                sendArr.push(idx);
+                sendArr.push(i);
             }
         }
         if(!((this.state.chooseType==='')||(this.state.chooseName===''))){
             sendArr.push(this.state.chooseType);
             sendArr.push(this.state.chooseName);
         }
-        console.log("array:" + sendArr + '\n');
         fetch('http://localhost:8080/UserTag/ChooseTag?' +
             'userID='+this.props.userid+
             '&tagArray='+sendArr,
             {
-
                 credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
@@ -234,12 +230,12 @@ class PersonalSetting extends React.Component {
             .then(reponse=>{
                 reponse.json()
                     .then(result=>{
-                        console.log("NewFetchresult:"+result);
                         let temp=this.state.checkBool;
-                        temp.push(true);
-                        this.setState({checkBool:temp});
+                        temp[result.tagId]=true;
+                        this.setState({
+                            checkBool:temp
+                        });
                         let add={"tagType":result.tagType,"tagId":result.tagId,"tagName":result.tagName};
-                        console.log("NNN:"+result.tagType);
                         if(result.tagType==="taste"){
                             let temp2=this.state.tasteTags;
                             temp2.push(add);
@@ -259,7 +255,6 @@ class PersonalSetting extends React.Component {
                             let temp2=this.state.foodTags;
                             temp2.push(add);
                             this.setState({foodTags:temp2});
-                            console.log("NEWW:"+this.state.foodTags);
                         }
 
 
@@ -292,115 +287,116 @@ class PersonalSetting extends React.Component {
                 <Navbar >
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <a href="#">口味标签设置</a>
+                            <a href="#">标签设置</a>
                         </Navbar.Brand>
                     </Navbar.Header>
                 </Navbar>
 
                 <MuiThemeProvider theme={theme2}>
-                    <Row>
-                        <Col md={2}>
-                            <div className={classes.formControl3}>
-                                {"自定义标签设置"}
-                            </div>
-                        </Col>
+                <Row>
+                    <Col md={2}>
+                        <div className={classes.formControl3}>
+                        {"自定义标签设置"}
+                        </div>
+                    </Col>
 
-                        <Col md={2}>
-                            <form autoComplete="off">
-                                <FormControl className={classes.formControl2}>
-                                    <Select
-                                        open={this.state.open}
-                                        onClose={this.handleClose}
-                                        onOpen={this.handleOpen}
-                                        value={this.state.choose}
-                                        onChange={this.handleChange}
-                                        inputProps={{
-                                            name: 'choose',
-                                            id: 'demo-controlled-open-select',
-                                        }}
-                                    >
-                                        <MenuItem value='taste'>口味</MenuItem>
-                                        <MenuItem value='country'>国家</MenuItem>
-                                        <MenuItem value='taboo'>禁忌</MenuItem>
-                                        <MenuItem value='food'>食材</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </form>
-                        </Col>
-                        <Col md={2}>
-                            <Input bsSize="large"
-                                   placeholder="输入自定义标签"
-                                   className={classes.input}
-                                   onChange={this.handleChange3}
-                            />
-                        </Col>
-                    </Row>
+                    <Col md={2}>
+                        <form autoComplete="off">
+                            <FormControl className={classes.formControl2}>
+                                <Select
+                                    open={this.state.open}
+                                    onClose={this.handleClose}
+                                    onOpen={this.handleOpen}
+                                    value={this.state.choose}
+                                    onChange={this.handleChange}
+                                    inputProps={{
+                                        name: 'choose',
+                                        id: 'demo-controlled-open-select',
+                                    }}
+                                >
+                                    <MenuItem value='taste'>口味</MenuItem>
+                                    <MenuItem value='country'>国家</MenuItem>
+                                    <MenuItem value='taboo'>禁忌</MenuItem>
+                                    <MenuItem value='food'>食材</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </form>
+                    </Col>
+                    <Col md={2}>
+                        <Input bsSize="large"
+                               placeholder="输入自定义标签"
+                               className={classes.input}
+                               onChange={this.handleChange3}
+                        />
+                    </Col>
+                </Row>
                 </MuiThemeProvider>
                 <br/>
                 <div className={classes.root} >
                     <FormControl component="fieldset" required className={classes.formControl}>
                         <Row>
-                            <Col md={3}>
-                                <FormLabel component="legend"><h5>口味</h5></FormLabel>
-                                <FormGroup className={classes.group}>{
-                                    this.state.tasteTags.map(function (item) {
-                                        return <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={this.state.checkBool[item.tagId-1]}
-                                                    onChange={this.handleChange1(item.tagId-1)}
-                                                    id={item.tagId-1}
-                                                    key={item.tagName}
-                                                    value={item.tagName}
-                                                />
-                                            }
-                                            label={<h4>{item.tagName}</h4>}
+                        <Col md={3}>
+                        <FormLabel component="legend"><h5>口味</h5></FormLabel>
+                        <FormGroup className={classes.group}>{
+                            this.state.tasteTags.map(function (item) {
+                                return <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            color="primary"
+                                            checked={this.state.checkBool[item.tagId]}
+                                            onChange={this.handleChange1(item)}
+                                            key={item.tagName}
+                                            value={item.tagName}
+                                            id={item.tagId}
                                         />
-                                    },this)
-                                }
-                                </FormGroup>
-                            </Col>
-                            <Col md={3}>
-                                <FormLabel component="legend"><h5>种类</h5></FormLabel>
-                                <FormGroup className={classes.group}>{
-                                    this.state.countryTags.map(function (item) {
-                                        return <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={this.state.checkBool[item.tagId-1]}
-                                                    onChange={this.handleChange1(item.tagId-1)}
-                                                    id={item.tagId-1}
-                                                    value={item.tagName}
-                                                />
-                                            }
-                                            label={<h4>{item.tagName}</h4>}
+                                    }
+                                    label={<h4>{item.tagName}</h4>}
+                                />
+                            },this)
+                        }
+                        </FormGroup>
+                        </Col>
+                        <Col md={3}>
+                        <FormLabel component="legend"><h5>种类</h5></FormLabel>
+                            <FormGroup className={classes.group}>{
+                                this.state.countryTags.map(function (item) {
+                                    return <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                color="primary"
+                                                checked={this.state.checkBool[item.tagId]}
+                                                onChange={this.handleChange1(item)}
+                                                key={item.tagName}
+                                                value={item.tagName}
+                                                id={item.tagId}
+                                            />
+                                        }
+                                        label={<h4>{item.tagName}</h4>}
+                                    />
+                                },this)
+                            }
+                            </FormGroup>
+                        </Col>
+                    <Col md={3}>
+                        <FormLabel component="legend"><h5>禁忌</h5></FormLabel>
+                        <FormGroup className={classes.group}>{
+                            this.state.tabooTags.map(function (item) {
+                                return <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            color="primary"
+                                            checked={this.state.checkBool[item.tagId]}
+                                            onChange={this.handleChange1(item)}
+                                            value={item.tagName}
+                                            id={item.tagId}
                                         />
-                                    },this)
-                                }
-                                </FormGroup>
-                            </Col>
-                            <Col md={3}>
-                                <FormLabel component="legend"><h5>禁忌</h5></FormLabel>
-                                <FormGroup className={classes.group}>{
-                                    this.state.tabooTags.map(function (item) {
-                                        return <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={this.state.checkBool[item.tagId-1]}
-                                                    onChange={this.handleChange1(item.tagId-1)}
-                                                    id={item.tagId-1}
-                                                    value={item.tagName}
-                                                />
-                                            }
-                                            label={<h4>{item.tagName}</h4>}
-                                        />
-                                    },this)
-                                }
-                                </FormGroup>
-                            </Col>
+                                    }
+                                    label={<h4>{item.tagName}</h4>}
+                                />
+                            },this)
+                        }
+                        </FormGroup>
+                    </Col>
                             <Col md={3}>
                                 <FormLabel component="legend"><h5>食材</h5></FormLabel>
                                 <FormGroup className={classes.group}>{
@@ -409,10 +405,10 @@ class PersonalSetting extends React.Component {
                                             control={
                                                 <Checkbox
                                                     color="primary"
-                                                    checked={this.state.checkBool[item.tagId-1]}
-                                                    onChange={this.handleChange1(item.tagId-1)}
-                                                    id={item.tagId-1}
+                                                    checked={this.state.checkBool[item.tagId]}
+                                                    onChange={this.handleChange1(item)}
                                                     value={item.tagName}
+                                                    id={item.tagId}
                                                 />
                                             }
                                             label={<h4>{item.tagName}</h4>}

@@ -8,7 +8,7 @@ import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import RoomIcon from '@material-ui/icons/Room';
-import {Col, Label, Row} from 'react-bootstrap';
+import {Col, Label, Navbar, Row} from 'react-bootstrap';
 import CardContent from "@material-ui/core/es/CardContent/CardContent";
 import red from "@material-ui/core/es/colors/red";
 import Grid from "@material-ui/core/es/Grid/Grid";
@@ -23,15 +23,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from "@material-ui/core/es/Collapse/Collapse";
 import classnames from 'classnames';
 import Chip from "@material-ui/core/es/Chip/Chip";
-import Button from "@material-ui/core/es/Button/Button";
 import CircularProgress from "@material-ui/core/es/CircularProgress/CircularProgress";
-import green from '@material-ui/core/colors/green';
-
-import CheckIcon from '@material-ui/icons/Check';
-import SaveIcon from '@material-ui/icons/Save';
-import classNames from 'classnames';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
-
+import List from "@material-ui/core/es/List/List";
+import ListItem from "@material-ui/core/es/ListItem/ListItem";
+import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+import ChildCareIcon from '@material-ui/icons/ChildCare';
+import pic from '../img/noPic.jpg'
 
 const theme2=createMuiTheme({
     typography:{
@@ -54,6 +52,10 @@ const theme2=createMuiTheme({
     },
 });
 const styles = theme => ({
+    header:{
+        width: '100%',
+        maxWidth: 360,
+    },
     root: {
         flexGrow: 1,
     },
@@ -81,9 +83,6 @@ const styles = theme => ({
     },
     avatar2: {
         color: red[0],
-    },
-    avatar3: {
-        color: blue[500],
     },
     likeButton: {
         zIndex: 100,
@@ -117,7 +116,7 @@ const styles = theme => ({
         marginLeft:2*theme.spacing.unit,
         position: 'absolute',
         top: -6,
-        left: -6,
+        left: -20,
         zIndex: 1,
     },
     change:{
@@ -126,7 +125,7 @@ const styles = theme => ({
     }
 });
 
-
+const foodListGroup=[];
 class PersonalRecommend extends React.Component
 {
     constructor(props)
@@ -135,8 +134,9 @@ class PersonalRecommend extends React.Component
         this.state = {
             like: [],
             foodInfo: [],
+            foodListGroupIdx:0,
             imageUrl: [],
-            expanded: false,
+            expanded: [],
             tags:[],
             loading: false,
             success: false,
@@ -156,11 +156,19 @@ class PersonalRecommend extends React.Component
     }
 
     handleNextClick = () => {
+        let idx=this.state.foodListGroupIdx;
+        idx++;
+        if(idx===foodListGroup.length){
+            idx=0;
+        }
+        let temp = foodListGroup[idx];
         if (!this.state.loading) {
             this.setState(
                 {
                     success: false,
                     loading: true,
+                    foodListGroupIdx:idx,
+                    foodInfo:temp,
                 },
                 () => {
                     this.timer = setTimeout(() => {
@@ -168,18 +176,25 @@ class PersonalRecommend extends React.Component
                             loading: false,
                             success: true,
                         });
-                    }, 1000);
+                    }, 500);
                 },
             );
+
         }
     };
 
-    handleExpandClick = () => {
-        this.setState(state => ({ expanded: !state.expanded }));
+    handleExpandClick = id => event => {
+        let temp=this.state.expanded;
+        temp[id]=!temp[id];
+        this.setState({
+            expanded:temp
+        })
     };
+
     searchFoodPic = (name) => {
         console.log("name:" + name);
-        fetch('http://localhost:8080/UserLikeFood/GetPic?foodID=' + name,
+        fetch('http://localhost:8080/UserLikeFood/GetPic?' +
+            'foodID=' + name,
             {
                 method: 'GET',
                 mode: 'cors',
@@ -189,9 +204,16 @@ class PersonalRecommend extends React.Component
                 let blob = response.blob();
                 return blob
                     .then(blob => {
+                        let temp = this.state.imageUrl;
+                        if(blob.size === 0){
+                            temp[name]='';
+                            this.setState({
+                                imageUrl:temp
+                            });
+                            return;
+                        }
                         let reader = new FileReader();
                         reader.readAsDataURL(blob);
-                        let temp = this.state.imageUrl;
                         reader.onloadend = ()=> {
                             temp[name] = reader.result;
                             this.setState({
@@ -240,8 +262,12 @@ class PersonalRecommend extends React.Component
             .then(response => {
                 response.json()
                     .then(result => {
+                        if(result.length===0){
+                            return;
+                        }
                         let likeList = [];
                         let foodList=[];
+                        let expandedList=[];
                         for(let i=0;i<result.length;i++){
                             for(let j=i+1;j<result.length;j++){
                                 if(result[i].relatedTags.length<result[j].relatedTags.length){
@@ -259,7 +285,7 @@ class PersonalRecommend extends React.Component
                             }
                         }
                         for(let i in result){
-                            console.log("tagSize:"+result[i].like);
+                            expandedList[result[i].foodId]=false;
                             let add = {
                                 "foodId": result[i].foodId,
                                 "foodName": result[i].foodName,
@@ -273,18 +299,33 @@ class PersonalRecommend extends React.Component
                             if(result[i].like===1){
                                 likeList[result[i].foodId] = true;
                             }
-                            else{
+                            else {
                                 likeList[result[i].foodId] = false;
                             }
-
-                            console.log("tags:"+result[i].tags);
                             foodList.push(add);
                             this.searchFoodPic(result[i].foodId);
                         }
-                        this.setState({
-                            foodInfo: foodList,
-                            like: likeList,
+                        let groupNum=0;
+                        if(foodList.length % 3 === 0){
+                            groupNum=foodList.length/3;
+                        }
+                        else {
+                            groupNum = (parseInt(foodList.length/3) + 1);
+                        }
 
+                        for(let k = 0;k < groupNum;k++) {
+                            foodListGroup[k] = [];
+                        }
+                        for(let i in foodList){
+                            let idx = i % groupNum;
+                            console.log("idx:"+idx);
+                            foodListGroup[idx].push(foodList[i]);
+                        }
+                        console.log("foodListGroup:"+foodListGroup);
+                        this.setState({
+                            foodInfo: foodListGroup[0],
+                            like: likeList,
+                            expanded: expandedList
                         })
                     });
             })
@@ -326,26 +367,26 @@ class PersonalRecommend extends React.Component
     render() {
         const { classes } = this.props;
         const { loading, success } = this.state;
-
         return (
             <div>
+                <div className={classes.header}>
+                    <List>
+                        <ListItem>
+                            <Avatar>
+                                <ChildCareIcon />
+                            </Avatar>
+                            <ListItemText primary="猜您喜欢"  />
+                        </ListItem>
+                    </List>
+                </div>
                 <MuiThemeProvider theme={theme2}>
                     <div className={classes.wrapper}>
-                        <Row>
-                            <Col sm={1}>
-                                <Button
-                                    variant="fab"
-                                    color="primary"
-                                    onClick={this.handleNextClick}
-                                >
-                                    {success ? <AutorenewIcon/> : <AutorenewIcon/>}
-                                    </Button>
-                                {loading && <CircularProgress size={68} className={classes.fabProgress} />}
-                            </Col>
-                            <Col sm={0.1}>
-                                <div className={classes.change}>{"换一批"}</div>
-                            </Col>
-                        </Row>
+                        <IconButton className={classes.likeButton}
+                                    onClick={this.handleNextClick}>
+                            {success ? <AutorenewIcon /> : <AutorenewIcon />}
+                            </IconButton>
+                        {loading && <CircularProgress size={60} className={classes.fabProgress}/>}
+                        {"换一批"}
                     </div>
 
                 <Grid container spacing = {24} >
@@ -375,7 +416,10 @@ class PersonalRecommend extends React.Component
                                         />
                                         <CardMedia
                                             className = {classes.media}
-                                            image = {this.state.imageUrl[item.foodId]}
+                                            image = {this.state.imageUrl[item.foodId]
+                                                ? this.state.imageUrl[item.foodId]
+                                                : pic}
+
                                         />
                                         <CardContent>
                                             <Typography component="p">
@@ -406,16 +450,16 @@ class PersonalRecommend extends React.Component
 
                                             <IconButton
                                                 className={classnames(classes.expand, {
-                                                    [classes.expandOpen]: this.state.expanded,
+                                                    [classes.expandOpen]: this.state.expanded[item.foodId],
                                                 })}
-                                                onClick={this.handleExpandClick}
-                                                aria-expanded={this.state.expanded}
+                                                onClick={this.handleExpandClick(item.foodId)}
+                                                aria-expanded={this.state.expanded[item.foodId]}
                                             >
                                                 <ExpandMoreIcon />
                                             </IconButton>
                                         </CardActions>
 
-                                        <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                                        <Collapse in={this.state.expanded[item.foodId]} timeout="auto" unmountOnExit>
                                             <CardContent>
                                                 <Typography paragraph variant="body2">
                                                     {"Tips： "+item.tips}

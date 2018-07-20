@@ -2,10 +2,7 @@ package lakers.ingram.Dao.impl;
 
 import lakers.ingram.Dao.UserLikeFoodDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
-import lakers.ingram.ModelEntity.FoodEntity;
-import lakers.ingram.ModelEntity.UserEntity;
-import lakers.ingram.ModelEntity.UserlikefoodEntity;
-import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.ModelEntity.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.hibernate.Session;
@@ -14,6 +11,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository("UserLikeFoodDao")
@@ -125,17 +123,36 @@ class UserLikeFoodDaoImpl implements UserLikeFoodDao {
             Query query2 = session.createQuery("select a from FoodEntity a where a.foodId= :foodID").
                     setParameter("foodID", foodId);
             FoodEntity food = (FoodEntity) query2.uniqueResult();
-            String foodName = food.getFoodName();
             Query query3 = session.createQuery("select a from WindowEntity  a where a.windowId= :windowID").
                     setParameter("windowID", food.getWindowId());
             WindowEntity window = (WindowEntity) query3.uniqueResult();
-            String windowName = window.getWindowName();
-            String restaurant = window.getRestaurant();
+            Query query4 = session.createQuery("select a from FoodtagEntity a where a.foodId= :foodId").
+                    setParameter("foodId", foodId);
+            List<Integer> tags=new ArrayList<>();
+            for(int j=0;j<query4.list().size();j++){
+                tags.add(((FoodtagEntity)query4.list().get(j)).getTagId());
+            }
+            List<String> tagNames=new ArrayList<>();
+            for(int j=0;j<tags.size();j++){
+                Query query5 = session.createQuery("select a from TagEntity a where a.tagId= :tagId").
+                        setParameter("tagId", tags.get(j));
+                tagNames.add(((TagEntity)query5.uniqueResult()).getTagName());
+            }
+            Query query6 = session.createQuery("select a from TodayfoodEntity a where a.foodId= :foodId").
+                    setParameter("foodId", food.getFoodId());
+            Integer flag=1;
+            if(query6.list().size()==0){
+                flag=0;
+            }
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("foodId", foodId);
-            jsonObject.put("foodName", foodName);
-            jsonObject.put("windowName", windowName);
-            jsonObject.put("restaurant", restaurant);
+            jsonObject.put("foodName", food.getFoodName());
+            jsonObject.put("price", food.getPrice());
+            jsonObject.put("tips", food.getTips());
+            jsonObject.put("tags", tagNames);
+            jsonObject.put("windowName", window.getWindowName());
+            jsonObject.put("restaurant",window.getRestaurant());
+            jsonObject.put("today",flag);
             jsonArray.add(jsonObject);
         }
         transaction.commit();

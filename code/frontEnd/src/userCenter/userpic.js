@@ -2,6 +2,7 @@ import { Upload, Icon, message } from 'antd';
 import React from 'react';
 import pic from '../img/none.jpg'
 
+
 class Avatar extends React.Component {
     constructor(props){
         super(props);
