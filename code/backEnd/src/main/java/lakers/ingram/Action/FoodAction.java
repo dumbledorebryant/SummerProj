@@ -68,7 +68,7 @@ public class FoodAction extends HttpServlet {
                 }
                 else{
                     int userId=Integer.parseInt(obj.toString());
-                    if(userId!=-1){
+                    if(userId!=-1) {
                         ViewhistoryEntity viewHistory = appService.selectView(userId,windowId);
                         if(viewHistory==null){
                             ViewhistoryEntity view = new ViewhistoryEntity();
@@ -205,26 +205,4 @@ public class FoodAction extends HttpServlet {
         out.flush();
         out.close();
     }
-
-    @RequestMapping(value = "/Test")
-    private void processTags(@RequestParam("restaurant") String restaurant,
-                             @RequestParam("floor") int floor,
-                             @RequestParam("windowId") int windowId,
-                             @RequestParam("tagList") ArrayList<Integer> tagList,
-                             HttpServletRequest request,
-                             HttpServletResponse response)  throws Exception {
-        response.setContentType("application/json;charset=utf-8");
-        System.out.println("restaurant:"+restaurant);
-        System.out.println("floor:"+floor);
-        System.out.println("windowId:"+windowId);
-        System.out.println("tagList"+tagList.size());
-        List<FoodEntity> Foods = appService.getAllFoodByWindowid(windowId);
-        List<Integer> tagId = tagList;
-        List<FoodEntity> result = appService.getFoodsByTags(tagId,Foods);
-        PrintWriter out = response.getWriter();
-        out.println(JSONArray.fromObject(result).toString());
-        out.flush();
-        out.close();
-    }
-
 }

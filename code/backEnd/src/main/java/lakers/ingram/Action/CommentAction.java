@@ -31,6 +31,7 @@ public class CommentAction extends HttpServlet {
             @RequestParam("commentContent") String commentContent,
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=utf-8");
         Integer userId=Integer.valueOf(request.getSession().getAttribute("userid").toString());
         CommentEntity comment = new CommentEntity();
         comment.setUserId(userId);
@@ -38,13 +39,13 @@ public class CommentAction extends HttpServlet {
         comment.setCommentContent(commentContent);
         comment.setValid((byte)1);
         appService.CommentSave(comment);
-
         PrintWriter out = response.getWriter();
         List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,(byte)1);
         JSONArray arr = JSONArray.fromObject(commentList);
         JSONArray arr2 = CommentEntityAddHeadPic(arr);
-        out.println(CommentEntityAddUserName(arr2).toString());
-        System.out.println(CommentEntityAddUserName(arr2).toString());
+        JSONArray arr3 = CommentEntityAddUserName(arr2);
+        out.println(arr3.toString());
+        System.out.println(arr3.toString());
         out.flush();
         out.close();
     }
@@ -54,14 +55,15 @@ public class CommentAction extends HttpServlet {
                                          @RequestParam("windowId") int windowId,
                                        HttpServletRequest request,
                                        HttpServletResponse response)  throws Exception {
-
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         appService.CommentDelete(commentId);
         List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,(byte)1);
         JSONArray arr = JSONArray.fromObject(commentList);
         JSONArray arr2 = CommentEntityAddHeadPic(arr);
-        out.println(CommentEntityAddUserName(arr2).toString());
-        System.out.println(CommentEntityAddUserName(arr2).toString());
+        JSONArray arr3 = CommentEntityAddUserName(arr2);
+        out.println(arr3.toString());
+        System.out.println(arr3.toString());
         out.flush();
         out.close();
     }
@@ -81,13 +83,14 @@ public class CommentAction extends HttpServlet {
     private void processAllComment( @RequestParam("windowId") int windowId,
                                       HttpServletRequest request,
                                       HttpServletResponse response)  throws Exception {
-        byte x = 1;
-        List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,x);
+        response.setContentType("application/json;charset=utf-8");
+        List<CommentEntity>commentList = appService.CommentListGetByWindowId(windowId,(byte)1);
         PrintWriter out = response.getWriter();
         JSONArray arr = JSONArray.fromObject(commentList);
         JSONArray arr2 = CommentEntityAddHeadPic(arr);
-        out.println(CommentEntityAddUserName(arr2).toString());
-        System.out.println(CommentEntityAddUserName(arr2).toString());
+        JSONArray arr3 = CommentEntityAddUserName(arr2);
+        out.println(arr3.toString());
+        System.out.println(arr3.toString());
         out.flush();
         out.close();
     }
