@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.sql.Time;
 
 @RestController
 @RequestMapping(value = "/Window")
@@ -28,6 +27,7 @@ public class WindowAction extends HttpServlet {
                                 HttpServletRequest request,
                               HttpServletResponse response)
             throws Exception {
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         List<Integer> FloorList = appService.getFloorListByRestaurant(restaurant);
 
@@ -50,7 +50,7 @@ public class WindowAction extends HttpServlet {
                                                  @RequestParam("floor") int floor,
                                                  HttpServletRequest request,
                                                  HttpServletResponse response)  throws Exception {
-
+            response.setContentType("application/json;charset=utf-8");
             List<WindowEntity> Windows = new ArrayList<WindowEntity>();
             if(floor==0) {
                 Windows = appService.getAllWindowsByRestaurant(restaurant);

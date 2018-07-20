@@ -99,18 +99,22 @@ class Dishes extends React.Component {
                 if(result===0){
                     this.setState({
                         like:this.state.like+1
+
                     })
+                    this.props.clickLike(this.props.idx,1);
                 }
                 else{
                     this.setState({
                         like:this.state.like-1
                     })
+                    this.props.clickLike(this.props.idx,-1);
                 }
                 })
         });
+
     };
 
-  /*  componentWillMount(){
+    componentWillMount(){
         let formData=new FormData();
         formData.append("foodId",this.props.foodId);
         let userId=this.props.userId;
@@ -118,7 +122,7 @@ class Dishes extends React.Component {
             alert("-1");
         }
         else {
-            alert(userId);
+          //  alert(userId);
             formData.append("userId",userId);
             formData.append("state",0);
             fetch('http://localhost:8080/UserLikeFood/Save', {
@@ -135,7 +139,7 @@ class Dishes extends React.Component {
             });
         }
     }
-*/
+
     componentWillReceiveProps(nextProps){
         let formData=new FormData();
         formData.append("foodId",this.props.foodId);
@@ -156,6 +160,7 @@ class Dishes extends React.Component {
                 return response.json().then(result => {
                     this.setState({
                         icon: result,
+                        like:this.props.like,
                         userId:this.props.userId,
                     });})
             });
