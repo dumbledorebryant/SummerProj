@@ -119,7 +119,7 @@ class Dishes extends React.Component {
         formData.append("foodId",this.props.foodId);
         let userId=this.props.userId;
         if(userId==="-1") {
-            alert("-1");
+        //    alert("-1");
         }
         else {
           //  alert(userId);
