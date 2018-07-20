@@ -6,7 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 //import Nav from '@material-ui/core/Tab';
-import constantData from './window.json';
+//import constantData from './window.json';
 import Typography from '@material-ui/core/Typography';
 import WindowsMenu from './WindowsMenu';
 //import {Link,hashHistory} from 'react-router';
@@ -48,7 +48,7 @@ class Floor extends React.Component {
       canteen:this.props.match.params.key,           //上一级跳转的时候传来的，要给windowsMenu
       floorList:[0,1,2,3],         //0表示全部,用canteen从后端拿floorList
       floor:0,                      //默认是0, 后面通过点击某一层，传递楼层给windowsMenu
-      windows:constantData.windows,
+      windows:[],
       dishesList:[],
       windowId:null,
   };
