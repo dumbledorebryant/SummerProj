@@ -37,8 +37,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchRes from './search'
 import MailIcon from '@material-ui/icons/Mail';
-
-
+import Snackbar from '@material-ui/core/Snackbar';
+import TipsToTagSetting from '../userCenter/tipsToTagSetting'
+import ChildCareIcon from '@material-ui/icons/ChildCare';
+import PersonalRecommend from '../userCenter/personalRecommend'
 const drawerWidth = 240;
 
 function TabContainer(props) {
@@ -217,6 +219,10 @@ class MiniDrawer extends React.Component {
         logoutPop:false, //logout
         openSearch:false,  //search
         searchContent:"",
+        openSetTagHint:false,  //settag
+        openSetTag:false,
+        openRecommendHint:false, //recommend
+        openRecommend:false,
     };
 
     //nav
@@ -466,36 +472,41 @@ class MiniDrawer extends React.Component {
     };
 
     handleLogout = () =>{
-        fetch('http://localhost:8080/User/Logout',{
-            credentials: 'include',
-            method:'GET',
-            mode:'cors',
+        if (this.state.admin){
+            fetch('http://localhost:8080/Admin/Logout', {
+                credentials: 'include',
+                method: 'GET',
+                mode: 'cors',
 
-        }).then(response=>{
-            console.log('Request successful',response);
-        });
+            }).then(response => {
+                console.log('Request successful', response);
+            });
+        }
+        else if (this.state.worker){
+            fetch('http://localhost:8080/Worker/Logout', {
+                credentials: 'include',
+                method: 'GET',
+                mode: 'cors',
+
+            }).then(response => {
+                console.log('Request successful', response);
+            });
+        }
+        else {
+            fetch('http://localhost:8080/User/Logout', {
+                credentials: 'include',
+                method: 'GET',
+                mode: 'cors',
+
+            }).then(response => {
+                console.log('Request successful', response);
+            });
+        }
         window.location.href="/";
         this.setState({login:false,logoutPop:false,admin:false,worker:false});
     };
 
-    componentWillMount(){
-        fetch('http://localhost:8080/User/State',{
-            credentials: 'include',
-            method:'GET',
-            mode:'cors',
-
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                if (result[0]!=="-1" ){
-                    this.loginId=result[0];
-                    this.loginName=result[1];
-                    this.setState({login:true});
-                }
-            });
-        });
-    }
-
+    //search
     onFocusSearch = event =>{
         event.target.style.boxShadow="0px -2px 0px #006db3 inset";
     };
@@ -516,6 +527,94 @@ class MiniDrawer extends React.Component {
         this.setState({openSearch:false,searchContent:""});
     };
 
+    //set tag
+    handleCloseSetTagHint = () =>{
+      this.setState({openSetTagHint:false});
+    };
+
+    openSetTag = () =>{
+        this.setState({openSetTag:true,openSetTagHint:false});
+    };
+
+    handleCloseSetTag = () =>{
+        this.setState({openSetTag:false})
+    };
+
+    //recommend
+    handleCloseRecommendHint = () =>{
+        this.setState({openRecommendHint:false})
+    };
+
+    handleOpenRecommend = () =>{
+        this.setState({openRecommendHint:false,openRecommend:true});
+    };
+
+    handleCloseRecommend = () =>{
+        this.setState({openRecommend:false});
+    };
+
+    componentWillMount(){
+        fetch('http://localhost:8080/User/State',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                if (result[0]!=="-1" ){
+                    this.loginId=result[0];
+                    this.loginName=result[1];
+                    this.setState({login:true});
+                    let formdata=new FormData();
+                    formdata.append("userID",result[0]);
+                    fetch('http://localhost:8080/UserTag/SearchSavedTag',{
+                        credentials: 'include',
+                        method:'POST',
+                        mode:'cors',
+                        body:formdata
+                    }).then(response=>{
+                        console.log('Request successful',response);
+                        return response.json().then(result=>{
+                            if (result.length===0){
+                                this.setState({openSetTagHint:true});
+                            }
+                            else {
+                                this.setState({openRecommendHint:true});
+                            }
+                        });
+                    });
+                }
+            });
+        });
+        fetch('http://localhost:8080/Worker/State',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                if (result!=="-1\n" ){
+                    this.setState({login:true,worker:true});
+                }
+            });
+        });
+        fetch('http://localhost:8080/Admin/State',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                if (result!=="-1\n" ){
+                    this.setState({login:true,admin:true});
+                }
+            });
+        });
+    }
+
     render() {
         const { classes, theme } = this.props;
 
@@ -523,7 +622,6 @@ class MiniDrawer extends React.Component {
             <MuiThemeProvider theme={theme2}>
             <div className={classes.root}>
                 <AppBar
-                    position="absolute"
                     className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
                 >
                     <Toolbar disableGutters={!this.state.open}>
@@ -569,6 +667,7 @@ class MiniDrawer extends React.Component {
                         paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
                     }}
                     open={this.state.open}
+                    position="static"
                 >
                     <div className={classes.toolbar}>
                         <IconButton onClick={this.handleDrawerClose}>
@@ -923,6 +1022,54 @@ class MiniDrawer extends React.Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
+                <Dialog
+                    open={this.state.openSetTag}
+                    onClose={this.handleCloseSetTag}
+                    aria-labelledby="form-dialog-title"
+                >
+                    <DialogTitle className={classes.registerTitle} id="form-dialog-title">
+                        <ChildCareIcon />Set Tags
+                    </DialogTitle>
+                    <DialogContent>
+                        <TipsToTagSetting save={this.handleCloseSetTag} userid={this.loginId}/>
+                    </DialogContent>
+                </Dialog>
+                <Snackbar
+                    anchorOrigin={{ vertical:'top', horizontal:'center' }}
+                    open={this.state.openSetTagHint}
+                    autoHideDuration={10000}
+                    onClose={this.handleCloseSetTagHint}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">Task: set your tags</span>}
+                    action={[<Button size="small" color="primary" onClick={this.openSetTag}>Set</Button>,
+                        <Button size="small" color="secondary" onClick={this.handleCloseSetTagHint}>Later</Button>,]}
+                />
+                <Dialog
+                    open={this.state.openRecommend}
+                    onClose={this.handleCloseRecommend}
+                    aria-labelledby="form-dialog-title"
+                >
+                    <DialogTitle className={classes.registerTitle} id="form-dialog-title">
+                        Recommends
+                    </DialogTitle>
+                    <DialogContent>
+                        <PersonalRecommend userid={this.loginId}/>
+                    </DialogContent>
+                </Dialog>
+                <Snackbar
+                    anchorOrigin={{ vertical:'top', horizontal:'center' }}
+                    open={this.state.openRecommendHint}
+                    autoHideDuration={600000}
+                    onClose={this.handleCloseRecommendHint}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">open to see recommend dishes</span>}
+                    action={[<Button size="small" color="primary" onClick={this.handleOpenRecommend}>Show</Button>,
+                        <Button size="small" color="secondary" onClick={this.handleCloseRecommendHint}>Later</Button>,]}
+                />
             </div>
             </MuiThemeProvider>
         );

@@ -86,14 +86,14 @@ public class UserTagAction {
 
     @RequestMapping(value = "/UpdateUserDislikeTag")
     private void processLogin(
-            @RequestParam("userId") Integer userId,
             @RequestParam("dislikeTags") JSONArray dislikeTags,
             HttpServletRequest request,
             HttpServletResponse response)
             throws Exception {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        String result=appService.updateUserDislikeTag(userId,dislikeTags);
+        String result=appService.updateUserDislikeTag(
+                Integer.valueOf(request.getSession().getAttribute("userid").toString()),dislikeTags);
         out.print(result);
     }
 

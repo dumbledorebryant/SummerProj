@@ -79,7 +79,7 @@ public class UserLikeFoodAction extends HttpServlet {
     }
 
     @RequestMapping(value = "/update")
-    private void processLogin(@RequestParam("userId") Integer userID,
+    private void processLogin(
                               @RequestParam("userLikeId") Integer foodID,
                               @RequestParam("flag") Integer flag,
                               HttpServletRequest request,
@@ -87,18 +87,20 @@ public class UserLikeFoodAction extends HttpServlet {
             throws Exception {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        String result = appService.updateUserLike(userID,foodID,flag);
+        String result = appService.updateUserLike
+                (Integer.valueOf(request.getSession().getAttribute("userid").toString()),foodID,flag);
         out.print(result);
     }
 
     @RequestMapping(value = "/search")
-    private void processLogin(@RequestParam("userId") Integer userID,
+    private void processLogin(
                               HttpServletRequest request,
                               HttpServletResponse response)
             throws Exception {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        JSONArray result = appService.searchUserLike(userID);
+        JSONArray result = appService.searchUserLike
+                (Integer.valueOf(request.getSession().getAttribute("userid").toString()));
         out.print(result);
     }
 

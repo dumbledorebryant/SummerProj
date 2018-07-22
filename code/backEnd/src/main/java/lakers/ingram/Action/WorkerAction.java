@@ -55,6 +55,26 @@ public class WorkerAction extends HttpServlet {
         request.getSession().setAttribute("windowid",-1);
     }
 
+    @RequestMapping(value="/State")
+    private void processState(HttpServletRequest request,HttpServletResponse response) throws IOException{
+        Object obj=request.getSession().getAttribute("windowid");
+        PrintWriter out = response.getWriter();
+        if (obj!=null){
+            String windowid=obj.toString();
+            if (!windowid.equals("-1")){
+                out.println(windowid);
+            }
+            else{
+                out.println("-1");
+            }
+        }
+        else{
+            out.println("-1");
+        }
+        out.flush();
+        out.close();
+    }
+
     @RequestMapping(value = "/UpdatePic")
     private void execute(@RequestParam("WindowID") String windowid,
                          @RequestParam("files[]") MultipartFile file,

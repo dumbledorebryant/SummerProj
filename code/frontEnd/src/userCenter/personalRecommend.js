@@ -161,7 +161,9 @@ class PersonalRecommend extends React.Component
         if(idx===foodListGroup.length){
             idx=0;
         }
-        let temp = foodListGroup[idx];
+        let temp=null;
+        if (foodListGroup.length===0) temp=[];
+        else temp = foodListGroup[idx];
         if (!this.state.loading) {
             this.setState(
                 {
@@ -235,7 +237,6 @@ class PersonalRecommend extends React.Component
             flag = 0;
         }
         fetch('http://localhost:8080/UserLikeFood/update?' +
-            'userId='+this.props.userid+
             '&userLikeId=' + name +
             '&flag=' + flag,
             {
@@ -252,8 +253,8 @@ class PersonalRecommend extends React.Component
     };
 
     searchUserTagRelatedFood=()=>{
-        fetch('http://localhost:8080/UserTag/UserTagRelatedFood/search?' +
-            'userId='+this.props.userid,
+        fetch('http://localhost:8080/UserTag/UserTagRelatedFood/search?userId='+this.props.userid ,
+
             {
                 method: 'POST',
                 mode: 'cors',
@@ -349,7 +350,6 @@ class PersonalRecommend extends React.Component
             }
         }
         fetch('http://localhost:8080/UserTag/UpdateUserDislikeTag?' +
-            'userId='+this.props.userid+
             '&dislikeTags=' + dislikeTags,
             {
                 method: 'POST',
@@ -391,8 +391,8 @@ class PersonalRecommend extends React.Component
 
                 <Grid container spacing = {24} >
                     <Grid item xs = {12}>
-                        <Grid container className = {classes.demo} >{
-                            this.state.foodInfo.map(function (item){
+                        <Grid container className = {classes.demo} >
+                            {this.state.foodInfo.length>0 && this.state.foodInfo.map(function (item){
                                 return <Grid item xs = {8} sm = {4}>
                                     <Card className={classes.card}>
                                         <Chip
@@ -470,8 +470,9 @@ class PersonalRecommend extends React.Component
 
                                     </Card>
                                 </Grid>
-                            },this)
-                        }
+                            },this)}
+                        {this.state.foodInfo.length === 0 && <p style={{marginLeft:30}}>nothing to recommend</p>}
+
                         </Grid>
                     </Grid>
                 </Grid>

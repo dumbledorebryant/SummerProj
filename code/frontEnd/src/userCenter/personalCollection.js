@@ -119,10 +119,13 @@ class PersonalCollection extends React.Component
         this.searchLike = this.searchLike.bind(this);
         this.searchLikePic = this.searchLikePic.bind(this);
         this.handleExpandClick = this.handleExpandClick.bind(this);
-        this.searchLike();
+
         this.handlePageSelect = this.handlePageSelect.bind(this);
     }
 
+    componentWillMount(){
+        this.searchLike();
+    }
     handlePageSelect(eventKey) {
         this.setState({
             activePage: eventKey
@@ -248,7 +251,7 @@ class PersonalCollection extends React.Component
                         console.log("111foodListGroup[1]:"+foodListGroup[1]);
                         this.setState({
                             saleBool:saleBoolTemp,
-                            likeFoodInfo: foodListGroup[0],
+                            likeFoodInfo: foodListGroup.length>0?foodListGroup[0]:[],
                             like: likeList,
                             pageNum:groupNum,
                             likeFoodInfoGroup:foodListGroup
@@ -273,7 +276,7 @@ class PersonalCollection extends React.Component
                 <Grid container spacing = {24} >
                     <Grid item xs = {12}>
                         <Grid container className = {classes.demo} >{
-                        this.state.likeFoodInfo.map(function (item){
+                             this.state.likeFoodInfo.map(function (item){
                             return <Grid item xs = {8} sm = {4}>
                                 <Card className={classes.card}>
                                     <CardHeader

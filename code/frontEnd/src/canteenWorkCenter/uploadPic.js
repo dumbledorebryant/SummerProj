@@ -8,10 +8,27 @@ class WorkerPage extends React.Component {
         this.state={
             loading:false,
             imageUrl:'',
+            windowId:null,
+            login:false
         };
         this.beforeUpload=this.beforeUpload.bind(this);
     }
 
+    componentWillMount(){
+        fetch('http://localhost:8080/Worker/State',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                if (result!=="-1" ){
+                    this.setState({windowId:result,login:true});
+                }
+            });
+        });
+    }
 
     beforeUpload=(file)=> {
         const isJPG = file.type === 'image/jpeg';
@@ -34,7 +51,7 @@ class WorkerPage extends React.Component {
 
         let formData = new FormData();
         formData.append('files[]', file);
-        fetch('http://localhost:8080/Worker/UpdatePic?WindowID=1',
+        fetch('http://localhost:8080/Worker/UpdatePic?WindowID='+this.state.windowId,
             {
                 method: 'POST',
                 mode: 'cors',
@@ -57,7 +74,7 @@ class WorkerPage extends React.Component {
                 <div className="ant-upload-text">点击上传图片</div>
             </div>
         );
-
+        if (this.state.login){
         return (
             <div align="center">
                 <br/>
@@ -76,7 +93,13 @@ class WorkerPage extends React.Component {
                 </Upload>
         </div>
 
-        );
+        );}
+        else{
+            return(
+                    <p>please login</p>
+                )
+
+        }
     }
 }
 

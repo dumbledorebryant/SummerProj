@@ -14,11 +14,26 @@ import blue from "@material-ui/core/es/colors/blue";
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import createMuiTheme from "@material-ui/core/es/styles/createMuiTheme";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
-import PersonalRecommend from "./personalRecommend";
+import Divider from '@material-ui/core/Divider';
 
 const theme2=createMuiTheme({
     typography:{
         fontSize:25,
+    },
+    palette: {
+        primary: {
+            light: '#039be5',
+            main: '#63ccff',
+            dark: '#006db3',
+            contrastText: '#424242',
+        },
+        secondary: {
+            light: '#fb8c00',
+            main: '#ffbd45',
+            dark: '#c25e00',
+            contrastText: '#424242',
+        },
+
     },
 });
 
@@ -28,8 +43,8 @@ const styles = theme => ({
         maxWidth: 360,
     },
     root: {
-        marginLeft:theme.spacing.unit*9,
-        marginRight:theme.spacing.unit*20,
+       // marginLeft:theme.spacing.unit*9,
+       // marginRight:theme.spacing.unit*20,
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: theme.spacing.unit ,
@@ -38,8 +53,11 @@ const styles = theme => ({
         margin: theme.spacing.unit ,
     },
     button: {
-        margin: theme.spacing.unit*3,
-        marginLeft:theme.spacing.unit*60
+       // margin: theme.spacing.unit*3,
+       // marginLeft:theme.spacing.unit*60
+        marginLeft:20,
+        marginRight:20,
+        marginTop:20
     },
     icon:{
         color:blue[500]
@@ -49,9 +67,9 @@ const styles = theme => ({
         marginLeft:theme.spacing.unit,
     },
     tagTitle:{
-        margin: theme.spacing.unit,
-        marginLeft:theme.spacing.unit,
-
+       // margin: theme.spacing.unit,
+       // marginLeft:theme.spacing.unit,
+        margin:20
     }
 });
 
@@ -66,54 +84,65 @@ class TipsToTagSetting extends Component {
             tagBool:[],
             step:0,
             header:"",
-            pageState:true
+            openSaveTag:false,
         };
         this.handleClick = this.handleClick.bind(this);
         this.showTags=this.showTags.bind(this);
-        this.showTags();
-        this.clickButton=this.clickButton.bind(this);
+
     }
 
-    clickButton(){
+    componentWillMount(){
+        this.showTags();
+    };
+
+    nextStep=()=>{
         let idx=this.state.step;
-        console.log("step:"+idx);
+        //console.log("step:"+idx);
         idx++;
-        console.log("headerGroup[idx]:"+headerGroup);
-        if(idx<=3){
+        //console.log("headerGroup[idx]:"+headerGroup);
             this.setState({
                 header:headerGroup[idx],
                 chipData:tagDataGroup[idx],
                 step:idx
             });
-        }
-        else if(idx===4){
-            let tagChoose=[];
-            for(let i in this.state.tagBool){
-                if(this.state.tagBool[i]===true){
-                    tagChoose.push(i);
-                }
+    };
+
+    lastStep=()=>{
+        let idx=this.state.step;
+        //console.log("step:"+idx);
+        idx--;
+        //console.log("headerGroup[idx]:"+headerGroup);
+        this.setState({
+            header:headerGroup[idx],
+            chipData:tagDataGroup[idx],
+            step:idx
+        });
+    };
+
+    saveTags= () =>{
+        let tagChoose=[];
+        for(let i in this.state.tagBool){
+            if(this.state.tagBool[i]===true){
+                tagChoose.push(i);
             }
-            fetch('http://localhost:8080/UserTag/ChooseTag?' +
-                'userID='+this.props.userid+
-                '&tagArray='+tagChoose,
-                {
-                    credentials: 'include',
-                    method: 'POST',
-                    mode: 'cors',
-                }
-            )
-                .then(response => {
-                    response.text()
-                        .then(result => {
-                            this.setState({
-                                pageState:false
-                            })
-                        });
-                })
-
         }
-    }
 
+        fetch('http://localhost:8080/UserTag/ChooseTag?' +
+            'userID='+this.props.userid+
+            '&tagArray='+tagChoose,
+            {
+                credentials: 'include',
+                method: 'POST',
+                mode: 'cors',
+            }
+        )
+            .then(response => {
+                response.text()
+                    .then(result => {
+                        this.props.save();
+                    });
+            });
+    };
     showTags= () => {
         fetch('http://localhost:8080/UserTag/ShowFoodTags',
             {
@@ -178,25 +207,14 @@ class TipsToTagSetting extends Component {
     render() {
         const { classes } = this.props;
         return (
-            <div>
-                {this.state.pageState?
+            <MuiThemeProvider theme={theme2}>
                     <div>
-                        <div className={classes.header}>
-                            <List>
-                                <ListItem>
-                                    <Avatar>
-                                        <ChildCareIcon />
-                                    </Avatar>
-                                    <ListItemText primary="选择您喜欢的标签"  />
-                                </ListItem>
-                            </List>
-                        </div>
-                        <MuiThemeProvider theme={theme2}>
+
                             <Paper className={classes.root}>
                                 <div className={classes.iconRestaurant}>
-                                    <RestaurantIcon/>
-                                    <a className={classes.tagTitle}>
-                                        {this.state.header+" favor"}</a>
+                                    <RestaurantIcon style={{float:'left',marginRight:10}} />
+                                    <typography className={classes.tagTitle}>
+                                        {this.state.header+" favor"}</typography>
                                 </div>
                                 {this.state.chipData.map(data => {
                                     return (
@@ -212,16 +230,47 @@ class TipsToTagSetting extends Component {
                                     );
                                     },this)}
                                     </Paper>
-                        </MuiThemeProvider>
-                        <Button variant="outlined"
-                                color="primary"
-                                className={classes.button}
-                                onClick={this.clickButton}>
-                            Next Step
-                         </Button>
+                        <Divider/>
+                        {this.state.step!==3 ?
+                            <div>
+                                <Button size="small" variant="outlined"
+                                        color="primary"
+                                        className={classes.button}
+                                        onClick={this.lastStep}
+                                        style={{float:'left'}}
+                                >
+                                    Last Step</Button>
+                                <Button size="small" variant="outlined"
+                                    color="primary"
+                                    className={classes.button}
+                                    onClick={this.nextStep}
+                                        style={{float:'left'}}
+                                >
+                                Next Step</Button>
+                                <Button size="small" variant="outlined"
+                                        color="secondary"
+                                        className={classes.button}
+                                        onClick={this.saveTags}
+                                        style={{float:'left'}}
+                                >
+                                    Save & Exit</Button>
+                            </div>
+                            :<div><Button size="small" variant="outlined"
+                                           color="secondary"
+                                           className={classes.button}
+                                           onClick={this.saveTags}>
+                                Done</Button>
+                                <Button size="small" variant="outlined"
+                                        color="primary"
+                                        className={classes.button}
+                                        onClick={this.lastStep}
+                                        style={{float:'left'}}
+                                >
+                                    Last Step</Button>
+                            </div>
+                        }
                     </div>
-                    :  <div><PersonalRecommend userid={this.props.userid}/></div>}
-            </div>
+            </MuiThemeProvider>
         );
     }
 }

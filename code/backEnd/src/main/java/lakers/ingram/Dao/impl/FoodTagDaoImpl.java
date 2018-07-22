@@ -49,7 +49,7 @@ public class FoodTagDaoImpl implements FoodTagDao {
         session.beginTransaction();
         Query query =session.createQuery("select Tag " +
                 "from TagEntity Tag " +
-                "group by tagType");
+                "order by Tag.tagType");
         @SuppressWarnings("unchecked")
         List<TagEntity> Tags=query.list();
         session.getTransaction().commit();
@@ -60,16 +60,18 @@ public class FoodTagDaoImpl implements FoodTagDao {
         if(Food.size()==0||tagIdList.size()==0)return null;
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
-        Query query1 =session.createQuery("select foodId " +
+        Query query1 =session.createQuery("select food.foodId " +
                 "from FoodtagEntity food " +
                 "where food.tagId in :tagIdList");
         query1.setParameter("tagIdList", tagIdList);
+        @SuppressWarnings("unchecked")
         List<Integer> list1 = query1.list();
         if(list1.size()==0){ session.getTransaction().commit();return null;}
         Query query2 =session.createQuery("select food " +
                 "from FoodEntity food " +
                 "where food.foodId in :foodIdList");
         query2.setParameter("foodIdList", list1);
+        @SuppressWarnings("unchecked")
         List<FoodEntity> list2 = query2.list();
         if(list2.size()==0){ session.getTransaction().commit();return null;}
 
@@ -78,6 +80,7 @@ public class FoodTagDaoImpl implements FoodTagDao {
                 "where food in :Food and food in :list2");
         query3.setParameter("Food", Food);
         query3.setParameter("list2", list2);
+        @SuppressWarnings("unchecked")
         List<FoodEntity> list3 = query3.list();
         if(list3.size()==0){ session.getTransaction().commit();return null;}
         session.getTransaction().commit();

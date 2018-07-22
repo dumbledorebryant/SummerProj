@@ -57,3 +57,8 @@
 ## 1.0.5
    2018.7.18
    * predict time
+   
+## 2.0.0
+   2018.7.22
+   * improve admin/worker login
+   * tagset & recommend pop

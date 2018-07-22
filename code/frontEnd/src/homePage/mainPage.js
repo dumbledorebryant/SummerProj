@@ -7,7 +7,6 @@ import ButtonBases from './btn'
 import Footer from '../nav/footer'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-
 const styles = theme => ({
     toolbar: {
         display: 'flex',

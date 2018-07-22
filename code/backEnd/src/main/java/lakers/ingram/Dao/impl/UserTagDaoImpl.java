@@ -32,6 +32,33 @@ public class UserTagDaoImpl implements UserTagDao{
         return jsonArray;
     }
 
+    public String chooseUserTag(Integer userid,String[] tagArray){
+        Session session = lakers.ingram.HibernateUtil.HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        Boolean tasteFlag=true;
+        Boolean countryFlag=true;
+        Boolean tabooFlag=true;
+        Query query1 = session.createQuery("select a from UsertagEntity a where a.userId= :userid").
+                setParameter("userid", userid);
+        List<UsertagEntity> list=query1.list();
+        for (int i=0;i<list.size();i++){
+            Integer tagID=list.get(i).getTagId();
+            Query query2 = session.createQuery("select a from TagEntity a where a.tagId= :userid").
+                    setParameter("userid", userid);
+
+        }
+        for(int i=0;i<tagArray.length;i++){
+            Query query = session.createQuery("select a from TagEntity a where a.tagName= :name").
+                    setParameter("name", tagArray[i]);
+            TagEntity tag=(TagEntity)query.uniqueResult();
+            String tagType=tag.getTagType();
+            if(tagType.equals("taste")&&tasteFlag){
+
+            }
+        }
+        return "success";
+    }
+
     private final static boolean isNumeric(String s) {
         if (s != null && !"".equals(s.trim()))
             return s.matches("^[0-9]*$");
