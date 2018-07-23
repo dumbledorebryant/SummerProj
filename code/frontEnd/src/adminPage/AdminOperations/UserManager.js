@@ -2,6 +2,20 @@ import React from 'react'
 import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table";
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
 import {Button, ButtonToolbar, Col, Modal} from "react-bootstrap";
+import List from "@material-ui/core/es/List/List";
+import ListItem from "@material-ui/core/es/ListItem/ListItem";
+import Avatar from "@material-ui/core/es/Avatar/Avatar";
+import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import {withStyles} from "@material-ui/core/styles/index";
+import PropTypes from 'prop-types';
+
+const styles = theme => ({
+    header: {
+        width: '100%',
+        maxWidth: 360,
+    },
+});
 
 class UserManager extends React.Component
 {
@@ -10,31 +24,22 @@ class UserManager extends React.Component
         this.state = {
             rowIDs: new FormData(),
             userData: [],
+            userSum:0,
 
             sortName: undefined,
             sortOrder: undefined,
-
-            show: false,
-            img: ""
         };
         this.onRowSelect = this.onRowSelect.bind(this);
         this.showUser = this.showUser.bind(this);
         this.deleteUser = this.deleteUser.bind(this);
         this.freezeUser = this.freezeUser.bind(this);
         this.activateUser = this.activateUser.bind(this);
-        this.close = this.close.bind(this);
+        this.showUser();
     }
-
-    close(){
-        this.setState({
-            show: false
-        })
-    }
-
 
     showUser(){
         let tmp = [];
-        fetch('http://localhost:8080/AdminAction/showUsers',
+        fetch('http://localhost:8080/Admin/showUsers',
             {
                 method: 'GET',
                 mode: 'cors',
@@ -43,9 +48,7 @@ class UserManager extends React.Component
             .then(response => {
                 return response.json()
                     .then(result => {
-                        console.log("result: ", result);
-                        tmp.splice(0, tmp.length);
-                        for (let i in result) {
+                        for (let i = 1; i < result.length; i++) {
                             if (result.hasOwnProperty(i)) {
                                 let add =
                                     {
@@ -60,6 +63,7 @@ class UserManager extends React.Component
                             }
                         }
                         this.setState({
+                            userSum: result[0],
                             userData: tmp
                         });
                     })
@@ -68,7 +72,7 @@ class UserManager extends React.Component
 
     deleteUser(){
         let deletedUserIDs = this.state.rowIDs;
-        fetch('http://localhost:8080/AdminAction/deleteUsers',
+        fetch('http://localhost:8080/Admin/deleteUsers',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -76,16 +80,16 @@ class UserManager extends React.Component
             }
         )
             .then(response => {
-                return response.json()
+                return response.text()
                     .then(result => {
-                        console.log("result: ", result);
                         alert(result);
+                        this.showUser();
                     })
             })
     }
     freezeUser(){
         let frozenUserIDs = this.state.rowIDs;
-        fetch('http://localhost:8080/AdminAction/freezeUsers',
+        fetch('http://localhost:8080/Admin/freezeUsers',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -102,7 +106,7 @@ class UserManager extends React.Component
     }
     activateUser(){
         let activatedUserIDs = this.state.rowIDs;
-        fetch('http://localhost:8080/AdminAction/activateUsers',
+        fetch('http://localhost:8080/Admin/activateUsers',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -121,7 +125,6 @@ class UserManager extends React.Component
     onRowSelect=(row)=>{
         let tmp = this.state.rowIDs;
         let rowID = row.id;
-        alert("The selected rowID is: " + rowID);
         for( let i = 0; i < tmp.length; i++)
         {
             if(tmp[i]===rowID)
@@ -133,11 +136,11 @@ class UserManager extends React.Component
         this.setState({
             rowIDs: tmp
         });
-        alert("Now you have selected rows: " + this.state.rowIDs);
     };
 
     render()
     {
+        const { classes } = this.props;
         const options = {
             sortName: this.state.sortName,
             sortOrder: this.state.sortOrder,
@@ -155,6 +158,16 @@ class UserManager extends React.Component
         };
         return(
             <div>
+                <div className={classes.header}>
+                    <List>
+                        <ListItem>
+                            <Avatar>
+                                <PermIdentityIcon />
+                            </Avatar>
+                            <ListItemText primary={"当前用户总数 : " + this.state.userSum}  />
+                        </ListItem>
+                    </List>
+                </div>
                 <br/>
                 <BootstrapTable data={ this.state.userData} height="300px" keyBoardNav
                                 columnFilter
@@ -173,9 +186,6 @@ class UserManager extends React.Component
                 <br/>
                 <ButtonToolbar>
                     <Col md={2}>
-                        <Button bsStyle="info" onClick={this.showUser}>Show User Info</Button>
-                    </Col>
-                    <Col md={2}>
                         <Button bsStyle="warning" onClick={this.deleteUser}>Delete User</Button>
                     </Col>
                     <Col md={2}>
@@ -185,21 +195,13 @@ class UserManager extends React.Component
                         <Button bsStyle="success" onClick={this.activateUser}>Activate User</Button>
                     </Col>
                 </ButtonToolbar>
-                <div className="modal-container" style={{height: 200}}>
-                    <Modal show={this.state.show} onHide={this.close}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>对话框标题</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <img src={this.state.img} alt="" height="500" width="570"/>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button onClick={this.close}>取消</Button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>
             </div>
         )
     }
 }
-export default UserManager;
+
+UserManager.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(UserManager);

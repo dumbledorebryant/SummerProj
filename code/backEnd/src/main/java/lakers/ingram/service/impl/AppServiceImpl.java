@@ -60,25 +60,11 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private UserTagDislikeDao userTagDislikeDao;
 
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-    public void setAdminDao(AdminDao adminDao) {
-        this.adminDao = adminDao;
-    }
-    public void setWorkerDao(WorkerDao workerDao) {
-        this.workerDao = workerDao;
-    }
-    public void setWindowDao(WindowDao windowDao){ this.windowDao = windowDao; }
-    public void setDataDao(DataDao dataDao){ this.dataDao = dataDao; }
-    public void setViewHistoryDao(ViewHistoryDao viewHistoryDao){this.viewHistoryDao=viewHistoryDao;}
-    public void setCommentDao(CommentDao commentDao){this.commentDao=commentDao;}
-    public void setFoodTagDao(FoodTagDao foodTagDao){this.foodTagDao=foodTagDao;}
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
 
-    public void deleteUser(UserEntity user){
-        userDao.delete(user);
+    public void deleteUsers(int[] userIDs){
+        userDao.delete(userIDs);
     }
 
     public void updateUser(UserEntity user){

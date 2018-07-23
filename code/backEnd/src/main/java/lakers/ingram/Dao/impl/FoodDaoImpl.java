@@ -16,7 +16,6 @@ import java.util.Map;
 @Repository("FoodDao")
 @Transactional
 class FoodDaoImpl implements FoodDao {
-
     @Override
     public List<FoodEntity> getAllFood() {
         Session session=HibernateUtil.getSession();
@@ -142,7 +141,6 @@ class FoodDaoImpl implements FoodDao {
     @Override
     public Map<String, String> getFoodId_NameByWindowID(int windowID)
     {
-        System.out.println(windowID);
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
 

@@ -64,7 +64,7 @@ class Avatar extends React.Component {
 
         let formData = new FormData();
         formData.append('files[]', file);
-        fetch('http://localhost:8080/User/UpdatePic?userId=1',
+        fetch('http://localhost:8080/User/UpdatePic?userId='+this.props.userid,
             {
                 method: 'POST',
                 mode: 'cors',

@@ -16,7 +16,7 @@ public interface AppService {
     void freezeUser(UserEntity user);
 
     void activateUser(UserEntity user);
-    public void deleteUser(UserEntity user);
+    public void deleteUsers(int[] userIDs);
 
     public void updateUser(UserEntity user);
 

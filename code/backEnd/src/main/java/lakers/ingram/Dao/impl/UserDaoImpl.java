@@ -3,6 +3,7 @@ package lakers.ingram.Dao.impl;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -37,10 +38,13 @@ class UserDaoImpl implements UserDao {
         return userr.getUserId();
     }
 
-    public void delete(UserEntity user) {
+    public void delete(int[] userIDs) {
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
-        session.delete(user);
+        for (int id: userIDs){
+            UserEntity user = getUserById(id);
+            session.delete(user);
+        }
         session.getTransaction().commit();
     }
 
@@ -100,6 +104,7 @@ class UserDaoImpl implements UserDao {
                 "from UserEntity user ");
         @SuppressWarnings("unchecked")
         List<UserEntity> users = query.list();
+
         session.getTransaction().commit();
         return users;
     }
@@ -162,7 +167,6 @@ class UserDaoImpl implements UserDao {
             gfsPhoto.remove(gfsPhoto.findOne(userid.toString()));
             GridFSInputFile gfsFile = gfsPhoto.createFile(imgFile);
             gfsFile.setFilename(userid.toString());
-
             gfsFile.save();
         } catch (Exception e) {
             e.printStackTrace();

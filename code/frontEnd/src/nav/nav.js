@@ -265,7 +265,8 @@ class MiniDrawer extends React.Component {
 
             }).then(response=>{
                 console.log('Request successful',response);
-                return response.json().then(result=>{
+                return response.json()
+                    .then(result=>{
                     if (result[0]==="0"){
                         this.setState({loginPattern:2})
                     }
@@ -595,7 +596,7 @@ class MiniDrawer extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.text().then(result=>{
-                if (result!=="-1\n" ){
+                if (result!=="-1\r\n" ){
                     this.setState({login:true,worker:true});
                 }
             });
@@ -608,7 +609,7 @@ class MiniDrawer extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.text().then(result=>{
-                if (result!=="-1\n" ){
+                if (result!=="-1\r\n" ){
                     this.setState({login:true,admin:true});
                 }
             });
@@ -651,7 +652,8 @@ class MiniDrawer extends React.Component {
                             onFocus={this.onFocusSearch}
                             onBlur={this.onBlurSearch}
                         />
-                        {!this.state.login?<Button color="inherit" onClick={this.handleLoginOpen}>Login</Button>:
+                        {!this.state.login?<Button color="inherit"
+                                                   onClick={this.handleLoginOpen}>Login</Button>:
                             <Button color="inherit" onClick={this.handleLogoutOpen}>Logout</Button>}
                         {!this.state.login?<Button color="inherit" onClick={this.handleRegisterOpen}>Register</Button>:
                             !this.state.admin&&!this.state.worker&&<Link className={classes.link} to={'/usercenter/'+this.loginId}><IconButton

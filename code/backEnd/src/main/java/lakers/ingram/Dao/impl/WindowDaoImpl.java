@@ -102,7 +102,6 @@ class WindowDaoImpl implements WindowDao {
                 "from WindowEntity window " +
                 "where window.windowId= :id");
         query.setParameter("id", id);
-        @SuppressWarnings("unchecked")
         List<WindowEntity> windows = query.list();
         session.getTransaction().commit();
         WindowEntity window = windows.size() > 0 ? windows.get(0) : null;

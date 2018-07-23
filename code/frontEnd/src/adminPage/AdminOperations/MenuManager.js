@@ -11,7 +11,11 @@ import {
     Modal,
     Row
 } from "react-bootstrap";
-import UploadPic from "../../PicUpload/UploadPic";
+import Avatar from "../../userCenter/userpic";
+import List from "@material-ui/core/es/List/List";
+import ListItem from "@material-ui/core/es/ListItem/ListItem";
+import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+
 
 class MenuManager extends React.Component
 {
@@ -31,7 +35,7 @@ class MenuManager extends React.Component
             singleWindow: [],
 
             show: false,
-            img: "Ingram.jpg"
+            img: ''
         };
         this.addNewDish = this.addNewDish.bind(this);
         this.close = this.close.bind(this);
@@ -67,7 +71,7 @@ class MenuManager extends React.Component
 
     fetchInfo(){
         let tmp = this.state.newData;
-        fetch('http://localhost:8080/AdminAction/ShowNews',
+        fetch('http://localhost:8080/Admin/ShowNews',
             {
                 method: 'GET',
                 mode: 'cors',
@@ -99,8 +103,7 @@ class MenuManager extends React.Component
 
     registerInfo(){
         let tmpAll = [];
-
-        fetch('http://localhost:8080/AdminAction/checkWindow' +
+        fetch('http://localhost:8080/Admin/checkWindow' +
             '?windowID=' + this.state.windowID,
             {
                 method: 'GET',
@@ -111,25 +114,19 @@ class MenuManager extends React.Component
                 return response.json()
                     .then(result => {
                         console.log("result: ", result);
-                        tmpAll.splice(0, tmpAll.length);
-
-                        for(let key in result)
-                        {
-                            if (result.hasOwnProperty(key))
-                            {
-                                let single =
-                                    {
+                        for(let key in result) {
+                            if (result.hasOwnProperty(key)) {
+                                let single = {
                                         "id": key,
                                         "name": result[key]
                                     };
                                 tmpAll.push(single);
                             }
                         }
-
                         this.setState({
                             singleWindow: tmpAll
                         });
-                        fetch('http://localhost:8080/AdminAction/fetchWinowPic' +
+                        fetch('http://localhost:8080/Admin/fetchWindowPic' +
                             '?windowID=' + this.state.windowID,
                             {
                                 method: 'GET',
@@ -232,16 +229,16 @@ class MenuManager extends React.Component
                             <Row>
                                 <Col md={9}>
                                     <Form>
-                                        <FormGroup controlId="formValidationWarning2" validationState="warning">
+                                        <FormGroup validationState="warning">
                                             <ControlLabel>Food Name</ControlLabel>
                                             <FormControl type="text" onChange={this.ChangeFoodName} />
                                             <FormControl.Feedback />
                                         </FormGroup>
-                                        <FormGroup controlId="formValidationSuccess2" validationState="success">
+                                        <FormGroup validationState="success">
                                             <ControlLabel>Food Prices</ControlLabel>
                                             <FormControl type="text" onChange={this.ChangePrice}/>
                                             <FormControl.Feedback />
-                                            <FormGroup controlId="formValidationSuccess2" validationState="success">
+                                            <FormGroup validationState="success">
                                                 <ControlLabel>Food Tips</ControlLabel>
                                                 <FormControl type="text" onChange={this.ChangeTips}/>
                                                 <FormControl.Feedback />
@@ -251,7 +248,7 @@ class MenuManager extends React.Component
                                     <Button onClick={this.addNewDish}>Add New Dish</Button>
                                 </Col>
                                 <Col md={3}>
-                                    <UploadPic/>
+                                    <Avatar/>
                                 </Col>
                             </Row>
 

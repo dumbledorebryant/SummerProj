@@ -8,7 +8,6 @@ import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import RoomIcon from '@material-ui/icons/Room';
-import {Col, Label, Navbar, Row} from 'react-bootstrap';
 import CardContent from "@material-ui/core/es/CardContent/CardContent";
 import red from "@material-ui/core/es/colors/red";
 import Grid from "@material-ui/core/es/Grid/Grid";

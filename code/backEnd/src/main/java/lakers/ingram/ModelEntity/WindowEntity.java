@@ -5,7 +5,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "window", schema = "SummerProj", catalog = "")
+@Table(name = "`window`", schema = "SummerProj", catalog = "")
 public class WindowEntity {
     private int windowId;
     private String restaurant;

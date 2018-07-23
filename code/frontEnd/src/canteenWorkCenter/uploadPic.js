@@ -47,7 +47,7 @@ class WorkerPage extends React.Component {
                 imageUrl: reader.result,
             });
         };
-        console.log("image1:"+this.state.imageUrl);
+        console.log("WindowID:"+this.state.windowId);
 
         let formData = new FormData();
         formData.append('files[]', file);

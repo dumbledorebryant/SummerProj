@@ -1,6 +1,7 @@
 package lakers.ingram.Dao;
 
 import lakers.ingram.ModelEntity.UserEntity;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.data.repository.CrudRepository;
 
@@ -11,7 +12,7 @@ public interface UserDao{
 
     public Integer save(UserEntity user);
 
-    public void delete(UserEntity user);
+    public void delete(int[] userIDs);
 
     public void update(UserEntity user);
 

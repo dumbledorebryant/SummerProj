@@ -84,7 +84,6 @@ public class WorkerAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("image/*");
         PrintWriter out = response.getWriter();
-        System.out.println("file: " + file);
         String headImg;
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();

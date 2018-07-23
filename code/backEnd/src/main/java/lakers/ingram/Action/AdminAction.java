@@ -81,8 +81,26 @@ public class AdminAction extends HttpServlet {
         out.close();
     }
 
+    @RequestMapping(value = "/showUsers", method = RequestMethod.GET)
+    public void showUsers(HttpServletResponse response)
+            throws IOException
+    {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
+
+        List<UserEntity> userList =  appService.getAllUsers();
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(userList.size());
+        jsonArray.addAll(userList);
+
+        out.print(jsonArray);
+        out.flush();
+        out.close();
+    }
+
     @RequestMapping(value = "/deleteUsers", method = RequestMethod.POST)
-    public void deleteUser(@RequestParam("UserID") int[] userIDs,
+    public void deleteUsers(@RequestParam("UserID") int[] userIDs,
                            HttpServletResponse response)
             throws IOException
     {
@@ -90,14 +108,7 @@ public class AdminAction extends HttpServlet {
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
 
-        for (int id: userIDs)
-        {
-            UserEntity user = appService.getUserById(id);
-            if(user != null)
-            {
-                appService.deleteUser(user);
-            }
-        }
+        appService.deleteUsers(userIDs);
         out.print("delete SUCCESS!");
         out.flush();
         out.close();
@@ -154,7 +165,6 @@ public class AdminAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
-
         List<WindowEntity> todayList =  appService.getAllNews();
         JSONArray jsonArray = new JSONArray();
         jsonArray.addAll(todayList);
@@ -179,7 +189,7 @@ public class AdminAction extends HttpServlet {
         out.close();
     }
 
-    @RequestMapping(value = "/fetchWinowPic", method = RequestMethod.GET)
+    @RequestMapping(value = "/fetchWindowPic", method = RequestMethod.GET)
     public void fetchWindowPic(@RequestParam("windowID") int windowID,
                                HttpServletResponse response)
             throws IOException

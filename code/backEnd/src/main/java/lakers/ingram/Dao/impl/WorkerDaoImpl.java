@@ -1,21 +1,35 @@
 package lakers.ingram.Dao.impl;
 
 
+import com.mongodb.Block;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.model.Filters;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
+
+
 import com.mongodb.gridfs.GridFSInputFile;
 import lakers.ingram.Dao.WorkerDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 
 import lakers.ingram.ModelEntity.WorkerEntity;
+import org.bson.types.ObjectId;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 @Repository("WorkerDao")
@@ -37,16 +51,11 @@ public class WorkerDaoImpl implements WorkerDao {
 
     public String newFoodPic(File imageFile, String windowid){
         MongoClient mongo = new MongoClient();
-        DB mongodb = mongo.getDB("Food");
+        MongoDatabase mongodb = mongo.getDatabase("Worker");
+        GridFSBucket bucket = GridFSBuckets.create(mongodb);
         try {
-            GridFS gfsPhoto = new GridFS(mongodb, "Images");
-            GridFSDBFile imageForOutput = gfsPhoto.findOne(windowid);
-            if (imageForOutput!=null){
-                gfsPhoto.remove(gfsPhoto.findOne(windowid));
-            }
-            GridFSInputFile gfsFile = gfsPhoto.createFile(imageFile);
-            gfsFile.setFilename(windowid);
-            gfsFile.save();
+            InputStream inputFile = new FileInputStream(imageFile);
+            bucket.uploadFromStream(windowid, inputFile);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
