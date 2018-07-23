@@ -11,7 +11,7 @@ import {
     Modal,
     Row
 } from "react-bootstrap";
-import Avatar from "../../userCenter/userpic";
+import UploadPic from "../../PicUpload/UploadPic";
 
 class MenuManager extends React.Component
 {
@@ -251,7 +251,7 @@ class MenuManager extends React.Component
                                     <Button onClick={this.addNewDish}>Add New Dish</Button>
                                 </Col>
                                 <Col md={3}>
-                                    <Avatar/>
+                                    <UploadPic/>
                                 </Col>
                             </Row>
 

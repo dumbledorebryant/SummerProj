@@ -3,16 +3,13 @@ import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table";
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
 import {Button, ButtonToolbar, Col, Modal} from "react-bootstrap";
 
-const products = [{"id": 1, "name": "ingram", "pwd": "14", "email":"372@qq.com", "phone": "18217503396", "valid":1},
-    {"id": 2, "name": "kobe", "pwd": "24", "email":"372@qq.com", "phone": "18217503396", "valid":1}];
-
 class UserManager extends React.Component
 {
     constructor() {
         super();
         this.state = {
             rowIDs: new FormData(),
-            data: products,
+            userData: [],
 
             sortName: undefined,
             sortOrder: undefined,
@@ -21,7 +18,7 @@ class UserManager extends React.Component
             img: ""
         };
         this.onRowSelect = this.onRowSelect.bind(this);
-        this.showUserImg = this.showUserImg.bind(this);
+        this.showUser = this.showUser.bind(this);
         this.deleteUser = this.deleteUser.bind(this);
         this.freezeUser = this.freezeUser.bind(this);
         this.activateUser = this.activateUser.bind(this);
@@ -35,31 +32,38 @@ class UserManager extends React.Component
     }
 
 
-    showUserImg(){
-        fetch('http://localhost:8080/User/ShowImg',
+    showUser(){
+        let tmp = [];
+        fetch('http://localhost:8080/AdminAction/showUsers',
             {
                 method: 'GET',
                 mode: 'cors',
             }
         )
-            .then(response=> {
-                console.log('Request successful', response);
-                const blob = response.blob();
-                return blob
-                    .then(blob => {
-                        console.log("result: ", blob);
-                        let reader = new FileReader();
-                        reader.readAsDataURL(blob);
-                        reader.onload = ()=> {
-                            this.setState({
-                                img:reader.result
-                            })
-                        };
+            .then(response => {
+                return response.json()
+                    .then(result => {
+                        console.log("result: ", result);
+                        tmp.splice(0, tmp.length);
+                        for (let i in result) {
+                            if (result.hasOwnProperty(i)) {
+                                let add =
+                                    {
+                                        "id": result[i].userId,
+                                        "name": result[i].username,
+                                        "pwd": result[i].password,
+                                        "email": result[i].email,
+                                        "phone": result[i].phone,
+                                        "valid": result[i].valid
+                                    };
+                                tmp.push(add);
+                            }
+                        }
                         this.setState({
-                            show: true
+                            userData: tmp
                         });
-                    });
-            });
+                    })
+            })
     }
 
     deleteUser(){
@@ -152,7 +156,7 @@ class UserManager extends React.Component
         return(
             <div>
                 <br/>
-                <BootstrapTable data={ this.state.data} height="300px" keyBoardNav
+                <BootstrapTable data={ this.state.userData} height="300px" keyBoardNav
                                 columnFilter
                                 selectRow={ selectRowProp }
                                 cellEdit={ cellEdit }
@@ -169,7 +173,7 @@ class UserManager extends React.Component
                 <br/>
                 <ButtonToolbar>
                     <Col md={2}>
-                        <Button bsStyle="info" onClick={this.showUserImg}>Show User Info</Button>
+                        <Button bsStyle="info" onClick={this.showUser}>Show User Info</Button>
                     </Col>
                     <Col md={2}>
                         <Button bsStyle="warning" onClick={this.deleteUser}>Delete User</Button>

@@ -5,6 +5,7 @@ import {Nav, NavItem} from "react-bootstrap";
 import UserManager from "./AdminOperations/UserManager";
 import MenuManager from "./AdminOperations/MenuManager";
 import CommentManager from "./AdminOperations/CommentManager";
+import CounterSimulation from "./AdminOperations/CounterSimulation";
 
 
 class AdminManager extends React.Component
@@ -25,6 +26,9 @@ class AdminManager extends React.Component
                                 <NavItem eventKey="third">
                                     CommentManage
                                 </NavItem>
+                                <NavItem eventKey="fourth">
+                                    CounterSimulation
+                                </NavItem>
                             </Nav>
                         </Col>
                         <Col md={9}>
@@ -37,6 +41,9 @@ class AdminManager extends React.Component
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
                                     <CommentManager/>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="fourth">
+                                    <CounterSimulation/>
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>
