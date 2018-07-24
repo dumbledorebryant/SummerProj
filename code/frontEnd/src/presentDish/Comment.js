@@ -29,13 +29,14 @@ const styles = theme => ({
         ...theme.mixins.gutters(),
         paddingTop: theme.spacing.unit * 2,
         paddingBottom: theme.spacing.unit * 2,
+    //    backgroundColor: 'red'
 
     },
 
     root2: {
         padding:10,
-        width: '50%',
-        backgroundColor: theme.palette.background.paper,
+        width: '100%',
+    //   backgroundColor: 'red'// theme.palette.background.paper,
     },
     row: {
         display: 'flex',
@@ -174,17 +175,24 @@ class CommentList extends React.Component {
                 this.setState({commentList:result});
             });
         });
-        this.setState({editorPop:false});
+        this.setState({
+            editorPop:false,
+            commentContent:null
+        });
     //    alert(1);
     };
 
 
     handleEditorClose = () =>{
-       this.setState({editorPop:false});
+       this.setState({
+           editorPop:false
+       });
     };
 
     handleEditorOpen = () =>{
-        this.setState({editorPop:true});
+        this.setState({
+            editorPop:true
+        });
     };
 
     render() {
@@ -203,7 +211,7 @@ class CommentList extends React.Component {
                     <ListIcon/>
                 </Button>}
                 <List id="comments" style={{display: "block"}}>
-                    {this.state.commentList.map((item, i) => (//   <List id="comments" style={{display: "none"}}>
+                    {this.state.commentList.map((item, i) => (
                         <div>
                             <ListItem>
                                 <Avatar src={item.HeadPic}/>

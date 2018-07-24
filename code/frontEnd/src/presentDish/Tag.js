@@ -40,10 +40,9 @@ class Tag extends React.Component{
 
     }
 
-
     render() {
         const { anchorEl } = this.state;
-
+        const { classes } = this.props;
         return(
             <Chip
                 key = {this.state.data.tagId}
@@ -51,12 +50,9 @@ class Tag extends React.Component{
                     <Avatar><TagFacesIcon  /></Avatar>:null}
                 label={this.state.data.tagName}
                 onClick={this.handleClick(this.state.data)}
-
             />
         )
     }
-
-
 }
 
 class TagList extends React.Component {
@@ -91,31 +87,12 @@ class TagList extends React.Component {
     };
 
     addClickTag (tagId){
-     //   alert(1);
         this.props.addClickTag(tagId);
-        /*
-        let temp = this.state.ChooseTag;
-        temp.push(tagId);
-        this.setState({
-            ChooseTag :temp
-        })
-        */
     };
 
 
     delClickTag (tagId){
         this.props.delClickTag(tagId);
-        /*
-        let temp = this.state.ChooseTag;
-        let index=0;
-        for(let i=0;i<temp.length;i++){
-            if(tagId===temp[i]){index=i;}
-        }
-        temp.splice(index);
-        this.setState({
-            ChooseTag :temp
-        })
-        */
     };
 
     render() {
@@ -135,7 +112,6 @@ class TagList extends React.Component {
 TagList.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-
 
 export default withStyles(styles)(TagList);
 
