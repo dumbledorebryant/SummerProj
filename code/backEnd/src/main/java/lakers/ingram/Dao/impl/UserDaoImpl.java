@@ -1,16 +1,29 @@
 package lakers.ingram.Dao.impl;
 
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.model.Filters;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
@@ -160,21 +173,26 @@ class UserDaoImpl implements UserDao {
     }
 
     public String updatePic(File imgFile, Integer userid){
-        System.out.println("useridpic:"+userid);
-        MongoClient mongo = new MongoClient();
-        DB mongodb = mongo.getDB("Portrait");
+        MongoClientURI connectionString = new MongoClientURI(
+                "mongodb://ingram:14" +
+                        "@localhost:27017/Portrait?authSource=admin");
+        MongoClient mongoClient = new MongoClient(connectionString);
+        MongoDatabase mongodb = mongoClient.getDatabase("Portrait");
+        GridFSBucket bucket = GridFSBuckets.create(mongodb);
+        GridFSFindIterable gridFSFindIterable = bucket.find(Filters.eq("filename", userid.toString()));
+        Iterator iter =gridFSFindIterable.iterator();
+        if(iter.hasNext()){
+            GridFSFile gridFSFile = (GridFSFile)iter.next();
+            ObjectId id=gridFSFile.getObjectId();
+            bucket.delete(id);
+        }
         try {
-            GridFS gfsPhoto = new GridFS(mongodb, "Images");
-            if(gfsPhoto.findOne(userid.toString())!=null){
-                gfsPhoto.remove(gfsPhoto.findOne(userid.toString()));
-            }
-            GridFSInputFile gfsFile = gfsPhoto.createFile(imgFile);
-            gfsFile.setFilename(userid.toString());
-            gfsFile.save();
+            InputStream inputFile = new FileInputStream(imgFile);
+            bucket.uploadFromStream(userid.toString(), inputFile);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            mongo.close();
+            mongoClient.close();
             return "Success";
         }
     }
@@ -203,5 +221,20 @@ class UserDaoImpl implements UserDao {
 
         transaction.commit();
         session.close();
+    }
+
+    public void getUserAvatar(Integer userid, OutputStream out){
+        MongoClientURI connectionString = new MongoClientURI(
+                "mongodb://ingram:14" +
+                        "@localhost:27017/Portrait?authSource=admin");
+        MongoClient mongoClient = new MongoClient(connectionString);
+        MongoDatabase mongodb = mongoClient.getDatabase("Portrait");
+        GridFSBucket bucket = GridFSBuckets.create(mongodb);
+        GridFSFindIterable gridFSFindIterable = bucket.find(Filters.eq("filename", userid.toString()));
+        Iterator iter =gridFSFindIterable.iterator();
+        if(iter.hasNext()) {
+            bucket.downloadToStream(userid.toString(), out);
+        }
+        mongoClient.close();
     }
 }

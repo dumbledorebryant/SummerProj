@@ -91,6 +91,9 @@ public class AppServiceImpl implements AppService {
         userDao.activate(user);
     }
 
+    public void getUserAvatar(Integer userid, OutputStream out){
+        userDao.getUserAvatar(userid, out);
+    }
     //admin
     public AdminEntity getAdminById(int id){ return adminDao.getAdminById(id); }
 
@@ -144,6 +147,10 @@ public class AppServiceImpl implements AppService {
         return foodDao.getWindowNameByFoodId(foodId);
     };
 
+    //TodayFood
+    public void addTodayFoodExisted(int[] foodIDArr,Integer windowId){
+        todayFoodDao.addTodayFoodExisted(foodIDArr,windowId);
+    }
 
 
     //  UserLikeFood

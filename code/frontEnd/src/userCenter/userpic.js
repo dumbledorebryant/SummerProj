@@ -23,10 +23,11 @@ class Avatar extends React.Component {
             }
         )
             .then(response=> {
-                console.log('Request successful', response);
                 let blob = response.blob();
                 return blob
                     .then(blob => {
+                        console.log('User pic Request successful:'+blob);
+                        console.log('User pic size:'+blob.size);
                         if(blob.size===0){
                             return;
                         }

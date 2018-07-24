@@ -106,9 +106,7 @@ class TipsToTagSetting extends Component {
 
     lastStep=()=>{
         let idx=this.state.step;
-        //console.log("step:"+idx);
         idx--;
-        //console.log("headerGroup[idx]:"+headerGroup);
         this.setState({
             header:headerGroup[idx],
             chipData:tagDataGroup[idx],
@@ -123,7 +121,6 @@ class TipsToTagSetting extends Component {
                 tagChoose.push(i);
             }
         }
-
         fetch('http://localhost:8080/UserTag/ChooseTag?' +
             'userID='+this.props.userid+
             '&tagArray='+tagChoose,
@@ -136,7 +133,12 @@ class TipsToTagSetting extends Component {
             .then(response => {
                 response.text()
                     .then(result => {
-                        this.props.save();
+                        if(tagChoose.length>0){
+                            this.props.open();
+                        }
+                        else{
+                            this.props.save();
+                        }
                     });
             });
     };

@@ -219,4 +219,20 @@ public class AdminAction extends HttpServlet {
         out.flush();
         out.close();
     }
+
+    @RequestMapping(value = "/AddTodayFood/ExistedFood", method = RequestMethod.POST)
+    public void addTodayFoodExisted(@RequestParam("ExistedFood") int[] foodIDArr,
+                                    @RequestParam("windowID") Integer windowId,
+                                    HttpServletResponse response)
+            throws IOException
+    {
+
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
+        appService.addTodayFoodExisted(foodIDArr,windowId);
+        out.print("success");
+        out.flush();
+        out.close();
+    }
 }

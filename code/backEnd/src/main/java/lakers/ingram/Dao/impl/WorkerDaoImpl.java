@@ -4,6 +4,7 @@ package lakers.ingram.Dao.impl;
 import com.mongodb.Block;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository("WorkerDao")
@@ -50,8 +52,11 @@ public class WorkerDaoImpl implements WorkerDao {
     }
 
     public String newFoodPic(File imageFile, String windowid){
-        MongoClient mongo = new MongoClient();
-        MongoDatabase mongodb = mongo.getDatabase("Worker");
+        MongoClientURI connectionString = new MongoClientURI(
+                "mongodb://ingram:14" +
+                        "@localhost:27017/Worker?authSource=admin");
+        MongoClient mongoClient = new MongoClient(connectionString);
+        MongoDatabase mongodb = mongoClient.getDatabase("Worker");
         GridFSBucket bucket = GridFSBuckets.create(mongodb);
         try {
             InputStream inputFile = new FileInputStream(imageFile);
@@ -59,7 +64,7 @@ public class WorkerDaoImpl implements WorkerDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            mongo.close();
+            mongoClient.close();
             return "Success";
         }
 

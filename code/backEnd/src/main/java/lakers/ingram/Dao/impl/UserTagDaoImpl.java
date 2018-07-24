@@ -158,10 +158,12 @@ public class UserTagDaoImpl implements UserTagDao{
                     .setParameter("windowID", food.getWindowId())
                     .setParameter("userId",userId);
             ViewhistoryEntity view = (ViewhistoryEntity) query7.uniqueResult();
-            jsonObject.put("viewHistory", view.getCount());
-
-
-
+            if(view==null){
+                jsonObject.put("viewHistory", 0);
+            }
+            else{
+                jsonObject.put("viewHistory", view.getCount());
+            }
             Query query4 = session.createQuery("select a from WindowEntity  a where a.windowId= :windowID").
                     setParameter("windowID", food.getWindowId());
             WindowEntity window = (WindowEntity) query4.uniqueResult();

@@ -26,6 +26,8 @@ public interface AppService {
 
     public UserEntity getUserByPhone(String phone);
 
+    public void getUserAvatar(Integer userid, OutputStream out);
+
     public List<UserEntity> getAllUsers();
 
     public AdminEntity getAdminById(int id);
@@ -47,7 +49,8 @@ public interface AppService {
     public WindowEntity getWindowById(int id);
 
     public Timestamp getTimeByWindowId(int windowId);
-
+    //Today Food
+    public void addTodayFoodExisted(int[] foodIDArr,Integer windowId);
     //Food
 
     public List<FoodEntity> getAllFood();

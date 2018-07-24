@@ -43,6 +43,34 @@ class MenuManager extends React.Component
         this.registerInfo = this.registerInfo.bind(this);
         this.onRowSelect = this.onRowSelect.bind(this);
         this.onRowSelectFood = this.onRowSelectFood.bind(this);
+        this.addExistedFood=this.addExistedFood.bind(this);
+    }
+
+    addExistedFood(){
+        let formData=new FormData();
+        if(this.state.foodIDs.length===0){
+            return;
+        }
+        formData.append("ExistedFood",this.state.foodIDs);
+        formData.append("windowID",this.state.windowID);
+        fetch('http://localhost:8080/Admin/AddTodayFood/ExistedFood',
+            {
+                credentials: 'include',
+                method: 'POST',
+                mode: 'cors',
+                body:formData,
+            }
+        )
+            .then(response=>{
+                return response.text()
+                    .then(result=>{
+                        alert(result);
+                    })
+            })
+    }
+
+    addNewDish(){
+
     }
 
     onRowSelectFood=(row)=>{
@@ -74,9 +102,6 @@ class MenuManager extends React.Component
             tips: event.target.value
         })
     }
-    addNewDish(){
-
-    }
 
     close(){
         this.setState({
@@ -95,8 +120,13 @@ class MenuManager extends React.Component
             .then(response => {
                 return response.json()
                     .then(result => {
-                        console.log("result: ", result);
                         tmp.splice(0, tmp.length);
+                        if(result.length===0){
+                            this.setState({
+                                newData: []
+                            });
+                            return;
+                        }
                         for (let i in result) {
                             if (result.hasOwnProperty(i)) {
                                 let add =
@@ -247,6 +277,7 @@ class MenuManager extends React.Component
                                 </Col>
                             </Row>
                             <br/>
+                            <div align="right"><Button onClick={this.addExistedFood}>Add Food That Were Existed Before</Button></div>
                             <Row>
                                 <Col md={9}>
                                     <Form>

@@ -546,6 +546,13 @@ class MiniDrawer extends React.Component {
         this.setState({openRecommendHint:false})
     };
 
+    handleCloseSetTagAndOpen=()=>{
+        this.setState({
+            openSetTag:false,
+            openRecommendHint:true
+        })
+    };
+
     handleOpenRecommend = () =>{
         this.setState({openRecommendHint:false,openRecommend:true});
     };
@@ -1033,7 +1040,8 @@ class MiniDrawer extends React.Component {
                         <ChildCareIcon />Set Tags
                     </DialogTitle>
                     <DialogContent>
-                        <TipsToTagSetting save={this.handleCloseSetTag} userid={this.loginId}/>
+                        <TipsToTagSetting save={this.handleCloseSetTag} userid={this.loginId}
+                                          open={this.handleCloseSetTagAndOpen}/>
                     </DialogContent>
                 </Dialog>
                 <Snackbar

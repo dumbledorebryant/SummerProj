@@ -6,6 +6,7 @@ import net.sf.json.JSONObject;
 import org.springframework.data.repository.CrudRepository;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface UserDao{
@@ -31,6 +32,8 @@ public interface UserDao{
     void freeze(UserEntity user);
 
     void activate(UserEntity user);
+
+    public void getUserAvatar(Integer userid, OutputStream out);
 }
 
 

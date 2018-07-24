@@ -11,6 +11,13 @@ public class TodayfoodEntity {
     private Integer time;
     private Integer windowId;
 
+    public TodayfoodEntity(){}
+    public TodayfoodEntity(int foodId,Date date,Integer time,Integer windowId){
+        this.date=date;
+        this.foodId=foodId;
+        this.windowId=windowId;
+        this.time=time;
+    }
     @Id
     @Column(name = "foodID", nullable = false)
     public int getFoodId() {

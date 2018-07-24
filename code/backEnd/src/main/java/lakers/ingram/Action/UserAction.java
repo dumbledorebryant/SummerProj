@@ -2,6 +2,12 @@ package lakers.ingram.Action;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.model.Filters;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import lakers.ingram.ModelEntity.UserEntity;
@@ -26,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 @RestController
 @RequestMapping(value = "/User")
@@ -182,8 +189,8 @@ public class UserAction extends HttpServlet {
             throws Exception {
         response.setCharacterEncoding("utf-8");
         response.setContentType("image/*");
+
         PrintWriter out = response.getWriter();
-        System.out.println("file: " + file);
         String headImg;
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
@@ -205,16 +212,9 @@ public class UserAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("image/*");
         OutputStream out = response.getOutputStream();
-        MongoClient mongo = new MongoClient();
-        DB mongodb = mongo.getDB("Portrait");
-        GridFS gfsPhoto = new GridFS(mongodb, "Images");
-        GridFSDBFile imageForOutput = gfsPhoto.findOne(userid.toString());
-        if (imageForOutput!=null){
-            imageForOutput.writeTo(out);
-        }
+        appService.getUserAvatar(userid, out);
         out.flush();
         out.close();
-        mongo.close();
     }
 
     @RequestMapping(value = "/PassWordCheck")

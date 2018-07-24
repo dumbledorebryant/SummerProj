@@ -7,5 +7,6 @@ public interface TodayFoodDao
 {
     List<Integer> showAllNews();
     void getNewPic(int windowID, OutputStream out);
+    public void addTodayFoodExisted(int[] foodIDArr,Integer windowId);
 }
 
