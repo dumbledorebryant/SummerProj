@@ -149,7 +149,7 @@ class TextFields extends React.Component {
         if (!(this.state.email.indexOf("@") !== -1
             && (this.state.email.indexOf(".com") !== -1
                 || this.state.email.indexOf(".cn") !== -1))){
-            alert("邮箱格式不正确！")
+            alert("邮箱格式不正确！");
             return;
         }
         if (this.state.phone.length!==11){

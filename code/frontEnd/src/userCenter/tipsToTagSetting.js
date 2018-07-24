@@ -88,7 +88,6 @@ class TipsToTagSetting extends Component {
         };
         this.handleClick = this.handleClick.bind(this);
         this.showTags=this.showTags.bind(this);
-
     }
 
     componentWillMount(){
@@ -97,14 +96,12 @@ class TipsToTagSetting extends Component {
 
     nextStep=()=>{
         let idx=this.state.step;
-        //console.log("step:"+idx);
         idx++;
-        //console.log("headerGroup[idx]:"+headerGroup);
-            this.setState({
-                header:headerGroup[idx],
-                chipData:tagDataGroup[idx],
-                step:idx
-            });
+        this.setState({
+            header:headerGroup[idx],
+            chipData:tagDataGroup[idx],
+            step:idx
+        });
     };
 
     lastStep=()=>{
@@ -233,33 +230,60 @@ class TipsToTagSetting extends Component {
                         <Divider/>
                         {this.state.step!==3 ?
                             <div>
-                                <Button size="small" variant="outlined"
-                                        color="primary"
-                                        className={classes.button}
-                                        onClick={this.lastStep}
-                                        style={{float:'left'}}
-                                >
-                                    Last Step</Button>
-                                <Button size="small" variant="outlined"
+                                {this.state.step!==0
+                                    ? <div><Button size="small" variant="outlined"
+                                            color="primary"
+                                            className={classes.button}
+                                            onClick={this.lastStep}
+                                            style={{float:'left'}}
+                                    >
+                                        Last Step
+                                    </Button>
+                                    <Button size="small" variant="outlined"
                                     color="primary"
                                     className={classes.button}
                                     onClick={this.nextStep}
-                                        style={{float:'left'}}
-                                >
-                                Next Step</Button>
-                                <Button size="small" variant="outlined"
-                                        color="secondary"
-                                        className={classes.button}
-                                        onClick={this.saveTags}
-                                        style={{float:'left'}}
-                                >
-                                    Save & Exit</Button>
+                                    style={{float:'left'}}
+                                    >
+                                    Next Step
+                                    </Button>
+                                    <Button size="small" variant="outlined"
+                                    color="secondary"
+                                    className={classes.button}
+                                    onClick={this.saveTags}
+                                    style={{float:'left'}}
+                                    >
+                                    Save & Exit
+                                    </Button>
+                                    </div>
+                                    : <div>
+                                        <Button size="small" variant="outlined"
+                                                color="primary"
+                                                className={classes.button}
+                                                onClick={this.nextStep}
+                                                style={{float:'left'}}
+                                        >
+                                            Next Step
+                                        </Button>
+                                        <Button size="small" variant="outlined"
+                                                color="secondary"
+                                                className={classes.button}
+                                                onClick={this.saveTags}
+                                                style={{float:'left'}}
+                                        >
+                                            Save & Exit
+                                        </Button>
+                                    </div>
+                                }
                             </div>
-                            :<div><Button size="small" variant="outlined"
-                                           color="secondary"
-                                           className={classes.button}
+
+
+                            :<div>
+                                    <Button size="small" variant="outlined"
+                                    color="secondary"
+                                    className={classes.button}
                                            onClick={this.saveTags}>
-                                Done</Button>
+                                        Done</Button>
                                 <Button size="small" variant="outlined"
                                         color="primary"
                                         className={classes.button}

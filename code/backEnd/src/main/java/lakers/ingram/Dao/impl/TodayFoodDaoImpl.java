@@ -47,7 +47,6 @@ public class TodayFoodDaoImpl implements TodayFoodDao
     public void getNewPic(int windowID, OutputStream out)
     {
         String windowId = String.valueOf(windowID);
-
         MongoClient mongoClient = new MongoClient();
         MongoDatabase mongodb = mongoClient.getDatabase("Worker");
         GridFSBucket bucket = GridFSBuckets.create(mongodb);

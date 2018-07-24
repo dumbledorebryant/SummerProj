@@ -187,7 +187,6 @@ public class UserAction extends HttpServlet {
         String headImg;
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
-            // 构建上传目录及文件对象，不存在则自动创建
             String path = "C:\\webImages\\";
             File imgFile = new File(path, headImg);
             file.transferTo(imgFile);
@@ -206,11 +205,9 @@ public class UserAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("image/*");
         OutputStream out = response.getOutputStream();
-        //GridFSDBFile result = appService.getPic(fileName);
         MongoClient mongo = new MongoClient();
         DB mongodb = mongo.getDB("Portrait");
         GridFS gfsPhoto = new GridFS(mongodb, "Images");
-        // get image file by it's filename
         GridFSDBFile imageForOutput = gfsPhoto.findOne(userid.toString());
         if (imageForOutput!=null){
             imageForOutput.writeTo(out);

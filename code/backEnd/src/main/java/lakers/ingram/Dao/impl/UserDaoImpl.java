@@ -151,20 +151,23 @@ class UserDaoImpl implements UserDao {
         userDB.setEmail(user.getEmail());
         userDB.setPhone(user.getPhone());
         userDB.setUsername(user.getUsername());
-        userDB.setPassword(encodePwd);
+        if(!(userDB.getPassword().equals(user.getPassword()))){
+            userDB.setPassword(encodePwd);
+        }
         session.update(userDB);
-        System.out.println("email:"+user.getEmail());
-        System.out.println("phone:"+user.getPhone());
         transaction.commit();
         return "success";
     }
 
     public String updatePic(File imgFile, Integer userid){
+        System.out.println("useridpic:"+userid);
         MongoClient mongo = new MongoClient();
         DB mongodb = mongo.getDB("Portrait");
         try {
             GridFS gfsPhoto = new GridFS(mongodb, "Images");
-            gfsPhoto.remove(gfsPhoto.findOne(userid.toString()));
+            if(gfsPhoto.findOne(userid.toString())!=null){
+                gfsPhoto.remove(gfsPhoto.findOne(userid.toString()));
+            }
             GridFSInputFile gfsFile = gfsPhoto.createFile(imgFile);
             gfsFile.setFilename(userid.toString());
             gfsFile.save();
