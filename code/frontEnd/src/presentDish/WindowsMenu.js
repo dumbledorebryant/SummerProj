@@ -135,7 +135,7 @@ class WindowsMenu extends React.Component {
         temp.splice(index,1);
         this.setState({
             ChooseTag :temp
-        });
+        })
     //    alert(temp);
         let formData=new FormData();
         formData.append("restaurant",this.props.canteen);

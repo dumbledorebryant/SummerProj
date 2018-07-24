@@ -29,14 +29,13 @@ const styles = theme => ({
         ...theme.mixins.gutters(),
         paddingTop: theme.spacing.unit * 2,
         paddingBottom: theme.spacing.unit * 2,
-    //    backgroundColor: 'red'
 
     },
 
     root2: {
         padding:10,
         width: '100%',
-    //   backgroundColor: 'red'// theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper,
     },
     row: {
         display: 'flex',
@@ -119,18 +118,6 @@ class CommentList extends React.Component {
         this.setState({windowId:nextProps.windowId,commentList:nextProps.commentList});
     };
 
-/*
-    handleShowComment=()=>{
-        this.state.commentList.map((item) => {
-            let d=document.getElementById("comment"+this.state.windowId+item.commentId);
-            d.innerHTML=item.commentContent;
-        });
-        alert(2);
-       // let s=document.getElementById("comments");
-       // s.style.display="block";
-    };
-*/
-
     handleChangeEditor =(value)=>{
         this.setState({commentContent:value});
     };
@@ -171,7 +158,6 @@ class CommentList extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-               // this.props.handleUpdate(result);
                 this.setState({commentList:result});
             });
         });
@@ -179,20 +165,15 @@ class CommentList extends React.Component {
             editorPop:false,
             commentContent:null
         });
-    //    alert(1);
     };
 
 
     handleEditorClose = () =>{
-       this.setState({
-           editorPop:false
-       });
+       this.setState({editorPop:false});
     };
 
     handleEditorOpen = () =>{
-        this.setState({
-            editorPop:true
-        });
+        this.setState({editorPop:true});
     };
 
     render() {

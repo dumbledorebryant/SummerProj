@@ -14,6 +14,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import Dishes from './Dishes';
 import TagList from './Tag';
+import classnames from "classnames";
+import {Pagination} from "antd";
+import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import createMuiTheme from "@material-ui/core/es/styles/createMuiTheme";
+
+
 
 const styles = theme => ({
     root: {
@@ -54,7 +60,9 @@ class WindowsFoodList extends React.Component {
     button = null;
     constructor(props) {
         super(props);
-         this.clickLike=this.clickLike.bind(this);
+        this.clickLike=this.clickLike.bind(this);
+        this.arrange = this.arrange.bind(this);
+        this.handlePageSelect = this.handlePageSelect.bind(this);
     }
     state = {
         anchorEl: null,
@@ -62,7 +70,25 @@ class WindowsFoodList extends React.Component {
         windowName:"一餐五楼A窗口",
         userId:-1,
         sort:"默认排序",
+
+        like: [],
+        likeFoodInfo: [],
+        current:1,
+        pageNum:0,
+        likeFoodInfoGroup:[]
+
     };
+
+    componentWillMount(){
+        this.arrange(this.state.dishesList);
+    }
+
+    handlePageSelect(eventKey) {
+        this.setState({
+            activePage: eventKey
+        });
+    }
+
 
     handleClick = event => {
         this.setState({
@@ -74,7 +100,7 @@ class WindowsFoodList extends React.Component {
         let formData=new FormData();
         var s = JSON.stringify(this.state.dishesList);
         formData.append("foodList",s);
-        formData.append("type",index);
+        formData.append("type",index );
         fetch('http://localhost:8080/Food/SortFood',{
             credentials: 'include',
             method:'POST',
@@ -88,6 +114,7 @@ class WindowsFoodList extends React.Component {
                     anchorEl: event.currentTarget, //content:index
                     sort:option[index]
                 });
+                this.arrange(result);
             })
         });
     };
@@ -103,6 +130,7 @@ class WindowsFoodList extends React.Component {
             userId:this.state.userId,
             dishesList:nextProps.dishesList
         });
+        this.arrange(nextProps.dishesList);
     };
 
     clickLike(index,action){
@@ -114,15 +142,48 @@ class WindowsFoodList extends React.Component {
         })
     }
 
+    arrange=(data)=>{
+        let result = data;
+        let likeList = [];
+        let foodListGroup=[];
+        let groupNum=0;
+        let j = 5;
+        if(result.length % j === 0){
+            groupNum=result.length/j;//groupNum:页数
+        }
+        else {
+            groupNum = (parseInt(result.length/j) + 1);
+        }
+        for(let k = 0;k < groupNum;k++) {//分页
+            foodListGroup[k] = [];
+        }
+        for(let i in result){
+            let idx = parseInt(i / j) ;
+            foodListGroup[idx].push(result[i]);
+        }
+        this.setState({
+            likeFoodInfo: foodListGroup.length>0?foodListGroup[0]:[],
+            like: likeList,
+            pageNum:groupNum,
+            likeFoodInfoGroup:foodListGroup
+        })
+    };
+
+    onPageChange = (page) => {
+        let temp=this.state.likeFoodInfoGroup[page-1];
+        this.setState({
+            current: page,
+            likeFoodInfo:temp
+        });
+    };
 
     render() {
         const { classes } = this.props;
         const { anchorEl } = this.state;
         return (
             <div>
-                <div>
                     <Button
-                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
+                        aria-owns={this.state.anchorEl? 'simple-menu' : null}
                         aria-haspopup="true"
                         onClick={this.handleClick}
                     >
@@ -140,12 +201,48 @@ class WindowsFoodList extends React.Component {
                         <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
                         <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
 
-                    </Menu>
-                    <div>
+                    </Menu> <Pagination current={this.state.current}
+                                        onChange={this.onPageChange}
+                                        total={this.state.pageNum*10}/>
+                    <div align ="center">
                         <TagList addClickTag={this.props.addClickTag} delClickTag={this.props.delClickTag}/>
                     </div>
 
 
+                    <div>
+                        <MuiThemeProvider>
+                            <Grid container className={classes.root} spacing={16} >
+                                <Grid container spacing={24} justify="left">
+                                    {this.state.likeFoodInfo.map((item,i)=>(
+                                        <Grid>
+                                            <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId}
+                                                    foodId={item.foodId} foodname={item.foodName} price={item.price}
+                                                    tips={item.tips} window_name={item.windowName} like={item.likes}
+                                                    picture="" Tags={item.Tags} clickLike={this.clickLike} idx={(this.state.current-1)*5+i}/>
+                                            </Grid>))
+                                    }
+                                </Grid>
+                            </Grid>
+                        </MuiThemeProvider>
+                        <div align ="center">
+                            <Pagination current={this.state.current}
+                                        onChange={this.onPageChange}
+                                        total={this.state.pageNum*10}/>
+                        </div>
+                        <br/><br/>
+                    </div>
+
+            </div>
+        );
+    }
+}
+WindowsFoodList.propTypes = {
+    classes: PropTypes.object.isRequired,
+
+};
+export default withStyles(styles)(WindowsFoodList);
+/*
+*
                     <Grid container className={classes.root} spacing={16} >
                             <Grid container spacing={24} justify="left">
                                 {this.state.dishesList.map((item, i) => (
@@ -158,18 +255,8 @@ class WindowsFoodList extends React.Component {
                                 }
                                 </Grid>
                     </Grid>
-                </div>
-            </div>
-        );
-    }
-}
-WindowsFoodList.propTypes = {
-    classes: PropTypes.object.isRequired,
 
-};
-export default withStyles(styles)(WindowsFoodList);
-/*
-*
+
                     <TextField
                         className={classes.search}
                         id="search"

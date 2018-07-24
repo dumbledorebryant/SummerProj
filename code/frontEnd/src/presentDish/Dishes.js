@@ -21,7 +21,8 @@ import Chip from '@material-ui/core/Chip';
 
 const styles = theme => ({
     card: {
-        maxWidth: 1200,
+        Width: 180,
+        maxWidth:250,
         margin:20
     },
     cardHeader:{
@@ -29,7 +30,7 @@ const styles = theme => ({
         marginRight:20
     },
     media: {
-        height: 0,
+        height: 200,
         paddingTop: '56.25%', // 16:9
     },
     actions: {
@@ -99,14 +100,13 @@ class Dishes extends React.Component {
                 if(result===0){
                     this.setState({
                         like:this.state.like+1
-
-                    })
+                    });
                     this.props.clickLike(this.props.idx,1);
                 }
                 else{
                     this.setState({
                         like:this.state.like-1
-                    })
+                    });
                     this.props.clickLike(this.props.idx,-1);
                 }
                 })
@@ -119,10 +119,9 @@ class Dishes extends React.Component {
         formData.append("foodId",this.props.foodId);
         let userId=this.props.userId;
         if(userId==="-1") {
-        //    alert("-1");
+
         }
         else {
-          //  alert(userId);
             formData.append("userId",userId);
             formData.append("state",0);
             fetch('http://localhost:8080/UserLikeFood/Save', {
@@ -176,8 +175,7 @@ class Dishes extends React.Component {
                 <Card className={classes.card}>
                     <CardHeader
                         avatar={
-                            <Avatar aria-label="Recipe" className={classes.avatar}>
-
+                            <Avatar className={classes.avatar}>
                             </Avatar>
                         }
                         action={
@@ -197,6 +195,17 @@ class Dishes extends React.Component {
                     <CardContent>
                         <Typography component="p">
                             Price:{this.props.price}￥
+                            {this.props.Tags.map(data => {
+                            let avatar = null;
+                            return (
+                                <Chip
+                                    key={data.tagId}
+                                    avatar={avatar}
+                                    label={data.tagName}
+                                    className={classes.chip}
+                                />
+                            );
+                        })}
                         </Typography>
 
                     </CardContent>
@@ -206,7 +215,6 @@ class Dishes extends React.Component {
                             <FavoriteIcon className={classes.avatar3}/>}
                         </IconButton>{this.state.like}
                         <IconButton aria-label="Share">
-                            <ShareIcon />
                         </IconButton><i>{!this.state.icon?"已收藏":"加入收藏"}</i>
                         <IconButton
                             className={classnames(classes.expand, {
@@ -253,3 +261,7 @@ Dishes.propTypes = {
 };
 
 export default withStyles(styles)(Dishes);
+
+/*
+* <Avatar aria-label="Recipe" className={classes.avatar}>
+                  <ShareIcon />          </Avatar>*/

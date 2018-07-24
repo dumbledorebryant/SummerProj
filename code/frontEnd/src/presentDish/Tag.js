@@ -40,9 +40,10 @@ class Tag extends React.Component{
 
     }
 
+
     render() {
         const { anchorEl } = this.state;
-        const { classes } = this.props;
+
         return(
             <Chip
                 key = {this.state.data.tagId}
@@ -50,9 +51,12 @@ class Tag extends React.Component{
                     <Avatar><TagFacesIcon  /></Avatar>:null}
                 label={this.state.data.tagName}
                 onClick={this.handleClick(this.state.data)}
+
             />
         )
     }
+
+
 }
 
 class TagList extends React.Component {
@@ -112,6 +116,7 @@ class TagList extends React.Component {
 TagList.propTypes = {
     classes: PropTypes.object.isRequired,
 };
+
 
 export default withStyles(styles)(TagList);
 
