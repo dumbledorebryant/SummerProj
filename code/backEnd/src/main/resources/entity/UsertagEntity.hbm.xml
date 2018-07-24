@@ -5,7 +5,7 @@
 <hibernate-mapping>
 
     <class name="lakers.ingram.ModelEntity.UsertagEntity" table="usertag" schema="SummerProj">
-        <composite-id >
+        <composite-id>
             <key-property name="tagId">
                 <column name="tagID" sql-type="int(11)"/>
             </key-property>

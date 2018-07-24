@@ -120,7 +120,6 @@ public class UserTagDaoImpl implements UserTagDao{
             }
             tagList.add(list1.get(i).getTagId());
         }
-
         for (Integer value : foodList) {
             Query query3 = session.createQuery("select a from FoodEntity a where a.foodId= :foodID").
                     setParameter("foodID", value);
@@ -161,6 +160,8 @@ public class UserTagDaoImpl implements UserTagDao{
             ViewhistoryEntity view = (ViewhistoryEntity) query7.uniqueResult();
             jsonObject.put("viewHistory", view.getCount());
 
+
+
             Query query4 = session.createQuery("select a from WindowEntity  a where a.windowId= :windowID").
                     setParameter("windowID", food.getWindowId());
             WindowEntity window = (WindowEntity) query4.uniqueResult();
@@ -179,7 +180,6 @@ public class UserTagDaoImpl implements UserTagDao{
             for(int i=0;i<dislikeTags.size();i++){
                 dislikeTagsID.add(dislikeTags.get(i).getTagId());
             }
-
             List<String> tags=new ArrayList<>();
             List<String> relatedTags=new ArrayList<>();
             Boolean flag=true;
@@ -201,7 +201,6 @@ public class UserTagDaoImpl implements UserTagDao{
             }
             jsonObject.put("relatedTags", relatedTags);
             jsonObject.put("tags", tags);
-
             Query query8 = session.createQuery("select a " +
                     "from UserlikefoodEntity a " +
                     "where a.foodId= :foodID and a.userId= :userID").
@@ -210,6 +209,7 @@ public class UserTagDaoImpl implements UserTagDao{
                 jsonObject.put("like", 1);
             else
                 jsonObject.put("like", 0);
+            System.out.println("jsonArrayRecoObkect"+ jsonObject);
             jsonArray.add(jsonObject);
         }
         transaction.commit();

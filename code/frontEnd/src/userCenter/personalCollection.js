@@ -211,7 +211,7 @@ class PersonalCollection extends React.Component
                 response.json()
                     .then(result => {
                         let likeList = [];
-                        let info=[];
+
                         let saleBoolTemp=[];
                         let foodListGroup=[];
                         let groupNum=0;
@@ -224,7 +224,6 @@ class PersonalCollection extends React.Component
                         for(let k = 0;k < groupNum;k++) {
                             foodListGroup[k] = [];
                         }
-                        console.log("groupNum:"+groupNum);
                         for(let i in result){
                             let add = {
                                 "foodId": result[i].foodId,
@@ -234,7 +233,6 @@ class PersonalCollection extends React.Component
                                 "tags":result[i].tags,
                                 "windowName": result[i].windowName,
                                 "restaurant": result[i].restaurant};
-                            info.push(add);
                             likeList[result[i].foodId] = true;
                             if(result[i].today===1){
                                 saleBoolTemp[result[i].foodId]=true;
@@ -243,12 +241,9 @@ class PersonalCollection extends React.Component
                                 saleBoolTemp[result[i].foodId]=false;
                             }
                             this.searchLikePic(result[i].foodId);
-
                             let idx = i % groupNum;
                             foodListGroup[idx].push(add);
                         }
-                        console.log("111foodListGroup[0]:"+foodListGroup);
-                        console.log("111foodListGroup[1]:"+foodListGroup[1]);
                         this.setState({
                             saleBool:saleBoolTemp,
                             likeFoodInfo: foodListGroup.length>0?foodListGroup[0]:[],

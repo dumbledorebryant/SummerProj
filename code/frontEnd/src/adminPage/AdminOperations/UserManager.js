@@ -22,7 +22,7 @@ class UserManager extends React.Component
     constructor() {
         super();
         this.state = {
-            rowIDs: new FormData(),
+            rowIDs: [],
             userData: [],
             userSum:0,
 
@@ -71,12 +71,13 @@ class UserManager extends React.Component
     }
 
     deleteUser(){
-        let deletedUserIDs = this.state.rowIDs;
+        let formData=new FormData();
+        formData.append("UserID",this.state.rowIDs);
         fetch('http://localhost:8080/Admin/deleteUsers',
             {
                 method: 'POST',
                 mode: 'cors',
-                body: deletedUserIDs
+                body:  formData
             }
         )
             .then(response => {
@@ -87,13 +88,15 @@ class UserManager extends React.Component
                     })
             })
     }
+
     freezeUser(){
-        let frozenUserIDs = this.state.rowIDs;
+        let formData=new FormData();
+        formData.append("UserID",this.state.rowIDs);
         fetch('http://localhost:8080/Admin/freezeUsers',
             {
                 method: 'POST',
                 mode: 'cors',
-                body: frozenUserIDs
+                body: formData
             }
         )
             .then(response => {
@@ -105,12 +108,13 @@ class UserManager extends React.Component
             })
     }
     activateUser(){
-        let activatedUserIDs = this.state.rowIDs;
+        let formData=new FormData();
+        formData.append("UserID",this.state.rowIDs);
         fetch('http://localhost:8080/Admin/activateUsers',
             {
                 method: 'POST',
                 mode: 'cors',
-                body: activatedUserIDs
+                body: formData
             }
         )
             .then(response => {
@@ -124,17 +128,15 @@ class UserManager extends React.Component
 
     onRowSelect=(row)=>{
         let tmp = this.state.rowIDs;
-        let rowID = row.id;
-        for( let i = 0; i < tmp.length; i++)
-        {
-            if(tmp[i]===rowID)
-            {
-                return;
-            }
+        let index=tmp.indexOf(row.id);
+        if(index === -1){
+            tmp.push(row.id);
         }
-        tmp.append("UserID", rowID);
+        else{
+            tmp.splice(index,1);
+        }
         this.setState({
-            rowIDs: tmp
+            foodIDs: tmp
         });
     };
 

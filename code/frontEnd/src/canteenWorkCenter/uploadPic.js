@@ -89,7 +89,7 @@ class WorkerPage extends React.Component {
                     beforeUpload={this.beforeUpload}
                 >
                 {this.state.imageUrl? <img src={this.state.imageUrl}
-                                           height="600px" width="1000px" /> : uploadButton}
+                                           height="100px" width="100px" /> : uploadButton}
                 </Upload>
         </div>
 

@@ -11,10 +11,7 @@ import {
     Modal,
     Row
 } from "react-bootstrap";
-import Avatar from "../../userCenter/userpic";
-import List from "@material-ui/core/es/List/List";
-import ListItem from "@material-ui/core/es/ListItem/ListItem";
-import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+import WorkerPage from "../../canteenWorkCenter/uploadPic.js";
 
 
 class MenuManager extends React.Component
@@ -35,14 +32,32 @@ class MenuManager extends React.Component
             singleWindow: [],
 
             show: false,
-            img: ''
+            img: '',
+
+            foodData:[],
+            foodIDs:[]
         };
         this.addNewDish = this.addNewDish.bind(this);
         this.close = this.close.bind(this);
         this.fetchInfo = this.fetchInfo.bind(this);
         this.registerInfo = this.registerInfo.bind(this);
         this.onRowSelect = this.onRowSelect.bind(this);
+        this.onRowSelectFood = this.onRowSelectFood.bind(this);
     }
+
+    onRowSelectFood=(row)=>{
+        let tmp = this.state.foodIDs;
+        let index=tmp.indexOf(row.id);
+        if(index === -1){
+            tmp.push(row.id);
+        }
+        else{
+            tmp.splice(index,1);
+        }
+        this.setState({
+            foodIDs: tmp
+        });
+    };
 
     ChangeFoodName(event){
         this.setState({
@@ -173,6 +188,12 @@ class MenuManager extends React.Component
             onSelect: this.onRowSelect,
         };
 
+        const selectRowPropFood = {
+            mode: 'checkbox',
+            clickToSelect: true,
+            onSelect: this.onRowSelectFood,
+        };
+
         const cellEdit = {
             mode: 'click', // click cell to edit
             blurToSave: true,
@@ -215,7 +236,7 @@ class MenuManager extends React.Component
                                 <Col md={1}/>
                                 <Col md={6}>
                                     <BootstrapTable data={ this.state.singleWindow} height="300px" keyBoardNav
-                                                    selectRow={ selectRowProp }
+                                                    selectRow={ selectRowPropFood }
                                                     cellEdit={ cellEdit }
                                                     options={ options }>
                                         <TableHeaderColumn dataField='id' isKey={true} dataSort={ true }>
@@ -248,7 +269,7 @@ class MenuManager extends React.Component
                                     <Button onClick={this.addNewDish}>Add New Dish</Button>
                                 </Col>
                                 <Col md={3}>
-                                    <Avatar/>
+                                    <WorkerPage/>
                                 </Col>
                             </Row>
 

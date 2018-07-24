@@ -236,6 +236,7 @@ class PersonalRecommend extends React.Component
             flag = 0;
         }
         fetch('http://localhost:8080/UserLikeFood/update?' +
+            'userId='+this.props.userid+
             '&userLikeId=' + name +
             '&flag=' + flag,
             {
@@ -252,8 +253,8 @@ class PersonalRecommend extends React.Component
     };
 
     searchUserTagRelatedFood=()=>{
-        fetch('http://localhost:8080/UserTag/UserTagRelatedFood/search?userId='+this.props.userid ,
-
+        fetch('http://localhost:8080/UserTag/UserTagRelatedFood/search?' +
+            'userId='+this.props.userid ,
             {
                 method: 'POST',
                 mode: 'cors',
@@ -262,6 +263,7 @@ class PersonalRecommend extends React.Component
             .then(response => {
                 response.json()
                     .then(result => {
+                        console.log("UserTagRelatedFood"+result);
                         if(result.length===0){
                             return;
                         }
@@ -284,6 +286,18 @@ class PersonalRecommend extends React.Component
                                 }
                             }
                         }
+
+                        let groupNum=0;
+                        if(result.length % 3 === 0){
+                            groupNum=result.length/3;
+                        }
+                        else {
+                            groupNum = (parseInt(result.length/3) + 1);
+                        }
+
+                        for(let k = 0;k < groupNum;k++) {
+                            foodListGroup[k] = [];
+                        }
                         for(let i in result){
                             expandedList[result[i].foodId]=false;
                             let add = {
@@ -303,27 +317,12 @@ class PersonalRecommend extends React.Component
                                 likeList[result[i].foodId] = false;
                             }
                             foodList.push(add);
+                            let idx = i % groupNum;
+                            foodListGroup[idx].push(add);
                             this.searchFoodPic(result[i].foodId);
                         }
-                        let groupNum=0;
-                        if(foodList.length % 3 === 0){
-                            groupNum=foodList.length/3;
-                        }
-                        else {
-                            groupNum = (parseInt(foodList.length/3) + 1);
-                        }
-
-                        for(let k = 0;k < groupNum;k++) {
-                            foodListGroup[k] = [];
-                        }
-                        for(let i in foodList){
-                            let idx = i % groupNum;
-                            console.log("idx:"+idx);
-                            foodListGroup[idx].push(foodList[i]);
-                        }
-                        console.log("foodListGroup:"+foodListGroup);
                         this.setState({
-                            foodInfo: foodListGroup[0],
+                            foodInfo: foodListGroup.length>0?foodListGroup[0]:[],
                             like: likeList,
                             expanded: expandedList
                         })
@@ -466,7 +465,6 @@ class PersonalRecommend extends React.Component
 
                                             </CardContent>
                                         </Collapse>
-
                                     </Card>
                                 </Grid>
                             },this)}

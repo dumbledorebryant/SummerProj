@@ -1,5 +1,6 @@
 package lakers.ingram.Dao.impl;
 
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
@@ -7,6 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import lakers.ingram.Dao.TodayFoodDao;
 import org.bson.Document;
 import org.springframework.stereotype.Repository;
@@ -17,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository("TodayFoodDao")
@@ -26,21 +30,15 @@ public class TodayFoodDaoImpl implements TodayFoodDao
     @Override
     public List<Integer> showAllNews()
     {
-        MongoClientURI connectionString = new MongoClientURI(
-                "mongodb://ingram:14" +
-                        "@localhost:27017/" +
-                        "?authSource=SummerProj");
-        MongoClient mongoClient = new MongoClient(connectionString);
-
-        MongoDatabase mongodb = mongoClient.getDatabase("SummerProj");
-        MongoCollection<Document> collection = mongodb.getCollection("MenuList");
-        FindIterable<Document> result = collection.find();
-
+        MongoClient mongoClient = new MongoClient();
+        MongoDatabase mongodb = mongoClient.getDatabase("Worker");
+        GridFSBucket bucket = GridFSBuckets.create(mongodb);
+        GridFSFindIterable gridFSFindIterable = bucket.find();
+        Iterator iter =gridFSFindIterable.iterator();
         List<Integer> windowIDs = new ArrayList<>();
-        for (Document cur : result) {
-            String ID = (String) cur.get("windowID");
-            Integer windowID = Integer.valueOf(ID);
-            windowIDs.add(windowID);
+        while(iter.hasNext()) {
+            GridFSFile gridFSFile = (GridFSFile)iter.next();
+            windowIDs.add(Integer.valueOf(gridFSFile.getFilename()));
         }
         return windowIDs;
     }
@@ -50,28 +48,9 @@ public class TodayFoodDaoImpl implements TodayFoodDao
     {
         String windowId = String.valueOf(windowID);
 
-        MongoClientURI connectionString = new MongoClientURI(
-                "mongodb://ingram:14" +
-                        "@localhost:27017/" +
-                        "?authSource=SummerProj");
-        MongoClient mongoClient = new MongoClient(connectionString);
-        MongoDatabase mongodb = mongoClient.getDatabase("SummerProj");
-
+        MongoClient mongoClient = new MongoClient();
+        MongoDatabase mongodb = mongoClient.getDatabase("Worker");
         GridFSBucket bucket = GridFSBuckets.create(mongodb);
-
-        // test
-        try
-        {
-            // test
-            String path = "C:\\webImages\\IMG_5462.JPG";
-            File imageFile = new File(path);
-            InputStream inputFile = new FileInputStream(imageFile);
-            bucket.uploadFromStream(windowId, inputFile);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
         bucket.downloadToStream(windowId, out);
     }
 }
