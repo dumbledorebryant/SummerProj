@@ -21,7 +21,7 @@ class CommentManager extends React.Component
 
     fetchComment(){
         let tmp = this.state.comments;
-        fetch('http://localhost:8080/AdminAction/showComments',
+        fetch('http://localhost:8080/Admin/showComments',
             {
                 method: 'GET',
                 mode: 'cors',
@@ -41,9 +41,14 @@ class CommentManager extends React.Component
                                         "UserID": result[i].userId,
                                         "WindowID": result[i].windowId,
                                         "Content": result[i].commentContent,
-                                        "Date": result[i].commentDate,
                                         "Valid": result[i].valid
                                     };
+                                add["Month"] = result[i].commentDate.month;
+                                add["Day"] = result[i].commentDate.day;
+                                add["Hour"] = result[i].commentDate.hours;
+                                add["Minute"] = result[i].commentDate.minutes;
+                                add["Second"] = result[i].commentDate.seconds;
+
                                 tmp.push(add);
                             }
                         }
@@ -58,7 +63,7 @@ class CommentManager extends React.Component
         let tmp = this.state.commentIDs;
         let deletedUserIDs = new FormData();
         deletedUserIDs.append("deletedCommentIDs", tmp);
-        fetch('http://localhost:8080/User/DeleteUsers',
+        fetch('http://localhost:8080/Admin/deleteComments',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -66,21 +71,61 @@ class CommentManager extends React.Component
             }
         )
             .then(response => {
-                return response.json()
+                return response.text()
                     .then(result => {
                         console.log("result: ", result);
                         alert(result);
+                        tmp = [];
+                        fetch('http://localhost:8080/Admin/showComments',
+                            {
+                                method: 'GET',
+                                mode: 'cors',
+                            }
+                        )
+                            .then(response => {
+                                return response.json()
+                                    .then(result => {
+                                        console.log("result: ", result);
+                                        tmp.splice(0, tmp.length);
+                                        for (let i in result) {
+                                            if (result.hasOwnProperty(i))
+                                            {
+                                                let add =
+                                                    {
+                                                        "CommentID": result[i].commentId,
+                                                        "UserID": result[i].userId,
+                                                        "WindowID": result[i].windowId,
+                                                        "Content": result[i].commentContent,
+                                                        "Valid": result[i].valid
+                                                    };
+                                                add["Month"] = result[i].commentDate.month;
+                                                add["Day"] = result[i].commentDate.day;
+                                                add["Hour"] = result[i].commentDate.hours;
+                                                add["Minute"] = result[i].commentDate.minutes;
+                                                add["Second"] = result[i].commentDate.seconds;
+
+                                                tmp.push(add);
+                                            }
+                                        }
+                                        this.setState({
+                                            comments: tmp
+                                        });
+                                    })
+                            })
                     })
             })
     }
 
     onRowSelect=(row)=>{
         let tmpComments = this.state.commentIDs;
-        let commentID = row.commentID;
+        let commentID = row.CommentID;
+        console.log(commentID);
+        console.log(tmpComments);
         for( let i = 0; i < tmpComments.length; i++)
         {
             if(tmpComments[i] === commentID)
             {
+                tmpComments.splice(i, 1);
                 return;
             }
         }
@@ -118,12 +163,15 @@ class CommentManager extends React.Component
                     <TableHeaderColumn dataField='CommentID' isKey={true} dataSort={ true }>
                         CommentID
                     </TableHeaderColumn>
-                    <TableHeaderColumn dataField='UserID'>UserID</TableHeaderColumn>
-                    <TableHeaderColumn dataField='WindowID'>WindowID</TableHeaderColumn>
+                    <TableHeaderColumn dataField='UserID' dataSort={ true }>UserID</TableHeaderColumn>
+                    <TableHeaderColumn dataField='WindowID' dataSort={ true }>WindowID</TableHeaderColumn>
                     <TableHeaderColumn dataField='Content'>Content</TableHeaderColumn>
-                    <TableHeaderColumn dataField='Date'>Date</TableHeaderColumn>
                     <TableHeaderColumn dataField='Valid'>ValidState</TableHeaderColumn>
-
+                    <TableHeaderColumn dataField='Month' dataSort={ true }>Month</TableHeaderColumn>
+                    <TableHeaderColumn dataField='Day' dataSort={ true }>Day</TableHeaderColumn>
+                    <TableHeaderColumn dataField='Hour' dataSort={ true }>Hour</TableHeaderColumn>
+                    <TableHeaderColumn dataField='Minute' dataSort={ true }>Minute</TableHeaderColumn>
+                    <TableHeaderColumn dataField='Second' dataSort={ true }>Second</TableHeaderColumn>
                 </BootstrapTable >
                 <br/>
                 <ButtonToolbar>
