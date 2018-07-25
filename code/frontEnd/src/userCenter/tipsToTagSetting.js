@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import List from "@material-ui/core/es/List/List";
-import ListItem from "@material-ui/core/es/ListItem/ListItem";
-import Avatar from "@material-ui/core/es/Avatar/Avatar";
-import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
-import ChildCareIcon from '@material-ui/icons/ChildCare';
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import PropTypes from 'prop-types';
 import Paper from "@material-ui/core/es/Paper/Paper";
@@ -67,8 +62,6 @@ const styles = theme => ({
         marginLeft:theme.spacing.unit,
     },
     tagTitle:{
-       // margin: theme.spacing.unit,
-       // marginLeft:theme.spacing.unit,
         margin:20
     }
 });
@@ -142,6 +135,7 @@ class TipsToTagSetting extends Component {
                     });
             });
     };
+
     showTags= () => {
         fetch('http://localhost:8080/UserTag/ShowFoodTags',
             {
@@ -171,7 +165,6 @@ class TipsToTagSetting extends Component {
                             tagBoolTemp[result[i].tagId]=false;
                             if(result[i].tagType==="taste"){
                                 tagDataGroup[0].push(add);
-
                             }
                             if(result[i].tagType==="country"){
                                 tagDataGroup[1].push(add);
@@ -185,7 +178,6 @@ class TipsToTagSetting extends Component {
                                 tagDataGroup[3].push(add);
                             }
                         }
-                        console.log("tagDataGroup:"+tagDataGroup);
                         this.setState({
                             chipData:tagDataGroup[0],
                             tagBool:tagBoolTemp,

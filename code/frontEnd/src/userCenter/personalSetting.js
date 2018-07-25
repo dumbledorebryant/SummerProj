@@ -109,7 +109,7 @@ class PersonalSetting extends React.Component {
     };
 
     showTags= () => {
-        fetch('http://localhost:8080/UserTag/ShowTags',
+        fetch('http://localhost:8080/Tag/ShowTags',
             {
                 credentials: 'include',
                 method: 'GET',

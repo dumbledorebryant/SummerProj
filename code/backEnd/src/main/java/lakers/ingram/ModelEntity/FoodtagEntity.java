@@ -10,6 +10,11 @@ public class FoodtagEntity implements Serializable {
     private int tagId;
     private int foodId;
 
+    public FoodtagEntity(){};
+    public FoodtagEntity(int tagId,int foodId){
+        this.tagId=tagId;
+        this.foodId=foodId;
+    }
     @Id
     @Column(name = "tagID", nullable = false)
     public int getTagId() {

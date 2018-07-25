@@ -44,18 +44,6 @@ public class FoodTagDaoImpl implements FoodTagDao {
         return Tags;
     };
 
-    public List<TagEntity> getAllTags(){
-        Session session=HibernateUtil.getSession();
-        session.beginTransaction();
-        Query query =session.createQuery("select Tag " +
-                "from TagEntity Tag " +
-                "order by Tag.tagType");
-        @SuppressWarnings("unchecked")
-        List<TagEntity> Tags=query.list();
-        session.getTransaction().commit();
-        return Tags;
-    };
-
     public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food){
         if(Food.size()==0||tagIdList.size()==0)return null;
         Session session=HibernateUtil.getSession();
@@ -106,5 +94,16 @@ public class FoodTagDaoImpl implements FoodTagDao {
         }
         transaction.commit();
         return jsonArray;
+    }
+
+    public void addFoodTag(Integer foodId,int[] tags){
+        Session session= HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        for(Integer tagId:tags){
+            FoodtagEntity foodTag=new FoodtagEntity(tagId,foodId);
+            session.save(foodTag);
+        }
+
+        transaction.commit();
     }
 }

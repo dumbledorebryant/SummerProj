@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TagDao {
-    public JSONArray showTags();
+    public List<TagEntity> getAllTags();
     public JSONObject showTags(String tagName);
     public List<TagEntity> getTagByLikeName(String tagName);
 }

@@ -12,6 +12,16 @@ public class FoodEntity {
     private Integer likes;
     private Integer windowId;
 
+    public FoodEntity(){};
+    public FoodEntity(String foodName,Double price,
+                      String tips,Integer likes,Integer windowId){
+        this.foodName=foodName;
+        this.price=price;
+        this.likes=likes;
+        this.windowId=windowId;
+        this.tips=tips;
+    };
+
     @Id
     @Column(name = "foodID", nullable = false)
     public int getFoodId() {

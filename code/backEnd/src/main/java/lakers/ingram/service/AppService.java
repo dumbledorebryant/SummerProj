@@ -50,7 +50,8 @@ public interface AppService {
 
     public Timestamp getTimeByWindowId(int windowId);
     //Today Food
-    public void addTodayFoodExisted(int[] foodIDArr,Integer windowId);
+    FoodEntity addFoodNew(String foodName,Double foodPrice,String foodTip,Integer windowID);
+    void addNewTodayFood(Integer foodId,Integer windowId);
     //Food
 
     public List<FoodEntity> getAllFood();
@@ -63,6 +64,7 @@ public interface AppService {
 
     public String getWindowNameByFoodId(int foodId);
 
+    public String uploadNewFoodPic(File imgFile,Integer foodID);
 
     //UserLikeFood
 
@@ -85,7 +87,7 @@ public interface AppService {
     public JSONObject showUserInfo(Integer userID);
     public String handleUserInfo(UserEntity user)throws Exception;
 
-    public JSONArray showTags();
+    public List<TagEntity> getAllTags();
     public String sendTags(Integer userid, JSONArray tagArray);
     public JSONObject showTags(String tagName);
 
@@ -154,8 +156,7 @@ public interface AppService {
 
     //foodtag
     public List<TagEntity> getTagByFoodId(int foodId);
-    public List<TagEntity> getAllTags();
     public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food);
-
+    public void addFoodTag(Integer foodId,int[] tags);
 
 }

@@ -11,9 +11,9 @@ public interface FoodTagDao {
 
     public List<TagEntity> getTagByFoodId(int foodId);
 
-    public List<TagEntity> getAllTags();
-
     public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food);
 
     public JSONArray allFoodTags();
+
+    public void addFoodTag(Integer foodId,int[] tags);
 }

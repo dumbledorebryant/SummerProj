@@ -1,5 +1,4 @@
 package lakers.ingram.Dao.impl;
-
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
@@ -10,9 +9,7 @@ import com.mongodb.client.model.Filters;
 import lakers.ingram.Dao.UserDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.UserEntity;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -25,15 +22,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSInputFile;
 
 @Repository("UserDao")
 @Transactional
 class UserDaoImpl implements UserDao {
-
     public Integer save(UserEntity user) {
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
