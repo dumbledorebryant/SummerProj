@@ -126,6 +126,9 @@ class CommentManager extends React.Component
             if(tmpComments[i] === commentID)
             {
                 tmpComments.splice(i, 1);
+                this.setState({
+                    commentIDs: tmpComments
+                });
                 return;
             }
         }
