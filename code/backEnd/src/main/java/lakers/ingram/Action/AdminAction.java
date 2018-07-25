@@ -220,6 +220,24 @@ public class AdminAction extends HttpServlet {
         out.close();
     }
 
+    @RequestMapping(value = "/deleteComments", method = RequestMethod.POST)
+    public void deleteComments(@RequestParam("deletedCommentIDs") int[] commentIDs,
+                               HttpServletResponse response)
+            throws IOException
+    {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
+
+        for(int commentID : commentIDs)
+        {
+            appService.CommentDelete(commentID);
+        }
+        out.print("delete SUCCESS!");
+        out.flush();
+        out.close();
+    }
+
     @RequestMapping(value = "/AddTodayFood/ExistedFood", method = RequestMethod.POST)
     public void addTodayFoodExisted(@RequestParam("ExistedFood") int[] foodIDArr,
                                     @RequestParam("windowID") Integer windowId,
