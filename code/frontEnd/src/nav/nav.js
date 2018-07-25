@@ -662,12 +662,22 @@ class MiniDrawer extends React.Component {
                         {!this.state.login?<Button color="inherit"
                                                    onClick={this.handleLoginOpen}>Login</Button>:
                             <Button color="inherit" onClick={this.handleLogoutOpen}>Logout</Button>}
-                        {!this.state.login?<Button color="inherit" onClick={this.handleRegisterOpen}>Register</Button>:
-                            !this.state.admin&&!this.state.worker&&<Link className={classes.link} to={'/usercenter/'+this.loginId}><IconButton
+                        {!this.state.login && <Button color="inherit" onClick={this.handleRegisterOpen}>Register</Button>}
+                        {this.state.login && !this.state.admin&&!this.state.worker&&<Link className={classes.link} to={'/usercenter/'+this.loginId}><IconButton
                                 color="inherit"
                             >
                                 <AccountCircle />
                             </IconButton></Link>}
+                        {this.state.login && this.state.admin && <Link className={classes.link} to={'/admin'}><IconButton
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton></Link>}
+                        {this.state.login && this.state.worker && <Link className={classes.link} to={'/worker'}><IconButton
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton></Link>}
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -703,6 +713,24 @@ class MiniDrawer extends React.Component {
                                             <AccountCircle/>
                                         </ListItemIcon>
                                         <ListItemText primary="User Center" />
+                                    </ListItem>
+                                </Link>}
+                                {this.state.admin&&
+                                <Link  to={'/admin'}>
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <AccountCircle/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Admin Center" />
+                                    </ListItem>
+                                </Link>}
+                                {this.state.worker&&
+                                <Link  to={'/worker'}>
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <AccountCircle/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Worker Center" />
                                     </ListItem>
                                 </Link>}
                             </div>:
