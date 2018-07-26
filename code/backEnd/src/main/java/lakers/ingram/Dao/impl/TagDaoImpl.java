@@ -14,16 +14,13 @@ import java.util.List;
 
 @Repository
 public class TagDaoImpl implements TagDao {
-    public JSONArray showTags(){
+    public List<TagEntity> getAllTags(){
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("select a from TagEntity a");
+        Query query = session.createQuery("select a from TagEntity a order by a.tagType");
         List<TagEntity> list=query.list();
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.addAll(list);
-        System.out.println("all"+jsonArray);
         transaction.commit();
-        return jsonArray;
+        return list;
     }
 
     public JSONObject showTags(String tagName)

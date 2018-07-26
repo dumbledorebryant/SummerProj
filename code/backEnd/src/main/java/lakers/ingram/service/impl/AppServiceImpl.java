@@ -147,9 +147,15 @@ public class AppServiceImpl implements AppService {
         return foodDao.getWindowNameByFoodId(foodId);
     };
 
+    public String uploadNewFoodPic(File imgFile,Integer foodID){
+        return foodDao.uploadNewFoodPic(imgFile,foodID);
+    }
     //TodayFood
-    public void addTodayFoodExisted(int[] foodIDArr,Integer windowId){
-        todayFoodDao.addTodayFoodExisted(foodIDArr,windowId);
+    public FoodEntity addFoodNew(String foodName,Double foodPrice,String foodTip,Integer windowID){
+        return todayFoodDao.addFoodNew(foodName,foodPrice,foodTip,windowID);
+    }
+    public void addNewTodayFood(Integer foodId,Integer windowId){
+        todayFoodDao.addNewTodayFood(foodId,windowId);
     }
 
 
@@ -191,9 +197,8 @@ public class AppServiceImpl implements AppService {
     public String handleUserInfo(UserEntity user)throws Exception{
         return userDao.handleUserInfo(user);
     }
-
-    public JSONArray showTags(){
-        return tagDao.showTags();
+    public List<TagEntity> getAllTags(){
+        return tagDao.getAllTags();
     }
 
     public String sendTags(Integer userid,JSONArray tagArray){
@@ -337,10 +342,10 @@ public class AppServiceImpl implements AppService {
     public List<TagEntity> getTagByFoodId(int foodId){
         return foodTagDao.getTagByFoodId(foodId);
     };
-
-    public List<TagEntity> getAllTags(){
-        return foodTagDao.getAllTags();
+    public void addFoodTag(Integer foodId,int[] tags){
+        foodTagDao.addFoodTag(foodId,tags);
     }
+
 
     public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food){
         return foodTagDao.getFoodsByTags(tagIdList,Food);

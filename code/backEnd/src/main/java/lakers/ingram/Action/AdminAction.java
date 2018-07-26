@@ -1,9 +1,6 @@
 package lakers.ingram.Action;
 
-import lakers.ingram.ModelEntity.AdminEntity;
-import lakers.ingram.ModelEntity.CommentEntity;
-import lakers.ingram.ModelEntity.UserEntity;
-import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.ModelEntity.*;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -13,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -244,13 +243,55 @@ public class AdminAction extends HttpServlet {
                                     HttpServletResponse response)
             throws IOException
     {
-
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
-        appService.addTodayFoodExisted(foodIDArr,windowId);
+        for(int foodId:foodIDArr){
+            appService.addNewTodayFood(foodId,windowId);
+        }
         out.print("success");
         out.flush();
         out.close();
+    }
+
+    @RequestMapping(value = "/AddTodayFood/NewFood", method = RequestMethod.POST)
+    public void addTodayFoodNew(@RequestParam("windowID") Integer windowID,
+                                @RequestParam("foodName") String name,
+                                @RequestParam("foodPrice") Double price,
+                                @RequestParam("foodTip") String tip,
+                                @RequestParam("tags") int[] tags,
+                                HttpServletResponse response)
+            throws IOException
+    {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
+        FoodEntity food = appService.addFoodNew(name,price,tip,windowID);
+        Integer foodId=food.getFoodId();
+        appService.addNewTodayFood(foodId,windowID);
+        appService.addFoodTag(foodId,tags);
+        out.print(foodId);
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/UploadNewFoodPic")
+    private void uploadNewFoodPic(@RequestParam("foodID") Integer foodID,
+                                  @RequestParam("files[]") MultipartFile file,
+                                  HttpServletResponse response)
+            throws Exception {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("image/*");
+        PrintWriter out = response.getWriter();
+        String headImg;
+        if (file != null && !file.isEmpty()) {
+            headImg = file.getOriginalFilename();
+            // 构建上传目录及文件对象，不存在则自动创建
+            String path = "C:\\webImages\\";
+            File imgFile = new File(path, headImg);
+            file.transferTo(imgFile);
+            String result = appService.uploadNewFoodPic(imgFile,foodID);
+            out.print(result);
+        }
     }
 }

@@ -26,8 +26,6 @@ class Avatar extends React.Component {
                 let blob = response.blob();
                 return blob
                     .then(blob => {
-                        console.log('User pic Request successful:'+blob);
-                        console.log('User pic size:'+blob.size);
                         if(blob.size===0){
                             return;
                         }
@@ -102,7 +100,6 @@ class Avatar extends React.Component {
                                            height="120px" width="140px" alt="aaa"/>
                     : <img src={pic} height="120px" width="140px"/>}
             </Upload>
-
         );
     }
 }

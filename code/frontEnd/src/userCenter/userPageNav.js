@@ -48,7 +48,6 @@ class UserPageNav extends Component {
                         <Tab eventKey={5} title="个性化推荐" >
                             <PersonalRecommend userid={this.props.match.params.key}/>
                         </Tab>
-
                     </Tabs>
                 </div>
             </div>

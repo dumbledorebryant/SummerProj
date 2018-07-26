@@ -12,10 +12,12 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import lakers.ingram.Dao.TodayFoodDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
+import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.TodayfoodEntity;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -59,7 +61,7 @@ public class TodayFoodDaoImpl implements TodayFoodDao
         mongoClient.close();
     }
 
-    public void addTodayFoodExisted(int[] foodIDArr,Integer windowId){
+    public void addNewTodayFood(Integer foodId,Integer windowId){
         Session session= HibernateUtil.getSession();
         session.beginTransaction();
         Integer time=0;
@@ -72,10 +74,21 @@ public class TodayFoodDaoImpl implements TodayFoodDao
         if(hour>13 && hour<20){
             time=2;
         }
-        for(int foodId:foodIDArr){
-            TodayfoodEntity newFood=new TodayfoodEntity(foodId,currentDate,time,windowId);
-            session.save(newFood);
-        }
+        TodayfoodEntity newFood=new TodayfoodEntity(foodId,currentDate,time,windowId);
+        session.save(newFood);
         session.getTransaction().commit();
+    }
+
+
+    public FoodEntity addFoodNew(String foodName, Double foodPrice, String foodTip,Integer windowID){
+        Session session= HibernateUtil.getSession();
+        session.beginTransaction();
+        FoodEntity food=new FoodEntity(foodName,foodPrice,foodTip,0,windowID);
+        session.save(food);
+        Query query = session.createQuery("select a from FoodEntity  a where a.foodName= :foodName").
+                setParameter("foodName", foodName);
+        FoodEntity newFood=(FoodEntity) query.uniqueResult();
+        session.getTransaction().commit();
+        return newFood;
     }
 }

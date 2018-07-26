@@ -1,5 +1,10 @@
 package lakers.ingram.Dao.impl;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
 import lakers.ingram.Dao.FoodDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
@@ -9,6 +14,9 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,5 +173,23 @@ class FoodDaoImpl implements FoodDao {
         transaction.commit();
         session.close();
         return resultList;
+    }
+
+    public String uploadNewFoodPic(File imgFile, Integer foodID){
+        MongoClientURI connectionString = new MongoClientURI(
+                "mongodb://ingram:14" +
+                        "@localhost:27017/Food?authSource=admin");
+        MongoClient mongoClient = new MongoClient(connectionString);
+        MongoDatabase mongodb = mongoClient.getDatabase("Food");
+        GridFSBucket bucket = GridFSBuckets.create(mongodb);
+        try {
+            InputStream inputFile = new FileInputStream(imgFile);
+            bucket.uploadFromStream(foodID.toString(), inputFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            mongoClient.close();
+            return "Success";
+        }
     }
 }
