@@ -189,7 +189,7 @@ class Dishes extends React.Component {
                     />
                     <CardMedia
                         className={classes.media}
-                        image={this.state.picture}
+                        image={this.props.picture}
                         title="Contemplative Reptile"
                     />
                     <CardContent>

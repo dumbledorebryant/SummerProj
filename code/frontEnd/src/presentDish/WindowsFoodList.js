@@ -218,18 +218,12 @@ class WindowsFoodList extends React.Component {
                                             <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId}
                                                     foodId={item.foodId} foodname={item.foodName} price={item.price}
                                                     tips={item.tips} window_name={item.windowName} like={item.likes}
-                                                    picture="" Tags={item.Tags} clickLike={this.clickLike} idx={(this.state.current-1)*5+i}/>
+                                                    picture={item.picture} Tags={item.Tags} clickLike={this.clickLike} idx={(this.state.current-1)*5+i}/>
                                             </Grid>))
                                     }
                                 </Grid>
                             </Grid>
                         </MuiThemeProvider>
-                        <div align ="center">
-                            <Pagination current={this.state.current}
-                                        onChange={this.onPageChange}
-                                        total={this.state.pageNum*10}/>
-                        </div>
-                        <br/><br/>
                     </div>
 
             </div>
