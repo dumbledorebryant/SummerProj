@@ -10,7 +10,31 @@ import CounterSimulation from "./AdminOperations/CounterSimulation";
 
 class AdminManager extends React.Component
 {
+    constructor(props){
+        super(props);
+        this.state={
+            login:false
+        }
+    }
+
+    componentWillMount(){
+        fetch('http://localhost:8080/Admin/State',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                if (result!=="-1\n" ){
+                    this.setState({login:true});
+                }
+            });
+        });
+    }
+
     render(){
+        if (this.state.login){
         return(
             <div>
                 <Tab.Container id="left-tabs-example" defaultActiveKey="first">
@@ -50,7 +74,10 @@ class AdminManager extends React.Component
                     </Row>
                 </Tab.Container>
             </div>
-        )
+        )}
+        else{
+            return (<p>please login</p>)
+        }
     }
 }
 

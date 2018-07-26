@@ -57,7 +57,8 @@ class MenuManager extends React.Component {
             newFoodId: '',
             allTags: tagsInit,
             tagBool: [],
-            header: []
+            header: [],
+            file: null,
         };
         this.addNewDish = this.addNewDish.bind(this);
         this.close = this.close.bind(this);
@@ -71,6 +72,7 @@ class MenuManager extends React.Component {
         this.ChangeTips = this.ChangeTips.bind(this);
         this.showTags = this.showTags.bind(this);
         this.handleClickTag = this.handleClickTag.bind(this);
+        this.setFile = this.setFile.bind(this);
     }
 
     handleClickTag = data => () => {
@@ -192,8 +194,24 @@ class MenuManager extends React.Component {
                             tips:'',
                             tagBool:tagBoolTemp
                         });
+                        let formData = new FormData();
+                        formData.append('files[]', this.state.file);
+                        formData.append('foodID', result);
+                        fetch('http://localhost:8080/Admin/UploadNewFoodPic?' ,
+                            {
+                                method: 'POST',
+                                mode: 'cors',
+                                body:formData
+                            }
+                        )
+                            .then(response => {
+                                response.text()
+                                    .then(result => {
+                                        //alert(result);
+                                    });
+                            })
                         alert("success");
-
+                        this.registerInfo();
                     })
             })
     }
@@ -236,6 +254,9 @@ class MenuManager extends React.Component {
         })
     }
 
+    componentDidMount(){
+        this.fetchInfo();
+    }
     fetchInfo() {
         let tmp = this.state.newData;
         fetch('http://localhost:8080/Admin/ShowNews',
@@ -337,6 +358,10 @@ class MenuManager extends React.Component {
             this.setState({
                 windowID: rowID
             });
+        };
+
+        setFile(file){
+            this.setState({file:file});
         };
 
         render()
@@ -471,12 +496,12 @@ class MenuManager extends React.Component {
                                     );
                                 }, this)}
                                 <br/>
+                                <UploadNewFoodPic foodId={this.state.newFoodId} setFile={this.setFile}/>
                                 <div align="center">
                                     <Button onClick={this.addNewDish}>
                                         Add New Dish
                                     </Button>
                                 </div>
-                                <UploadNewFoodPic foodId={this.state.newFoodId}/>
                             </Modal.Body>
                             <Modal.Footer>
                                 <Button onClick={this.close}>Cancel</Button>

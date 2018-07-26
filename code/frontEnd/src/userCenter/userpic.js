@@ -23,21 +23,30 @@ class Avatar extends React.Component {
             }
         )
             .then(response=> {
-                let blob = response.blob();
-                return blob
-                    .then(blob => {
-                        if(blob.size===0){
-                            return;
-                        }
-                        else{
-                            let reader = new FileReader();
+                //let blob = response.blob();
+                 response.json()
+                    .then(result => {
+                        //let str = byteToString(result[0]);
+                        //var blob = new Blob([str], {type:'image/*'});
+                        //let blob = new Blob(result[0]);
+                        //let blob = c.blob();
+                        //let blob = new Blob([c],{type:"image/*"});
+                        //if(blob.size===0){
+                          //  return;
+                        //}
+                        /*else{
+                            var blobUrl = URL.createObjectURL(blob);
+                            /*let reader = new FileReader();
                             reader.readAsDataURL(blob);
                             reader.onloadend = ()=> {
                                 this.setState({
                                     imageUrl: reader.result
                                 })
-                            }
-                        }
+                            }*/
+                            this.setState({
+                                imageUrl: result[0]
+                            })
+
                     });
             });
     };

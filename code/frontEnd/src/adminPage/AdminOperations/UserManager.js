@@ -100,10 +100,11 @@ class UserManager extends React.Component
             }
         )
             .then(response => {
-                return response.json()
+                return response.text()
                     .then(result => {
                         console.log("result: ", result);
                         alert(result);
+                        this.showUser();
                     })
             })
     }
@@ -118,10 +119,11 @@ class UserManager extends React.Component
             }
         )
             .then(response => {
-                return response.json()
+                return response.text()
                     .then(result => {
                         console.log("result: ", result);
                         alert(result);
+                        this.showUser();
                     })
             })
     }
@@ -174,7 +176,6 @@ class UserManager extends React.Component
                 <BootstrapTable data={ this.state.userData} height="300px" keyBoardNav
                                 columnFilter
                                 selectRow={ selectRowProp }
-                                cellEdit={ cellEdit }
                                 options={ options }>
                     <TableHeaderColumn dataField='id' isKey={true} dataSort={ true }>
                         UserID

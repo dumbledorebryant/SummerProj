@@ -29,28 +29,9 @@ class UploadNewFoodPic extends React.Component {
                 imageUrl: reader.result,
             });
         };
+        
 
-        console.log("foodID:"+this.props.foodId);
-        if(this.props.foodId===''){
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('files[]', file);
-        formData.append('foodID', this.props.foodId);
-        fetch('http://localhost:8080/Admin/UploadNewFoodPic?' ,
-            {
-                method: 'POST',
-                mode: 'cors',
-                body:formData
-            }
-        )
-            .then(response => {
-                response.text()
-                    .then(result => {
-                        alert(result);
-                    });
-            })
+        this.props.setFile(file);
     };
 
 

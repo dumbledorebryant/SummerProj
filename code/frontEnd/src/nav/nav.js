@@ -603,7 +603,7 @@ class MiniDrawer extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.text().then(result=>{
-                if (result!=="-1\r\n" ){
+                if (result!=="-1\n" ){
                     this.setState({login:true,worker:true});
                 }
             });
@@ -616,7 +616,7 @@ class MiniDrawer extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.text().then(result=>{
-                if (result!=="-1\r\n" ){
+                if (result!=="-1\n" ){
                     this.setState({login:true,admin:true});
                 }
             });

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/Worker")
@@ -88,8 +89,9 @@ public class WorkerAction extends HttpServlet {
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
             // 构建上传目录及文件对象，不存在则自动创建
-            String path = "C:\\webImages\\";
-            File imgFile = new File(path, headImg);
+            //String path = "/Users/myu/Downloads/eat";
+            String path = "C:\\webImages\\worker";
+            File imgFile = new File(path, windowid.toString()+".jpg");
             file.transferTo(imgFile);
             String result=appService.newFoodPic(imgFile,windowid);
             out.print(result);

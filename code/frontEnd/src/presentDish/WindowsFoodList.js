@@ -224,6 +224,12 @@ class WindowsFoodList extends React.Component {
                                 </Grid>
                             </Grid>
                         </MuiThemeProvider>
+                        <div align ="center">
+                            <Pagination current={this.state.current}
+                                        onChange={this.onPageChange}
+                                        total={this.state.pageNum*10}/>
+                        </div>
+                        <br/><br/>
                     </div>
 
             </div>

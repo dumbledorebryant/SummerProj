@@ -19,6 +19,10 @@ class CommentManager extends React.Component
         this.fetchComment = this.fetchComment.bind(this);
     }
 
+    componentDidMount(){
+        this.fetchComment();
+    }
+
     fetchComment(){
         let tmp = this.state.comments;
         fetch('http://localhost:8080/Admin/showComments',

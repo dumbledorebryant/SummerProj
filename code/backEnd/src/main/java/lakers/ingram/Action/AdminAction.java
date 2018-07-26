@@ -287,8 +287,9 @@ public class AdminAction extends HttpServlet {
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
             // 构建上传目录及文件对象，不存在则自动创建
-            String path = "C:\\webImages\\";
-            File imgFile = new File(path, headImg);
+            //String path = "/Users/myu/Downloads/eat";
+            String path = "C:\\webImages\\food\\";
+            File imgFile = new File(path, foodID.toString()+".jpg");
             file.transferTo(imgFile);
             String result = appService.uploadNewFoodPic(imgFile,foodID);
             out.print(result);

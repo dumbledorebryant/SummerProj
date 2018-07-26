@@ -1,5 +1,6 @@
 package lakers.ingram.Action;
 
+import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.TagEntity;
 import lakers.ingram.ModelEntity.ViewhistoryEntity;
@@ -101,7 +102,8 @@ public class FoodAction extends HttpServlet {
 
         JSONArray arr3 = FoodEntityAddWindowName(Foods);
         JSONArray arr4 = FoodEntityAddTag(arr3);
-        out.println(arr4.toString());
+        JSONArray arr5 = AddFoodPic(arr4);
+        out.println(arr5.toString());
 
         HttpSession session=request.getSession();
         session.setAttribute("foodList",Foods);
@@ -204,5 +206,27 @@ public class FoodAction extends HttpServlet {
         System.out.println(JSONArray.fromObject(tagList));
         out.flush();
         out.close();
+    }
+
+    private JSONArray AddFoodPic(JSONArray arr){
+        JSONArray arr2 = new JSONArray();
+        for(int i= 0;i<arr.size();i++){
+            JSONObject food = arr.getJSONObject(i);
+            int foodId = food.getInt("foodId");
+            //   String userName= appService.getUserById((int)comment.get("userId")).getUsername();
+            //String path = "/Users/myu/Downloads/eat/"+String.valueOf(foodId)+".jpg";
+            String path = "C:\\webImages\\food\\"+String.valueOf(foodId)+".jpg";
+            String imgBase = ImgUtil.getImgStr(path);
+            if (imgBase.equals("error")){
+                imgBase= "data:image/*;base64,"
+                        +"/9j/4QBkRXhpZgAATU0AKgAAAAgABYdpAAQAAAABAAAASgESAAQAAAABAAAAAAEBAAMAAAABADAAAAEyAAIAAAABAAAAAAEAAAMAAAABADAAAAAAAAAAAZIIAAQAAAABAAAAAAAAAAD/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wgARCAAwADADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAUCAwYB/8QAGAEAAwEBAAAAAAAAAAAAAAAAAQIDAAT/2gAMAwEAAhADEAAAAddVWBI9CskuaGZvQMFsac1Lo1I/BCHA62T56rf5xFdRVW89LSAXV5//xAAfEAADAAICAgMAAAAAAAAAAAABAgMABBETEiIFISP/2gAIAQEAAQUCwsAH2VebtWOSoKJladaeHIG6KXptrELR0CnnKkNap8p6yxyjwtdjOUdRvHHYivJ5aZrEmgwoBr/HD97x7Miiu+EA5Wntqw6UH3k6ns9jjNdQwoYLww//xAAaEQACAwEBAAAAAAAAAAAAAAAAAQIQEQMS/9oACAEDAQE/AVcIaPmeFhB02f/EABkRAAMAAwAAAAAAAAAAAAAAAAABAhARIf/aAAgBAgEBPwFtYRQqE9lnSD//xAApEAACAgAEBAUFAAAAAAAAAAABAgARAxIxURMhIkEQI0JhgTJxcpHB/9oACAEBAAY/ApZNVrG4JZj7IYfMxa9IAuvvczBlb8T4M9aCXjnMe+wnAw1Un3OsJxFIYdpx1wxwn1yNLir2Tn89v7HW+oipnygYgFGddHDK0T2/cCpWUDku84DNmpQRMde9Zll3Acqs4rWXxFFeio7olWdoTssBU5XXQxs2EFdTzrw5qD8QYagFjvN2OsuY4H1EkrOg47H35QWwzn0qtzO9DETqEDbz/8QAJBAAAQQCAQMFAQAAAAAAAAAAAQARITFBYVGBkbEQcaHB4dH/2gAIAQEAAT8hRIwWYTvTgFr3ZkGnYhRkHKBuUFwA+jmZA3pPllT6VxdCIZRBU9BC8Tt+E9FBNwjdBBAAYIdY2JPX5IAPJBOk/Y8qbYBltjFmSIwx8oOg3KQalHDei2wR47qIjh3Bm8j5Qv7o4hAoXpCDMLMDbymluFmRkvwok9Hcj+K6Me7vpUzs09x6FuoJwEcU6oJw9g4EqTA0USFfZxBrwgzWZMA7hBEcESHuXhAYyRY1+QiDqEEdZX//2gAMAwEAAgADAAAAEPvbo92gS+//xAAZEQEBAQADAAAAAAAAAAAAAAABABEQITH/2gAIAQMBAT8QGzwQuySjls/l/8QAGREBAQEBAQEAAAAAAAAAAAAAAAERMSFB/9oACAECAQE/EGy/HDpNseGl2P/EACEQAQEAAgICAwADAAAAAAAAAAERACExQVFhEIGhcZHB/9k=";
+            }
+            else{
+                imgBase = "data:image/*;base64,"+imgBase;
+            }
+            food.put("picture",imgBase);
+            arr2.add(food);
+        }
+        return arr2;
     }
 }

@@ -10,11 +10,16 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import javassist.bytecode.ByteArray;
+import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.UserEntity;
 import lakers.ingram.encode.MD5Util;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,10 +32,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import javax.websocket.Decoder;
+import java.io.*;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -194,8 +198,9 @@ public class UserAction extends HttpServlet {
         String headImg;
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
-            String path = "C:\\webImages\\";
-            File imgFile = new File(path, headImg);
+            //String path = "/Users/myu/Downloads/eat";
+            String path = "C:\\webImages\\user\\";
+            File imgFile = new File(path, userid.toString()+".jpg");
             file.transferTo(imgFile);
             String result = appService.updatePic(imgFile, userid);
             out.print(result);
@@ -204,15 +209,25 @@ public class UserAction extends HttpServlet {
         }
     }
 
+
+
     @RequestMapping(value = "/GetPic")
     private void showPic(@RequestParam("userID") Integer userid,
                          HttpServletRequest request,
                          HttpServletResponse response)
             throws Exception {
         response.setCharacterEncoding("utf-8");
-        response.setContentType("image/*");
-        OutputStream out = response.getOutputStream();
-        appService.getUserAvatar(userid, out);
+        //response.setContentType("image/*");
+        //OutputStream out = response.getOutputStream();
+        //ByteArrayOutputStream outp = new ByteArrayOutputStream();
+        //appService.getUserAvatar(userid, outp);
+        PrintWriter out = response.getWriter();
+        String path = "/Users/myu/Downloads/eat/"+userid.toString()+".jpg";
+        //String path = "C:\\webImages\\"+userid.toString()+".jpg";
+        String imgBase = "data:image/*;base64,"+ImgUtil.getImgStr(path);
+        ArrayList<String> ur=new ArrayList<String>();
+        ur.add(imgBase);
+        out.println(JSONArray.fromObject(ur));
         out.flush();
         out.close();
     }

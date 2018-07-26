@@ -29,3 +29,8 @@
 ### 1.0.3
 2018.7.18
 * getTimeByWindow
+
+
+### 3.0.0
+2018.7.26
+* getMultiPic

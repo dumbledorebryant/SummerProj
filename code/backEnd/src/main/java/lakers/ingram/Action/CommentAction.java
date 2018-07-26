@@ -1,5 +1,6 @@
 package lakers.ingram.Action;
 
+import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.CommentEntity;
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
@@ -100,8 +101,19 @@ public class CommentAction extends HttpServlet {
         JSONArray arr2 = new JSONArray();
         for(int i= 0;i<arr.size();i++){
             JSONObject comment = arr.getJSONObject(i);
+            int userId = comment.getInt("userId");
+            //String path = "/Users/myu/Downloads/eat/"+String.valueOf(userId)+".jpg";
+            String path = "C:\\webImages\\user\\"+String.valueOf(userId)+".jpg";
+            String imgBase = ImgUtil.getImgStr(path);
+            if (imgBase.equals("error")){
+                imgBase = "data:image/*;base64,"  +
+                        "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCAAwADADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAAAgUDBAYAAQf/xAAXAQADAQAAAAAAAAAAAAAAAAAAAgME/9oADAMBAAIQAxAAAAG2YcjTs6DSIGnw+0c+fdLEw2UVynR2xzLVhXL4bTKZewxaE+vp6jQv/8QAIRAAAgICAgEFAAAAAAAAAAAAAQIDBAARBRITEBUkMTL/2gAIAQEAAQUCOJrO7Q2ZLLyZVvyHAcA2F/Q7+XyurPHGkkZ36L9wsFsFO93kTAk3Ev8AGIHRTrLj4ZY9e4SNV4eVZJcRcAjWZa1Vzy8QEnE1TXrnWg2gWPlmtQTR8OE6rn//xAAcEQACAgIDAAAAAAAAAAAAAAAAAQIDEBESITH/2gAIAQMBAT8BNbHiEORKlxW8V+FljfR//8QAHBEAAgICAwAAAAAAAAAAAAAAAAECAxAREjJB/9oACAECAQE/ASbaK5cliU9EdeYt7FKP/8QAKhAAAgEDAgUEAQUAAAAAAAAAAQIAAxEhEjEEEyJBYRAyUVKBQoKxwdH/2gAIAQEABj8CnntKbhGqbjSm8RKQq06h9xdMgfwZTXiaOknp1Ag58jcTzD4glM0lVmvs2200cQmnX+sZU/5Odwr0uaPeuMiAj1p6iBf5PiFG4oVRXqBgoa9gM3/qUeGbhdS1NmXsY1Nn1mm5S/5xL3z6U8KQGyG2MAINJr3HTkHwbQM70/rcKbgjvKvKUqmkXvuTc59LnaIXsFN950v+3XKfKK/XQNx+JZ[表情]prdvEGMzaUmsWCm5AjLUFRR86do2OpTa+nNuxl/mf/EABsQAAMAAwEBAAAAAAAAAAAAAAABERAhQTFh/9oACAEBAAE/IQyMEU+CorgAdUzAQFuCgDQEOgBJ1+DQLdH9AKsamPA3EACYowAQchlWYuICFFy4AEAABGqJCUpwAFAepABGs+AqPoAO2EB4AaQIYcQccBzUe4AISD//2gAMAwEAAgADAAAAEJXcsf0SfBv/xAAYEQADAQEAAAAAAAAAAAAAAAAAAREhIP/aAAgBAwEBPxA0EizlFtKE5//EABkRAAIDAQAAAAAAAAAAAAAAAAABEBExIf/aAAgBAgEBPxAzx3WEtTGnn6f/xAAdEAACAgMAAwAAAAAAAAAAAAABEQAQITFBIGFx/9oACAEBAAE/EEpYd5moBMwAaUneQCrhmePnIeQSAI9urEaaFkUE71gUL9fhiCOo1BwrdWCAkmUCCFXNqZEFCA0LEcdSBWIFcoIomAYOTp5Ur0QL4a4CheF1XNqDG8FcphlIGoER/9k=";
+            }
+            else {
+                imgBase = "data:image/*;base64," + ImgUtil.getImgStr(path);
+            }
             //   String userName= appService.getUserById((int)comment.get("userId")).getUsername();
-            comment.put("HeadPic","https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4099675241,2760395260&fm=15&gp=0.jpg");
+            comment.put("HeadPic",imgBase);
             arr2.add(comment);
         }
         return arr2;
