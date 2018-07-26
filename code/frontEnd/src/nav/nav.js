@@ -223,6 +223,7 @@ class MiniDrawer extends React.Component {
         openSetTag:false,
         openRecommendHint:false, //recommend
         openRecommend:false,
+        system:null,   //pc system
     };
 
     //nav
@@ -296,7 +297,10 @@ class MiniDrawer extends React.Component {
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.text().then(result=>{
-                    if (result==="fail\n"){
+                    if (this.state.system === "mac" && result==="fail\n"){
+                        this.setState({loginPattern:2})
+                    }
+                    else if (this.state.system === "windows" && result === "fail\r\n"){
                         this.setState({loginPattern:2})
                     }
                     else{
@@ -319,7 +323,10 @@ class MiniDrawer extends React.Component {
             }).then(response=>{
                 console.log('Request successful',response);
                 return response.text().then(result=>{
-                    if (result==="fail\n"){
+                    if (this.state.system === "mac" && result==="fail\n"){
+                        this.setState({loginPattern:2})
+                    }
+                    else if (this.state.system === "windows" && result==="fail\r\n"){
                         this.setState({loginPattern:2})
                     }
                     else{
@@ -561,7 +568,12 @@ class MiniDrawer extends React.Component {
         this.setState({openRecommend:false});
     };
 
+    isMac = () =>{ return /macintosh|mac os x/i.test(navigator.userAgent); };
+    isWindows = ()=> { return /windows|win32/i.test(navigator.userAgent); };
+
     componentWillMount(){
+        if (this.isMac()) this.setState({system:"mac"});
+        if (this.isWindows()) this.setState({system:"windows"});
         fetch('http://localhost:8080/User/State',{
             credentials: 'include',
             method:'GET',
@@ -603,7 +615,10 @@ class MiniDrawer extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.text().then(result=>{
-                if (result!=="-1\n" ){
+                if (this.state.system === "mac" && result!=="-1\n" ){
+                    this.setState({login:true,worker:true});
+                }
+                else if (this.state.system === "windows" && result!=="-1\r\n" ){
                     this.setState({login:true,worker:true});
                 }
             });
@@ -616,7 +631,10 @@ class MiniDrawer extends React.Component {
         }).then(response=>{
             console.log('Request successful',response);
             return response.text().then(result=>{
-                if (result!=="-1\n" ){
+                if (this.state.system === "mac" && result!=="-1\n" ){
+                    this.setState({login:true,admin:true});
+                }
+                else if (this.state.system === "windows" && result!=="-1\r\n" ){
                     this.setState({login:true,admin:true});
                 }
             });

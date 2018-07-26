@@ -1,5 +1,5 @@
 package lakers.ingram.Action;
-
+import java.util.Properties;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -14,6 +14,7 @@ import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import javassist.bytecode.ByteArray;
 import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.UserEntity;
+import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.encode.MD5Util;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
@@ -44,6 +45,7 @@ public class UserAction extends HttpServlet {
 
     @Autowired
     private AppService appService;
+
 
     @RequestMapping(value = "/Login")
     private void processLogin(@RequestParam("username") String name,
@@ -199,7 +201,13 @@ public class UserAction extends HttpServlet {
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
             //String path = "/Users/myu/Downloads/eat";
-            String path = "C:\\webImages\\user\\";
+            String path = "";
+            if (OSUtil.getOS().contains("Mac")){
+                path = "/Users/myu/Downloads/eat/user";
+            }
+            else if (OSUtil.getOS().contains("Windows")){
+                path = "C:\\webImages\\user";
+            }
             File imgFile = new File(path, userid.toString()+".jpg");
             file.transferTo(imgFile);
             String result = appService.updatePic(imgFile, userid);
@@ -222,8 +230,13 @@ public class UserAction extends HttpServlet {
         //ByteArrayOutputStream outp = new ByteArrayOutputStream();
         //appService.getUserAvatar(userid, outp);
         PrintWriter out = response.getWriter();
-        String path = "/Users/myu/Downloads/eat/"+userid.toString()+".jpg";
-        //String path = "C:\\webImages\\"+userid.toString()+".jpg";
+        String path = "";
+        if (OSUtil.getOS().contains("Mac")){
+            path = "/Users/myu/Downloads/eat/user/"+userid.toString()+".jpg";
+        }
+        else if (OSUtil.getOS().contains("Windows")){
+            path = "C:\\webImages\\user\\"+userid.toString()+".jpg";
+        }
         String imgBase = "data:image/*;base64,"+ImgUtil.getImgStr(path);
         ArrayList<String> ur=new ArrayList<String>();
         ur.add(imgBase);

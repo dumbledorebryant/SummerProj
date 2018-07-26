@@ -4,6 +4,7 @@ import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.CommentEntity;
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -103,7 +104,13 @@ public class CommentAction extends HttpServlet {
             JSONObject comment = arr.getJSONObject(i);
             int userId = comment.getInt("userId");
             //String path = "/Users/myu/Downloads/eat/"+String.valueOf(userId)+".jpg";
-            String path = "C:\\webImages\\user\\"+String.valueOf(userId)+".jpg";
+            String path = "";
+            if (OSUtil.getOS().contains("Mac")){
+                path = "/Users/myu/Downloads/eat/user/"+String.valueOf(userId)+".jpg";
+            }
+            else if (OSUtil.getOS().contains("Windows")){
+                path = "C:\\webImages\\user\\"+String.valueOf(userId)+".jpg";
+            }
             String imgBase = ImgUtil.getImgStr(path);
             if (imgBase.equals("error")){
                 imgBase = "data:image/*;base64,"  +

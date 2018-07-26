@@ -220,6 +220,9 @@ class MenuManager extends React.Component {
     onRowSelectFood = (row) => {
         let tmp = this.state.foodIDs;
         let tmp2=this.state.selected;
+        if(tmp2===''){
+            tmp2=[]
+        }
 
         let index = tmp.indexOf(row.id);
         if (index === -1) {

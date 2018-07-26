@@ -2,6 +2,7 @@ package lakers.ingram.Action;
 
 import lakers.ingram.ModelEntity.AdminEntity;
 import lakers.ingram.ModelEntity.WorkerEntity;
+import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.service.AppService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,8 +90,13 @@ public class WorkerAction extends HttpServlet {
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
             // 构建上传目录及文件对象，不存在则自动创建
-            //String path = "/Users/myu/Downloads/eat";
-            String path = "C:\\webImages\\worker";
+            String path = "";
+            if (OSUtil.getOS().contains("Mac")){
+                path = "/Users/myu/Downloads/eat/worker";
+            }
+            else if (OSUtil.getOS().contains("Windows")){
+                path = "C:\\webImages\\worker";
+            }
             File imgFile = new File(path, windowid.toString()+".jpg");
             file.transferTo(imgFile);
             String result=appService.newFoodPic(imgFile,windowid);

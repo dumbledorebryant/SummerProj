@@ -1,6 +1,7 @@
 package lakers.ingram.Action;
 
 import lakers.ingram.ModelEntity.*;
+import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -180,8 +181,10 @@ public class AdminAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
+
         JSONArray FoodList = appService.ShowWindowFood(windowID);
         out.print(FoodList);
+
         out.flush();
         out.close();
     }
@@ -286,8 +289,13 @@ public class AdminAction extends HttpServlet {
         if (file != null && !file.isEmpty()) {
             headImg = file.getOriginalFilename();
             // 构建上传目录及文件对象，不存在则自动创建
-            //String path = "/Users/myu/Downloads/eat";
-            String path = "C:\\webImages\\food\\";
+            String path = "";
+            if (OSUtil.getOS().contains("Mac")){
+                path = "/Users/myu/Downloads/eat/food";
+            }
+            else if (OSUtil.getOS().contains("Windows")){
+                path = "C:\\webImages\\food";
+            }
             File imgFile = new File(path, foodID.toString()+".jpg");
             file.transferTo(imgFile);
             String result = appService.uploadNewFoodPic(imgFile,foodID);

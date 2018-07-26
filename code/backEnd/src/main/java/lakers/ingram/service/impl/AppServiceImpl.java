@@ -157,6 +157,7 @@ public class AppServiceImpl implements AppService {
     public void addNewTodayFood(Integer foodId,Integer windowId){
         todayFoodDao.addNewTodayFood(foodId,windowId);
     }
+
     public void deleteAllTodayFoodByWindowId(Integer windowId){
         todayFoodDao.deleteAllTodayFoodByWindowId(windowId);
     }

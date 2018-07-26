@@ -53,6 +53,7 @@ public interface AppService {
     FoodEntity addFoodNew(String foodName,Double foodPrice,String foodTip,Integer windowID);
     void addNewTodayFood(Integer foodId,Integer windowId);
     void deleteAllTodayFoodByWindowId(Integer windowId);
+
     //Food
 
     public List<FoodEntity> getAllFood();

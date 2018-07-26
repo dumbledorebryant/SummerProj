@@ -5,6 +5,7 @@ import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.TagEntity;
 import lakers.ingram.ModelEntity.ViewhistoryEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -215,7 +216,13 @@ public class FoodAction extends HttpServlet {
             int foodId = food.getInt("foodId");
             //   String userName= appService.getUserById((int)comment.get("userId")).getUsername();
             //String path = "/Users/myu/Downloads/eat/"+String.valueOf(foodId)+".jpg";
-            String path = "C:\\webImages\\food\\"+String.valueOf(foodId)+".jpg";
+            String path = "";
+            if (OSUtil.getOS().contains("Mac")){
+                path = "/Users/myu/Downloads/eat/food/"+String.valueOf(foodId)+".jpg";
+            }
+            else if (OSUtil.getOS().contains("Windows")){
+                path = "C:\\webImages\\food\\"+String.valueOf(foodId)+".jpg";
+            }
             String imgBase = ImgUtil.getImgStr(path);
             if (imgBase.equals("error")){
                 imgBase= "data:image/*;base64,"

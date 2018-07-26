@@ -92,6 +92,7 @@ public class TodayFoodDaoImpl implements TodayFoodDao
         return newFood;
     }
 
+
     public void deleteAllTodayFoodByWindowId(Integer windowId){
         Session session= HibernateUtil.getSession();
         session.beginTransaction();
@@ -105,15 +106,15 @@ public class TodayFoodDaoImpl implements TodayFoodDao
         if(hour>13 && hour<20){
             time=2;
         }
-        Query query2 = session.createQuery("select a from TodayfoodEntity a " +
-                "where a.windowId = :windowId and a.time=:time").
-                setParameter("windowId", windowId).setParameter("time",time);
-        if(query2.list().size()>0){
-            Query query = session.createQuery("delete from TodayfoodEntity a " +
+       Query query2 = session.createQuery("select a from TodayfoodEntity a " +
+            "where a.windowId = :windowId and a.time=:time").
+            setParameter("windowId", windowId).setParameter("time",time);
+            if(query2.list().size()>0){
+                    Query query = session.createQuery("delete from TodayfoodEntity a " +
                     "where a.windowId = :windowId and a.time=:time").
                     setParameter("windowId", windowId).setParameter("time",time);
-            query.executeUpdate();
-        }
-        session.getTransaction().commit();
+                    query.executeUpdate();
+            }
+            session.getTransaction().commit();
     }
 }

@@ -8,6 +8,8 @@ import com.mongodb.client.gridfs.GridFSBuckets;
 import lakers.ingram.Dao.FoodDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -17,6 +19,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +175,7 @@ class FoodDaoImpl implements FoodDao {
             time=2;
         }
 
+
         for(FoodEntity singleFood : foodList)
         {
             Integer foodID = singleFood.getFoodId();
@@ -188,13 +192,15 @@ class FoodDaoImpl implements FoodDao {
             jsonObject.put("foodName", foodName);
             jsonObject.put("flag", flag);
             array.add(jsonObject);
+
         }
+
         System.out.println("array:"+array);
         transaction.commit();
         session.close();
         return array;
-    }
 
+    }
 
     public String uploadNewFoodPic(File imgFile, Integer foodID){
         MongoClientURI connectionString = new MongoClientURI(

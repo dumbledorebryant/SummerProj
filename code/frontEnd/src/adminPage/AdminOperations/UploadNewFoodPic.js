@@ -29,7 +29,7 @@ class UploadNewFoodPic extends React.Component {
                 imageUrl: reader.result,
             });
         };
-        
+
 
         this.props.setFile(file);
     };
