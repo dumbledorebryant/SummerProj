@@ -147,7 +147,7 @@ class FoodDaoImpl implements FoodDao {
     }
 
     @Override
-    public Map<String, String> getFoodId_NameByWindowID(int windowID)
+    public JSONArray getFoodId_NameByWindowID(int windowID)
     {
         Session session = HibernateUtil.getSession();
         Transaction transaction = session.beginTransaction();
@@ -159,21 +159,42 @@ class FoodDaoImpl implements FoodDao {
 
         @SuppressWarnings("unchecked")
         List<FoodEntity> foodList = query.list();
-        System.out.println(foodList);
+        JSONArray array=new JSONArray();
+        JSONObject jsonObject =new JSONObject();
 
-        Map<String, String> resultList = new LinkedHashMap<>();
+        Integer time=0;
+        Calendar cal=Calendar.getInstance();
+        int hour=cal.get(Calendar.HOUR_OF_DAY);
+        if(hour>9 && hour<=13){
+            time=1;
+        }
+        if(hour>13 && hour<20){
+            time=2;
+        }
+
         for(FoodEntity singleFood : foodList)
         {
             Integer foodID = singleFood.getFoodId();
             String foodName = singleFood.getFoodName();
-            String strID = String.valueOf(foodID);
-            resultList.put(strID, foodName);
+            Integer flag=0;
+            Query query2 = session.createQuery("select food " +
+                    "from TodayfoodEntity food " +
+                    "where food.foodId= :foodID and food.time=:time")
+                    .setParameter("foodID", foodID).setParameter("time",time);
+            if(query2.list().size()>0){
+                flag=1;
+            }
+            jsonObject.put("foodId", foodID);
+            jsonObject.put("foodName", foodName);
+            jsonObject.put("flag", flag);
+            array.add(jsonObject);
         }
-
+        System.out.println("array:"+array);
         transaction.commit();
         session.close();
-        return resultList;
+        return array;
     }
+
 
     public String uploadNewFoodPic(File imgFile, Integer foodID){
         MongoClientURI connectionString = new MongoClientURI(

@@ -11,5 +11,6 @@ public interface TodayFoodDao
     void getNewPic(int windowID, OutputStream out);
     public FoodEntity addFoodNew(String foodName, Double foodPrice, String foodTip,Integer windowID);
     public void addNewTodayFood(Integer foodId,Integer windowId);
+    public void deleteAllTodayFoodByWindowId(Integer windowId);
 }
 

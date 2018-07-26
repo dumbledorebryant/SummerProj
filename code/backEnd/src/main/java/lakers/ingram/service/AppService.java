@@ -52,6 +52,7 @@ public interface AppService {
     //Today Food
     FoodEntity addFoodNew(String foodName,Double foodPrice,String foodTip,Integer windowID);
     void addNewTodayFood(Integer foodId,Integer windowId);
+    void deleteAllTodayFoodByWindowId(Integer windowId);
     //Food
 
     public List<FoodEntity> getAllFood();
@@ -150,7 +151,7 @@ public interface AppService {
 
     List<WindowEntity> getAllNews();
     void RegisterWindow();
-    Map<String, String> ShowWindowFood(int windowID);
+    JSONArray ShowWindowFood(int windowID);
     void getNewPicByWindowID(int windowID, OutputStream out);
     List<CommentEntity> getAllComments();
 

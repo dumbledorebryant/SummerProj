@@ -91,4 +91,29 @@ public class TodayFoodDaoImpl implements TodayFoodDao
         session.getTransaction().commit();
         return newFood;
     }
+
+    public void deleteAllTodayFoodByWindowId(Integer windowId){
+        Session session= HibernateUtil.getSession();
+        session.beginTransaction();
+        Integer time=0;
+        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+        Calendar cal=Calendar.getInstance();
+        int hour=cal.get(Calendar.HOUR_OF_DAY);
+        if(hour>9 && hour<=13){
+            time=1;
+        }
+        if(hour>13 && hour<20){
+            time=2;
+        }
+        Query query2 = session.createQuery("select a from TodayfoodEntity a " +
+                "where a.windowId = :windowId and a.time=:time").
+                setParameter("windowId", windowId).setParameter("time",time);
+        if(query2.list().size()>0){
+            Query query = session.createQuery("delete from TodayfoodEntity a " +
+                    "where a.windowId = :windowId and a.time=:time").
+                    setParameter("windowId", windowId).setParameter("time",time);
+            query.executeUpdate();
+        }
+        session.getTransaction().commit();
+    }
 }

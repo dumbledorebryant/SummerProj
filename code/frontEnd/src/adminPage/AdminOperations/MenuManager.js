@@ -59,6 +59,7 @@ class MenuManager extends React.Component {
             tagBool: [],
             header: [],
             file: null,
+            selected:[]
         };
         this.addNewDish = this.addNewDish.bind(this);
         this.close = this.close.bind(this);
@@ -209,7 +210,7 @@ class MenuManager extends React.Component {
                                     .then(result => {
                                         //alert(result);
                                     });
-                            })
+                            });
                         alert("success");
                         this.registerInfo();
                     })
@@ -218,6 +219,8 @@ class MenuManager extends React.Component {
 
     onRowSelectFood = (row) => {
         let tmp = this.state.foodIDs;
+        let tmp2=this.state.selected;
+
         let index = tmp.indexOf(row.id);
         if (index === -1) {
             tmp.push(row.id);
@@ -225,8 +228,18 @@ class MenuManager extends React.Component {
         else {
             tmp.splice(index, 1);
         }
+
+        let index2 = tmp2.indexOf(row.id);
+        if (index2 === -1) {
+            tmp2.push(row.id);
+        }
+        else {
+            tmp2.splice(index2, 1);
+        }
+
         this.setState({
-            foodIDs: tmp
+            foodIDs:tmp,
+            selected:tmp2
         });
     };
 
@@ -310,19 +323,28 @@ class MenuManager extends React.Component {
                 .then(response => {
                     return response.json()
                         .then(result => {
-                            console.log("result: ", result);
-                            for (let key in result) {
-                                if (result.hasOwnProperty(key)) {
-                                    let single = {
-                                        "id": key,
-                                        "name": result[key]
-                                    };
-                                    tmpAll.push(single);
+                            let selectedRow=[];
+                            let foodIDsTemp=[];
+                            for (let i in result) {
+                                let single = {
+                                    "id": result[i].foodId,
+                                    "name": result[i].foodName
+                                };
+                                tmpAll.push(single);
+                                if(result[i].flag===1){
+                                    selectedRow.push(result[i].foodId);
+                                    foodIDsTemp.push(result[i].foodId);
                                 }
                             }
+                            if(selectedRow.length===0){
+                                selectedRow='';
+                            }
                             this.setState({
-                                singleWindow: tmpAll
+                                singleWindow: tmpAll,
+                                selected:selectedRow,
+                                foodIDs:foodIDsTemp
                             });
+
                             this.showTags();
                             fetch('http://localhost:8080/Admin/fetchWindowPic' +
                                 '?windowID=' + this.state.windowID,
@@ -377,8 +399,8 @@ class MenuManager extends React.Component {
 
             const selectRowPropFood = {
                 mode: 'checkbox',
-                clickToSelect: true,
                 onSelect: this.onRowSelectFood,
+                selected:this.state.selected
             };
 
             const cellEdit = {

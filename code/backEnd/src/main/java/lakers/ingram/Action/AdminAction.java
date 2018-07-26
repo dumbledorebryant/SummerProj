@@ -180,10 +180,8 @@ public class AdminAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
-
-        Map<String, String> FoodList = appService.ShowWindowFood(windowID);
-        JSONObject jsonobject = JSONObject.fromObject(FoodList);
-        out.print(jsonobject);
+        JSONArray FoodList = appService.ShowWindowFood(windowID);
+        out.print(FoodList);
         out.flush();
         out.close();
     }
@@ -246,6 +244,7 @@ public class AdminAction extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
+        appService.deleteAllTodayFoodByWindowId(windowId);
         for(int foodId:foodIDArr){
             appService.addNewTodayFood(foodId,windowId);
         }

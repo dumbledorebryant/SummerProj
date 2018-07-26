@@ -24,7 +24,7 @@ public interface FoodDao {
 
     public FoodEntity getFoodById(int foodId);
 
-    Map<String, String> getFoodId_NameByWindowID(int WindowID);
+    JSONArray getFoodId_NameByWindowID(int WindowID);
 
     public String uploadNewFoodPic(File imgFile, Integer foodID);
 

@@ -1085,6 +1085,7 @@ class MiniDrawer extends React.Component {
                         <Button size="small" color="secondary" onClick={this.handleCloseSetTagHint}>Later</Button>,]}
                 />
                 <Dialog
+                    maxWidth={false}
                     open={this.state.openRecommend}
                     onClose={this.handleCloseRecommend}
                     aria-labelledby="form-dialog-title"

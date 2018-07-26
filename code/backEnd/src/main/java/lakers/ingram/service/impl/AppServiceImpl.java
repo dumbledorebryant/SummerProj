@@ -157,7 +157,9 @@ public class AppServiceImpl implements AppService {
     public void addNewTodayFood(Integer foodId,Integer windowId){
         todayFoodDao.addNewTodayFood(foodId,windowId);
     }
-
+    public void deleteAllTodayFoodByWindowId(Integer windowId){
+        todayFoodDao.deleteAllTodayFoodByWindowId(windowId);
+    }
 
     //  UserLikeFood
 
@@ -326,7 +328,7 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public Map<String, String> ShowWindowFood(int windowID) { return foodDao.getFoodId_NameByWindowID(windowID); }
+    public JSONArray ShowWindowFood(int windowID) { return foodDao.getFoodId_NameByWindowID(windowID); }
 
     @Override
     public void getNewPicByWindowID(int windowID, OutputStream out) {
