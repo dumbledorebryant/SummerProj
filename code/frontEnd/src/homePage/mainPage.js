@@ -7,6 +7,7 @@ import ButtonBases from './btn'
 import Footer from '../nav/footer'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+
 const styles = theme => ({
     toolbar: {
         display: 'flex',
@@ -22,17 +23,23 @@ const styles = theme => ({
     },
 });
 
-function MainPage(props) {
-    const {classes} = props;
-    return (
-        <div>
-    <Typography noWrap>
-    <Paper className={classes.paper2} elevation={5}>
-        <SwipeableTextMobileStepper/>
-        </Paper>
-    </Typography>
-    <ButtonBases/>
-        </div>);
+class MainPage extends React.Component {
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        const {classes} = this.props;
+            return (
+                <div>
+            <Typography noWrap>
+            <Paper className={classes.paper2} elevation={5}>
+                <SwipeableTextMobileStepper/>
+                </Paper>
+            </Typography>
+            <ButtonBases/>
+                </div>);
+        }
 }
 
 MainPage.propTypes = {

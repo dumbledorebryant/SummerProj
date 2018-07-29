@@ -8,19 +8,21 @@ import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-const tutorialSteps = [
+
+const advers = [
     {
-        label: 'One piece 1:)',
-        imgPath: require('../img/banner_01.jpg'),
+        label: 'adver1',
+        imgPath: null,
     },
     {
-        label: 'one piece 2',
-        imgPath: require('../img/timg-3.jpeg'),
+        label: 'adver2',
+        imgPath: null,
     },
     {
-        label: 'one piece 3',
-        imgPath: require('../img/timg-4.jpeg'),
+        label: 'adver3',
+        imgPath: null,
     },
 ];
 
@@ -33,7 +35,7 @@ const styles = theme => ({
     header: {
         display: 'flex',
         alignItems: 'center',
-        height: 50,
+        height: 100,
         paddingLeft: theme.spacing.unit * 4,
         marginBottom: 20,
         backgroundColor: theme.palette.background.default,
@@ -55,6 +57,8 @@ const styles = theme => ({
 class SwipeableTextMobileStepper extends React.Component {
     state = {
         activeStep: 0,
+        load:false,
+        img:advers
     };
 
     handleNext = () => {
@@ -76,63 +80,86 @@ class SwipeableTextMobileStepper extends React.Component {
     };
 
     index = 0;
-    steps = tutorialSteps.length;
+    steps = advers.length;
     updateAdver = () =>{
         this.index++;
         this.handleStepChange(this.index%this.steps)
     };
     componentDidMount(){
 
-        let _this=this;
-        setInterval(function(){
+        fetch('http://localhost:8080/Img/Adver',{
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                for (let i=0;i<3;i++){
+                    advers[i].imgPath=result[i];
+                }
+                this.setState({
+                    img:advers,
+                    load:true,
+                });
+                let _this=this;
+                setInterval(function(){
 
-            _this.updateAdver();
+                    _this.updateAdver();
 
-        },10000);
+                },10000);
+
+            });
+        });
+
+
     };
 
     render() {
         const { classes, theme } = this.props;
         const { activeStep } = this.state;
 
-        const maxSteps = tutorialSteps.length;
+        const maxSteps = advers.length;
+        if (this.state.load){
+            return (
+                <Paper className={classes.paper} elevation={2}>
+                <div className={classes.root}>
 
-        return (
-            <Paper className={classes.paper} elevation={2}>
-            <div className={classes.root}>
+                    <SwipeableViews
+                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                        index={this.state.activeStep}
+                        onChangeIndex={this.handleStepChange}
+                        enableMouseEvents
+                    >
+                        {this.state.img.map(step => (
+                            <img key={step.label} className={classes.img} src={step.imgPath} alt={step.label} />
+                        ))}
+                    </SwipeableViews>
+                    <MobileStepper
+                        steps={maxSteps}
+                        position="static"
+                        activeStep={activeStep}
+                        className={classes.mobileStepper}
+                        nextButton={
+                            <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
+                                Next
+                                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                            </Button>
+                        }
+                        backButton={
+                            <Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
+                                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                                Back
+                            </Button>
+                        }
+                    />
 
-                <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={this.state.activeStep}
-                    onChangeIndex={this.handleStepChange}
-                    enableMouseEvents
-                >
-                    {tutorialSteps.map(step => (
-                        <img key={step.label} className={classes.img} src={step.imgPath} alt={step.label} />
-                    ))}
-                </SwipeableViews>
-                <MobileStepper
-                    steps={maxSteps}
-                    position="static"
-                    activeStep={activeStep}
-                    className={classes.mobileStepper}
-                    nextButton={
-                        <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
-                            Next
-                            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-                        </Button>
-                    }
-                    backButton={
-                        <Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
-                            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                            Back
-                        </Button>
-                    }
-                />
-
-            </div>
-            </Paper>
-        );
+                </div>
+                </Paper>
+            );
+        }
+        else{
+            return (<p> </p>)
+        }
     }
 }
 

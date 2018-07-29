@@ -213,7 +213,7 @@ class WindowsMenu extends React.Component {
             let temp=nextProps.windowList;
             for (i;i<temp.length;i++){
                 if (temp[i].window_id===nextProps.windowId || temp[i].windowId===parseInt(nextProps.windowId)){
-                    this.setStatek({
+                    this.setState({
                         selectedIndex:i+1,
                         windowId:nextProps.windowId
                     });

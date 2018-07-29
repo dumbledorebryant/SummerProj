@@ -41,6 +41,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import TipsToTagSetting from '../userCenter/tipsToTagSetting'
 import ChildCareIcon from '@material-ui/icons/ChildCare';
 import PersonalRecommend from '../userCenter/personalRecommend'
+import {theme2,primaryColor,secondaryColor,fontColor} from '../style/style'
 const drawerWidth = 240;
 
 function TabContainer(props) {
@@ -55,39 +56,6 @@ TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const theme2 = createMuiTheme({
-    palette: {
-        primary: {
-            light: '#039be5',
-            main: '#63ccff',
-            dark: '#006db3',
-            contrastText: '#424242',
-        },
-        secondary: {
-            light: '#fb8c00',
-            main: '#ffbd45',
-            dark: '#c25e00',
-            contrastText: '#424242',
-        },
-
-    },
-    typography: {
-        // Tell Material-UI what the font-size on the html element is.
-        fontSize: 22,
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-    },
-   });
 
 const styles = theme => ({
     root: {
@@ -182,11 +150,11 @@ const styles = theme => ({
         marginTop:30
     },
     registerTitle:{
-        backgroundColor:'#039be5',
+        backgroundColor:primaryColor,
         marginBottom:20,
     },
     link:{
-        fontcolor:'#424242'
+        fontcolor:fontColor,
     },
     search: {
         margin: theme.spacing.unit,
@@ -516,7 +484,7 @@ class MiniDrawer extends React.Component {
 
     //search
     onFocusSearch = event =>{
-        event.target.style.boxShadow="0px -2px 0px #006db3 inset";
+        event.target.style.boxShadow="0px -2px 0px #899d73 inset";
     };
 
     onBlurSearch = event =>{
@@ -665,7 +633,7 @@ class MiniDrawer extends React.Component {
                         <TextField
                             className={classes.search}
                             id="search"
-                            style={{backgroundColor:'#26c3fe' ,paddingLeft:5 }}
+                            style={{backgroundColor:'#d0e7b7' ,paddingLeft:5 }}
                             InputProps={{
                                 disableUnderline: true,
                                 startAdornment: (
