@@ -114,6 +114,7 @@ class FoodDaoImpl implements FoodDao {
     }
 
     public List<FoodEntity> getAllFoodByLikeStr(String str){
+        System.out.println(str);
         Session session=HibernateUtil.getSession();
         session.beginTransaction();
         Query query= session.createQuery("select food f" +

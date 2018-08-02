@@ -6,6 +6,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import StoreIcon from '@material-ui/icons/Store';
+import Divider from '@material-ui/core/Divider';
 
 const styles = theme => ({
     root: {
@@ -13,7 +14,8 @@ const styles = theme => ({
         flexWrap: 'wrap',
         minWidth: 50,
         width: '100%',
-        textAlign:'center',
+        //textAlign:'center',
+        marginTop:20,
     },
     title:{
         marginTop:20,
@@ -175,6 +177,7 @@ class ButtonBases extends React.Component{
                 <div className={classes.title}>
                     <StoreIcon style={{float:'left',marginRight:5}}/><p >请选择餐厅</p>
                 </div>
+                <Divider/>
                 <div className={classes.root}>
                     {this.state.img.map(image => (
                         <ButtonBase

@@ -31,9 +31,11 @@ public class SearchAction extends HttpServlet {
                               @RequestParam("time") Integer time,
                               HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=utf-8");
+        System.out.println(content);
         PrintWriter out = response.getWriter();
         List<FoodEntity> foodList=appService.getAllFoodByLikeStr(content);
         JSONArray foods = JSONArray.fromObject(foodList);
+        System.out.println(foods);
         JSONArray res = new JSONArray();
         for(int i= 0;i<foods.size();i++){
             JSONObject food = foods.getJSONObject(i);

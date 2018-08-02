@@ -26,7 +26,7 @@ public class CorsFilter implements Filter {
         chain.doFilter(request, response);*/
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         HttpServletRequest request=(HttpServletRequest)servletRequest;
-        res.setContentType("textml;charset=UTF-8");
+        res.setContentType("text/html;charset=UTF-8");
         res.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         res.setHeader("Access-Control-Max-Age", "0");

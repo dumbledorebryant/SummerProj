@@ -35,6 +35,7 @@ export const theme2=createMuiTheme({
 });
 
 export const primaryColor = '#c5e1a5';
+export const primaryDarkColor = '#899d73';
 export const secondaryColor = '#ffecb3';
 export const fontColor = '#424242';
 
