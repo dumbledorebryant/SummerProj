@@ -17,6 +17,12 @@ import dailySalesChart from './chartData'
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import {theme2,primaryColor,secondaryColor,fontColor} from '../style/style'
 
 const chartStyle= theme => ({
     root:{
@@ -40,6 +46,21 @@ const chartStyle= theme => ({
         paddingRight:40,
         width: '100%',
         marginRight:40
+    },
+    paper2:{
+        // display:'flex',
+        paddingTop:20,
+        paddingBottom:20,
+        paddingLeft:20,
+        paddingRight:20,
+        width: '100%',
+        marginRight:40,
+        borderLeftWidth:10,
+        borderRightWidth:0,
+        borderTopWidth:0,
+        borderBottomWidth:0,
+        borderLeftColor: primaryColor,
+        borderStyle: 'solid',
     },
     queueInfo:{
 
@@ -618,15 +639,27 @@ class WindowChart extends React.Component {
                     </Grid>
 
                     <Grid item xs={6} >
-                        <Typography className={classes.queueInfo} color="primary" component="p">
-                            the number of newly coming people: {this.state.currentLength.toString()}
-                        </Typography>
-                        <Typography className={classes.updateInfo} component="p" color="secondary">
-                            the last time of update: {this.state.label[14]}
-                        </Typography>
-                        <Typography className={classes.waitInfo} component="p" color="primary">
-                            time to wait: {this.state.currentWaitTime}
-                        </Typography>
+                        <Paper className={classes.paper2}>
+                        <List component="nav">
+                            <ListItem button>
+                                <ListItemText>
+                                    the number of newly coming people: {this.state.currentLength.toString()}
+                                </ListItemText>
+                            </ListItem>
+                            <Divider/>
+                            <ListItem button>
+                                <ListItemText>
+                                    time to wait: {this.state.currentWaitTime}
+                                </ListItemText>
+                            </ListItem>
+                            <Divider/>
+                            <ListItem button>
+                                <ListItemText>
+                                    the last time of update: {this.state.label[14]}
+                                </ListItemText>
+                            </ListItem>
+                        </List>
+                        </Paper>
                     </Grid>
 
                 </Grid>

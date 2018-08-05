@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TempChart from './chart'
 import CompareChart from './compareChart'
+import {primaryLightColor,secondaryLightColor} from '../style/style'
 const styles = theme => ({
     root: {
         width: '120%',
@@ -42,7 +43,7 @@ class AllChart extends React.Component {
     };
 
 
-    render(){
+        render(){
         const { classes } = this.props;
         const { expanded } = this.state;
         return (
@@ -59,7 +60,7 @@ class AllChart extends React.Component {
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <ExpansionPanelSummary>
                         <Typography className={classes.heading}>Compare chart</Typography>
                         <Typography className={classes.secondaryHeading}>for two windows</Typography>
                     </ExpansionPanelSummary>

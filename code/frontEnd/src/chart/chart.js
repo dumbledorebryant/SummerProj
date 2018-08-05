@@ -17,15 +17,23 @@ import dailySalesChart from './chartData'
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import {theme2,primaryColor,secondaryColor,fontColor} from '../style/style'
+import {MuiThemeProvider,createMuiTheme } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const chartStyle= theme => ({
     root:{
         margin:20,
-       // flexGrow: 1,
+        flexGrow: 1,
         zIndex: 1,
        // overflow: 'hidden',
         //position: 'relative',
-       // display: 'flex',
+        display: 'flex',
     },
     formControl: {
         margin: 20,
@@ -40,23 +48,20 @@ const chartStyle= theme => ({
        // minWidth:900
         //width: '100%',
     },
-    queueInfo:{
-
-        marginTop:20,
-        marginRight:10,
-        fontSize:20
+    paper2:{
+        display:'flex',
+        paddingTop:20,
+        paddingBottom:20,
+        paddingLeft:20,
+        paddingRight:40,
+       /* background:
+        'linear-gradient(to top, #b5a6db 0%, ' +
+        ' rgba(0,0,0,0) 100%)',*/
     },
-    updateInfo:{
-        marginTop:20,
-        marginRight:10,
-        fontSize:20
+    progress: {
+        margin: theme.spacing.unit * 2,
+        align:'center',
     },
-    waitInfo:{
-        marginTop:20,
-        marginRight:10,
-        fontSize:20,
-        float:'left',
-    }
 });
 
 
@@ -78,6 +83,8 @@ class TempChart extends React.Component {
         windows:[],
         time:null,
         currentWaitTime:'N/A',
+        picReady:false,
+        pic:null,
     };
 
     componentWillMount(){
@@ -119,6 +126,23 @@ class TempChart extends React.Component {
             _this.updateChart();
 
         },120000);
+        let formdata = new FormData();
+        formdata.append("windowId",1);
+        fetch('http://localhost:8080/Window/GetPic',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    pic:result[0],
+                    picReady:true,
+                });
+
+            });
+        });
     };
 
     drawChart = (windowId) =>{
@@ -542,15 +566,49 @@ class TempChart extends React.Component {
             console.log('Request successful',response);
             return response.json().then(result=>{
                 this.setState({windows:result});
-                this.setState({windowId:result.length>0?result[0].windowId:null});
+                this.setState({windowId:result.length>0?result[0].windowId:null, picReady:false});
                 this.drawChart(result[0].windowId);
+                let formdata2 = new FormData();
+                formdata2.append("windowId",result[0].windowId);
+                fetch('http://localhost:8080/Window/GetPic',{
+                    credentials: 'include',
+                    method:'POST',
+                    mode:'cors',
+                    body:formdata2,
+                }).then(response=>{
+                    console.log('Request successful',response);
+                    return response.json().then(result=>{
+                        this.setState({
+                            pic:result[0],
+                            picReady:true,
+                        });
+
+                    });
+                });
             })
         });
 
     };
 
     handleChangeWindow = event =>{
-        this.setState({windowId:event.target.value});
+        this.setState({windowId:event.target.value, picReady: false});
+        let formdata = new FormData();
+        formdata.append("windowId",event.target.value);
+        fetch('http://localhost:8080/Window/GetPic',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    pic:result[0],
+                    picReady:true,
+                });
+
+            });
+        });
         let formdata2=new FormData();
         formdata2.append("window",event.target.value);
         fetch('http://localhost:8080/Data/GetTime',{
@@ -572,63 +630,35 @@ class TempChart extends React.Component {
     render(){
         const { classes, theme } = this.props;
         return (
-
+            <MuiThemeProvider theme={theme2}>
                 <Grid container spacing={24}>
-                    <Grid item xs={12}>
-                        <Paper className={classes.paper}>
-                            {this.state.historyMode === "0" &&<ChartistGraph
-                                    className="ct-chart"
-                                    data={this.state.chartMode==="0"?
-                                            {labels:this.state.label,series:[this.state.currentData,this.state.historyCurrentData]}:
-                                            {labels:this.state.label,series:[this.state.totalData,this.state.historyTotalData]}
-                                            }
-                                    type="Line"
-                                    options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                                    listener={dailySalesChart.animation}/>}
-                            {this.state.historyMode === "1" &&<ChartistGraph
-                                className="ct-chart"
-                                data={this.state.chartMode==="0"?
-                                    {labels:this.state.label,series:[this.state.currentData,this.state.hopeCurrentData]}:
-                                    {labels:this.state.label,series:[this.state.totalData,this.state.hopeTotalData]}
-                                }
-                                type="Line"
-                                options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                                listener={dailySalesChart.animation}/>}
+                    <Grid item xs={6}>
+                        <Paper className={classes.paper2}>
+                            {this.state.picReady? <img src={this.state.pic} style={{width: '33.3%',marginLeft:20, marginRight:20, height:220,}}/>:  <CircularProgress className={classes.progress} />}
 
+                            <List component="nav">
+                                <ListItem button>
+                                    <ListItemText>
+                                        the number of newly coming people: {this.state.currentLength.toString()}
+                                    </ListItemText>
+                                </ListItem>
+                                <Divider/>
+                                <ListItem button>
+                                    <ListItemText>
+                                        time to wait: {this.state.currentWaitTime}
+                                    </ListItemText>
+                                </ListItem>
+                                <Divider/>
+                                <ListItem button>
+                                    <ListItemText>
+                                        the last time of update: {this.state.label[14]}
+                                    </ListItemText>
+                                </ListItem>
+                            </List>
                         </Paper>
                     </Grid>
-                    <Grid item xs={8}>
-                        <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor="chartMode">chart mode</InputLabel>
-                            <Select
-                                native
-                                value={this.state.chartMode}
-                                onChange={this.handleChangeChart}
-                                inputProps={{
-                                    name: 'chartMode',
-                                    id: 'chartMode',
-                                }}
-                            >
-                                <option value={0}>Current</option>
-                                <option value={1}>Total</option>
-                            </Select>
-                        </FormControl>
-                        <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor="chartMode">History mode</InputLabel>
-                            <Select
-                                native
-                                value={this.state.historyMode}
-                                onChange={this.handleChangeHistory}
-                                inputProps={{
-                                    name: 'historyMode',
-                                    id: 'historyMode',
-                                }}
-                            >
-                                <option value={0}>Yesterday</option>
-                                <option value={1}>Predict</option>
-                            </Select>
-                        </FormControl>
-                        <FormControl className={classes.formControl}>
+                    <Grid item xs={4}>
+                        <FormControl className={classes.formControl} style={{marginTop:100,}}>
                             <InputLabel htmlFor="selectRestaurant">select restaurant</InputLabel>
                             <Select
                                 native
@@ -664,22 +694,63 @@ class TempChart extends React.Component {
                                     ))}
                             </Select>
                         </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="chartMode">chart mode</InputLabel>
+                            <Select
+                                native
+                                value={this.state.chartMode}
+                                onChange={this.handleChangeChart}
+                                inputProps={{
+                                    name: 'chartMode',
+                                    id: 'chartMode',
+                                }}
+                            >
+                                <option value={0}>Current</option>
+                                <option value={1}>Total</option>
+                            </Select>
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="chartMode">History mode</InputLabel>
+                            <Select
+                                native
+                                value={this.state.historyMode}
+                                onChange={this.handleChangeHistory}
+                                inputProps={{
+                                    name: 'historyMode',
+                                    id: 'historyMode',
+                                }}
+                            >
+                                <option value={0}>Yesterday</option>
+                                <option value={1}>Predict</option>
+                            </Select>
+                        </FormControl>
                     </Grid>
-                    <Grid item xs={4} >
-                        <Typography className={classes.queueInfo} color="primary" component="p">
-                            the number of newly coming people: {this.state.currentLength.toString()}
-                            </Typography>
-                        <Typography className={classes.updateInfo} component="p" color="secondary">
-                            the last time of update: {this.state.label[14]}
-                        </Typography>
-                        <Typography className={classes.waitInfo} component="p" color="primary">
-                            time to wait: {this.state.currentWaitTime}
-                        </Typography>
-                          </Grid>
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            {this.state.historyMode === "0" &&<ChartistGraph
+                                    className="ct-chart"
+                                    data={this.state.chartMode==="0"?
+                                            {labels:this.state.label,series:[this.state.currentData,this.state.historyCurrentData]}:
+                                            {labels:this.state.label,series:[this.state.totalData,this.state.historyTotalData]}
+                                            }
+                                    type="Line"
+                                    options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
+                                    listener={dailySalesChart.animation}/>}
+                            {this.state.historyMode === "1" &&<ChartistGraph
+                                className="ct-chart"
+                                data={this.state.chartMode==="0"?
+                                    {labels:this.state.label,series:[this.state.currentData,this.state.hopeCurrentData]}:
+                                    {labels:this.state.label,series:[this.state.totalData,this.state.hopeTotalData]}
+                                }
+                                type="Line"
+                                options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
+                                listener={dailySalesChart.animation}/>}
 
+                        </Paper>
+                    </Grid>
                 </Grid>
 
-
+            </MuiThemeProvider>
         )
     }
 }

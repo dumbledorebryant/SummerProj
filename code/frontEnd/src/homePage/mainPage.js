@@ -7,7 +7,7 @@ import ButtonBases from './btn'
 import Footer from '../nav/footer'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import {primaryDarkColor, primaryColor,secondaryColor} from '../style/style'
+import {primaryDarkColor, primaryColor,secondaryColor, fontColor} from '../style/style'
 import Divider from '@material-ui/core/Divider';
 import SvgIcon from '@material-ui/core/SvgIcon';
 
@@ -48,7 +48,7 @@ class MainPage extends React.Component {
         const {classes} = this.props;
             return (
                 <div>
-                    <h1 className={classes.title} style={{textAlign:'center'}}>Welcome to EatOrNot</h1>
+                    <Typography component='h1' className={classes.title} style={{textAlign:'center',fontSize:40, fontWidth:200}}>Welcome to EatOrNot</Typography>
                     <div style={{textAlign:'center'}}>
                         <EatIcon
                             className={classes.icon}

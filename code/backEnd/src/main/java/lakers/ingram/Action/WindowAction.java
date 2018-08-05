@@ -1,6 +1,8 @@
 package lakers.ingram.Action;
 
+import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,4 +68,20 @@ public class WindowAction extends HttpServlet {
              out.close();
     }
 
+    @RequestMapping(value = "/GetPic")
+    private void processGetPic(@RequestParam("windowId") int windowId  ,HttpServletResponse response)  throws Exception {
+        PrintWriter out = response.getWriter();
+        String path = "";
+        if (OSUtil.getOS().contains("Mac")){
+            path = "/Users/myu/Downloads/eat/window/";
+        }
+        else if (OSUtil.getOS().contains("Windows")){
+            path = "C:\\webImages\\window\\";
+        }
+        ArrayList<String> arrayList = new ArrayList<String>();
+        arrayList.add("data:image/*;base64,"+ImgUtil.getImgStr(path+String.valueOf(windowId)+".jpg"));
+        out.println(JSONArray.fromObject(arrayList));
+        out.flush();
+        out.close();
+    }
 }

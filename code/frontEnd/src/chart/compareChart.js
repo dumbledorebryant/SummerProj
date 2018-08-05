@@ -17,6 +17,12 @@ import dailySalesChart from './chartData'
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+
 const chartStyle= theme => ({
     root:{
         margin:20,
@@ -39,19 +45,16 @@ const chartStyle= theme => ({
         // minWidth:900
         //width: '100%',
     },
-    queueInfo:{
-
-        marginTop:20,
-        fontSize:24
+    paper2:{
+        display:'flex',
+        paddingTop:20,
+        paddingBottom:20,
+        paddingLeft:20,
+        paddingRight:40,
+        /* background:
+         'linear-gradient(to top, #b5a6db 0%, ' +
+         ' rgba(0,0,0,0) 100%)',*/
     },
-    updateInfo:{
-        marginTop:20,
-        fontSize:20
-    },
-    waitInfo:{
-        marginTop:20,
-        fontSize:20
-    }
 });
 
 
@@ -546,15 +549,28 @@ class CompareChart extends React.Component {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12} >
-                    <Typography className={classes.updateInfo} component="p" color="secondary">
-                        the last time of update: {this.state.label[14]}
-                    </Typography>
-                    <Typography className={classes.waitInfo} component="p" color="primary">
-                        time to wait: {this.state.currentWaitTime1}
-                    </Typography>
-                    <Typography className={classes.waitInfo} component="p" color="#47ad70">
-                        time to wait: {this.state.currentWaitTime2}
-                    </Typography>
+                    <Paper className={classes.paper2}>
+                        <List component="nav">
+                            <ListItem button>
+                                <ListItemText>
+                                    time for window1 to wait: {this.state.currentWaitTime1}
+                                </ListItemText>
+                            </ListItem>
+                            <Divider/>
+                            <ListItem button>
+                                <ListItemText>
+                                    time for window2 to wait: {this.state.currentWaitTime2}
+                                </ListItemText>
+                            </ListItem>
+                            <Divider/>
+                            <ListItem button>
+                                <ListItemText>
+                                    the last time of update: {this.state.label[14]}
+                                </ListItemText>
+                            </ListItem>
+
+                        </List>
+                    </Paper>
                 </Grid>
             </Grid>
 

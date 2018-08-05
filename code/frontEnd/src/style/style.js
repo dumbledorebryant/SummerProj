@@ -19,7 +19,7 @@ export const theme2=createMuiTheme({
     typography: {
         // Tell Material-UI what the font-size on the html element is.
         fontSize: 22,
-        fontFamily: [
+        /*fontFamily: [
             '-apple-system',
             'BlinkMacSystemFont',
             '"Segoe UI"',
@@ -30,12 +30,18 @@ export const theme2=createMuiTheme({
             '"Apple Color Emoji"',
             '"Segoe UI Emoji"',
             '"Segoe UI Symbol"',
-        ].join(','),
+        ].join(','),*/
+        fontFamily:'Helvetica'
     },
-});
+    }
+
+
+);
 
 export const primaryColor = '#c5e1a5';
 export const primaryDarkColor = '#899d73';
+export const primaryLightColor =  '#d0e7b7';
 export const secondaryColor = '#ffecb3';
+export const secondaryLightColor =  '#ffefc2';
 export const fontColor = '#424242';
 

@@ -236,4 +236,23 @@ public class FoodAction extends HttpServlet {
         }
         return arr2;
     }
+
+    @RequestMapping(value = "/GetPic")
+    private void processGetPic(
+                               @RequestParam("foodId") int foodId,
+                               HttpServletResponse response)  throws Exception {
+        PrintWriter out = response.getWriter();
+        String path = "";
+        if (OSUtil.getOS().contains("Mac")){
+            path = "/Users/myu/Downloads/eat/food/";
+        }
+        else if (OSUtil.getOS().contains("Windows")){
+            path = "C:\\webImages\\food\\";
+        }
+        ArrayList<String> arrayList = new ArrayList<String>();
+        arrayList.add("data:image/*;base64,"+ImgUtil.getImgStr(path+String.valueOf(foodId)+".jpg"));
+        out.println(JSONArray.fromObject(arrayList));
+        out.flush();
+        out.close();
+    }
 }

@@ -14,6 +14,9 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import SearchResult from './searchResult'
+import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 const styles = {
     appBar: {
         position: 'relative',
@@ -30,12 +33,14 @@ function Transition(props) {
 class SearchRes extends React.Component {
     constructor(props){
         super(props);
+        this.handleShowPic=this.handleShowPic.bind(this);
     };
 
     state = {
         open: this.props.open,
         content:this.props.content,
-        result:[]
+        result:[],
+        pic:null,
     };
 
 
@@ -49,6 +54,24 @@ class SearchRes extends React.Component {
         this.props.close();
     };
 
+    handleShowPic= foodId => event =>{
+        let formdata = new FormData();
+        formdata.append("foodId",foodId);
+        fetch('http://localhost:8080/Food/GetPic',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.setState({
+                    pic:result[0],
+                });
+
+            });
+        });
+    };
 
     componentWillReceiveProps = nextProps =>{
         this.setState({open:nextProps.open,content:nextProps.content});
@@ -98,24 +121,33 @@ class SearchRes extends React.Component {
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    {this.state.result.length > 0?<List>
-                        {this.state.result.map((item,i) =>
-                            (
-                                <div>
-                                    <ListItem key={item.foodName+item.tag}>
-                                        <ListItemText primary={item.foodName}/>
-                                    </ListItem>
-                                    <SearchResult key={item.foodName+item.tag} rid={item.foodName+item.tag}
-                                                  restaurant={item.restaurant} windowName={item.windowName}
-                                                  windowId={item.windowId} foodName={item.foodName} likes={item.likes}
-                                                  price={item.price} tips={item.tips} tag={item.tag} content={this.state.content}
-                                                  close={this.handleJump}
-                                    />
+                    {this.state.result.length > 0?
+                        <Grid container spacing={24}>
+                            <Grid item xs={6}>
+                                <List>
+                                {this.state.result.map((item,i) =>
+                                    (
+                                        <div>
+                                            <ListItem button key={item.foodName+item.tag}  id={"s"+item.foodId} onClick={this.handleShowPic(item.foodId)}>
+                                                <ListItemText primary={item.foodName}/>
+                                            </ListItem>
+                                            <SearchResult key={item.foodName+item.tag} rid={item.foodName+item.tag}
+                                                          restaurant={item.restaurant} windowName={item.windowName}
+                                                          windowId={item.windowId} foodName={item.foodName} likes={item.likes}
+                                                          price={item.price} tips={item.tips} tag={item.tag} content={this.state.content}
+                                                          close={this.handleJump}
+                                            />
 
-                                    <Divider />
-                                </div>
-                            ))}
-                    </List>:<p style={{margin:50}}>no result</p>}
+                                            <Divider />
+                                        </div>
+                                    ))}
+                                </List>
+                            </Grid>
+                            <Grid item xs={6}>
+                                {this.state.pic === null?<CircularProgress className={classes.progress} />:
+                                <img src={this.state.pic} style={{width:"100%", padding: 20}}/>}
+                            </Grid>
+                        </Grid>:<p style={{margin:50}}>no result</p>}
                 </Dialog>
         );
     }
