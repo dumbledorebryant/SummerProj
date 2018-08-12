@@ -3,6 +3,8 @@ package lakers.ingram.Dao.impl;
 import lakers.ingram.Dao.DataDao;
 import lakers.ingram.HibernateUtil.HibernateUtil;
 import lakers.ingram.ModelEntity.DataEntity;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -10,7 +12,8 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import javax.xml.crypto.Data;
 import java.sql.Timestamp;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Repository("DataDao")
 @Transactional
@@ -73,6 +76,54 @@ public class DataDaoImpl implements DataDao {
         DataEntity dt= dl.size()> 0 ? dl.get(0):null;
         session.getTransaction().commit();
         return dt;
+    }
+
+    public ArrayList<JSONArray> getWrapDataByDateAndWindow(Timestamp date, int p, int windowId){
+        ArrayList<JSONArray> res=new ArrayList<>();
+        long time1, time2;
+        long period = 7L * 24L * 60L * 60L * 1000L;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String day = df.format(date).substring(0,10);
+        day += " 00:00:00.00";
+        System.out.println(day);
+        long time =Timestamp.valueOf(day).getTime() - period;
+        System.out.println(time);
+        if (p == 0){
+            time1 = time + 60*60*7*1000;
+            time2 = time + 60*60*10*1000;
+        }
+        else if (p == 1){
+            time1 = time + 60*60*11*1000;
+            time2 = time + 60*60*14*1000;
+            System.out.println(df.format(time1));
+            System.out.println(df.format(time2));
+        }
+        else if (p == 2){
+            time1 = time + 60*60*17*1000;
+            time2 = time + 60*60*20*1000;
+        }
+        else return res;
+        Session session=HibernateUtil.getSession();
+        session.beginTransaction();
+        for (int i=0;i<16;i++) {
+            Query query = session.createQuery("select data from DataEntity data " +
+                    "where data.windowId = :id and data.date < :dt and data.date >= :ds order by date desc")
+                    .setParameter("id", windowId)
+                    .setParameter("dt", new Timestamp(time2))
+                    .setParameter("ds", new Timestamp(time1));
+
+            @SuppressWarnings("unchecked")
+            List<DataEntity> dl = query.list();
+            if (dl.size()>0){
+                res.add(JSONArray.fromObject(dl));
+            }
+            else{
+                res.add(null);
+            }
+            time1 -= period;
+            time2 -= period;
+        }
+        return res;
     }
 
 }

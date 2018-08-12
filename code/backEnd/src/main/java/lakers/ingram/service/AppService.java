@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 import java.io.File;
 import java.io.OutputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -161,4 +162,9 @@ public interface AppService {
     public List<FoodEntity> getFoodsByTags(List<Integer> tagIdList,List<FoodEntity> Food);
     public void addFoodTag(Integer foodId,int[] tags);
 
+    //collect data
+    public List<ViewhistorytimeEntity> getViewHistoryByTimeAndWindow(Timestamp date, int windowId);
+    public List<WindowliketimeEntity> getWindowLikeByTimeAndWindow(Timestamp date, int windowId, int period);
+    public List<WeatherEntity> getWeatherByTime(Timestamp date);
+    public ArrayList<JSONArray> getWrapDataByDateAndWindow(Timestamp date, int period, int windowId);
 }

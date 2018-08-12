@@ -1,7 +1,10 @@
 package lakers.ingram.Action;
 
 import lakers.ingram.ImgUtil.ImgUtil;
+import lakers.ingram.ModelEntity.ViewhistorytimeEntity;
+import lakers.ingram.ModelEntity.WeatherEntity;
 import lakers.ingram.ModelEntity.WindowEntity;
+import lakers.ingram.ModelEntity.WindowliketimeEntity;
 import lakers.ingram.OSUtil.OSUtil;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
@@ -14,7 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,6 +87,37 @@ public class WindowAction extends HttpServlet {
         ArrayList<String> arrayList = new ArrayList<String>();
         arrayList.add("data:image/*;base64,"+ImgUtil.getImgStr(path+String.valueOf(windowId)+".jpg"));
         out.println(JSONArray.fromObject(arrayList));
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/GetViewHistory")
+    private void processGetViewHistory(@RequestParam("time") String time,
+                                       @RequestParam("windowId") int windowId,
+                                       HttpServletResponse response) throws Exception {
+        PrintWriter out = response.getWriter();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sdf.parse(time);
+        List<ViewhistorytimeEntity> res=appService.getViewHistoryByTimeAndWindow(new Timestamp(date.getTime()),windowId);
+        ArrayList<ViewhistorytimeEntity> arrayList = new ArrayList<ViewhistorytimeEntity>();
+        System.out.println(JSONArray.fromObject(res));
+        out.println(JSONArray.fromObject(res));
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/GetLike")
+    private void processGetLike(@RequestParam("time") String time,
+                                       @RequestParam("windowId") int windowId,
+                                @RequestParam("period") int period,
+                                       HttpServletResponse response) throws Exception {
+        PrintWriter out = response.getWriter();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sdf.parse(time);
+        List<WindowliketimeEntity> res=appService.getWindowLikeByTimeAndWindow(new Timestamp(date.getTime()),windowId, period);
+        ArrayList<WindowliketimeEntity> arrayList = new ArrayList<WindowliketimeEntity>();
+        System.out.println(JSONArray.fromObject(res));
+        out.println(JSONArray.fromObject(res));
         out.flush();
         out.close();
     }

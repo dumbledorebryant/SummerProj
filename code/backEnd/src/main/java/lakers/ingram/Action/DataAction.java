@@ -3,6 +3,7 @@ package lakers.ingram.Action;
 import lakers.ingram.ModelEntity.DataEntity;
 import lakers.ingram.service.AppService;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -169,6 +170,20 @@ public class DataAction extends HttpServlet {
         PrintWriter out = response.getWriter();
         Timestamp time=appService.getTimeByWindowId(windowId);
         out.println(time.toString());
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/Wrap")
+    private void processWrap(@RequestParam("time") String time,
+                                       @RequestParam("window") Integer windowId,
+                                       @RequestParam("period") Integer period,
+                                       HttpServletResponse response)
+            throws Exception {
+        PrintWriter out = response.getWriter();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sdf.parse(time);
+        out.println(JSONArray.fromObject(appService.getWrapDataByDateAndWindow(new Timestamp(date.getTime()),period, windowId)));
         out.flush();
         out.close();
     }

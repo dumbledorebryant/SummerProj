@@ -41,12 +41,12 @@ time_now_form = 0
 dataid = 0
 
 x = numpy.arange(0, 15, 15/90)
-y = 100 * norm.pdf(x, 7, 3)   # normal 0-0 max 13
-y2 = 100 * norm.pdf(x, 7, 5)    # average  breakfast 2-2 max 7
+y = 80 * norm.pdf(x, 7, 3)   # normal 0-0 max 13
+y2 = 80 * norm.pdf(x, 7, 5)    # average  breakfast 2-2 max 7
 x2 = numpy.arange(3, 18, 15/90)
-y3 = 100 * norm.pdf(x2, 7, 3)  # hot 5-0 max 13
+y3 = 80 * norm.pdf(x2, 7, 3)  # hot 5-0 max 13
 x3 = numpy.arange(6, 13, 7/90)
-y4 = 100 * norm.pdf(x3, 9, 2)  # 6-3 max 20
+y4 = 80 * norm.pdf(x3, 9, 2)  # 6-3 max 20
 
 yList = [y, y2, y3, y4]
 yNow = y
@@ -59,10 +59,10 @@ while True:
         # idx -= 1
         # data_current = int(20 * (1.1 ** idx)+(-1)**(randint(1, 10))*randint(1, 10))
         if idx == 90:
-            yNow = yList[random.randint(0, 4)]
-            yNow2 = yList[random.randint(0, 4)]
-            yNow3 = yList[random.randint(0, 4)]
-            yNow4 = yList[random.randint(0, 4)]
+            yNow = yList[random.randint(0, 3)]
+            yNow2 = yList[random.randint(0, 3)]
+            yNow3 = yList[random.randint(0, 3)]
+            yNow4 = yList[random.randint(0, 3)]
             idx = 0
         data_current = int(round(yNow[idx] + ((-1)**random.randint(1, 10)) * random.randint(0, 3)))
         if data_current < 0:

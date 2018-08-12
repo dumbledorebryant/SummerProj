@@ -60,6 +60,15 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private UserTagDislikeDao userTagDislikeDao;
 
+    @Autowired
+    private WindowLikeTimeDao windowLikeTimeDao;
+
+    @Autowired
+    private ViewHistoryTimeDao viewHistoryTimeDao;
+
+    @Autowired
+    private WeatherDao weatherDao;
+
     //user
     public Integer addUser(UserEntity user){ return userDao.save(user); }
 
@@ -354,5 +363,19 @@ public class AppServiceImpl implements AppService {
         return foodTagDao.getFoodsByTags(tagIdList,Food);
     };
 
+    public List<ViewhistorytimeEntity> getViewHistoryByTimeAndWindow(Timestamp date, int windowId){
+        return viewHistoryTimeDao.getViewHistoryByTimeAndWindow(date,windowId);
+    };
 
+    public List<WindowliketimeEntity> getWindowLikeByTimeAndWindow(Timestamp date, int windowId, int period){
+        return windowLikeTimeDao.getWindowLikeByTimeAndWindow(date, windowId, period);
+    }
+
+    public List<WeatherEntity> getWeatherByTime(Timestamp date){
+        return weatherDao.getWeatherByTime(date);
+    }
+
+    public ArrayList<JSONArray> getWrapDataByDateAndWindow(Timestamp date, int period, int windowId){
+        return dataDao.getWrapDataByDateAndWindow(date, period, windowId);
+    }
 }
