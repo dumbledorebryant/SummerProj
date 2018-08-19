@@ -57,7 +57,7 @@ year = 2018
 month = 3
 day = 1
 days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-while month < 8:
+while month < 9:
     day = 1
     while day <= days[month-1]:
         hour1 = 7
@@ -65,9 +65,9 @@ while month < 8:
         hour3 = 17
         minute = 0
         second = random.randint(0, 59)
-        idx1 = random.randint(0, 3)
-        idx2 = random.randint(0, 3)
-        idx3 = random.randint(0, 3)
+        idx1 = 0
+        idx2 = 0
+        idx3 = 0
         for i in range(0, 3):
             for j in range(0, 30):
                 date1 = datetime(year, month, day, hour1 + i, minute + 2*j, second)
@@ -104,8 +104,8 @@ while month < 8:
                 print(data_current2, date2, '\n')
                 print(data_current3, date3, '\n')
                 data1 = CanteenData(number=data_current, date=date1, windowId=1)
-                data2 = CanteenData(number=data_current, date=date2, windowId=1)
-                data3 = CanteenData(number=data_current, date=date3, windowId=1)
+                data2 = CanteenData(number=data_current2, date=date2, windowId=1)
+                data3 = CanteenData(number=data_current3, date=date3, windowId=1)
                 session.add(data1)
                 session.add(data2)
                 session.add(data3)
