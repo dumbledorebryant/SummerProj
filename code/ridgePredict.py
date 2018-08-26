@@ -116,8 +116,9 @@ def predict(window_id):
                 y.append(dataList[i * 3 * 7 * 90 + j][0])
             else:
                 maxList.append(j)
-        start += min(maxList)
-        end += max(maxList)
+        if len(maxList) != 0:
+            start += min(maxList)
+            end += max(maxList)
     
     start = int(start/8)
     end = int(end/8)
@@ -153,12 +154,16 @@ def predict(window_id):
     
     print(result)
     
-    predictOld = session.query(PredictData).filter(PredictData.windowId == window_id).delete()
+    session.query(PredictData).filter(PredictData.windowId == window_id).delete()
     session.commit()
     
     for i in range(0, 90):
-        predictData = PredictData(windowId=1, number=float(result[i]))
+        predictData = PredictData(windowId=window_id, number=float(result[i]))
         session.add(predictData)
     session.commit()
     
     session.close()
+
+
+for i in range(1, 40):
+    predict(i)

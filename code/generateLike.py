@@ -23,25 +23,31 @@ class Windowliketime(Base):
 
 Base.metadata.create_all(engine)
 
-Session = sessionmaker(bind=engine)
-session = Session()
 
-year = 2018
-month = 3
-day = 1
-days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-while month < 9:
+def generateLike(window_id):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    session.query(Windowliketime).filter(Windowliketime.windowId == window_id).delete()
+    year = 2018
+    month = 3
     day = 1
-    while day <= days[month-1]:
-        hour = 12
-        minute = random.randint(0, 59)
-        second = random.randint(0, 59)
-        for i in range(0, 3):
-            like = Windowliketime(windowId=1, time=datetime(year, month, day, hour, minute, second),
-                                  count=0, period=i)
-            session.add(like)
-        session.commit()
-        day += 1
-    month += 1
-session.close()
+    days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+    while month < 9:
+        day = 1
+        while day <= days[month-1]:
+            hour = 12
+            minute = random.randint(0, 59)
+            second = random.randint(0, 59)
+            for i in range(0, 3):
+                like = Windowliketime(windowId=window_id, time=datetime(year, month, day, hour, minute, second),
+                                      count=0, period=i)
+                session.add(like)
+            session.commit()
+            day += 1
+        month += 1
+    session.close()
+
+
+for i in range(1, 40):
+    generateLike(window_id=i)

@@ -23,6 +23,11 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import {theme2,primaryColor,secondaryColor,fontColor} from '../style/style'
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/component/tooltip';
+import  'echarts/lib/chart/line';
+import  'echarts/lib/component/legend';
+import  'echarts/lib/component/dataZoom';
 
 const chartStyle= theme => ({
     root:{
@@ -96,60 +101,94 @@ class WindowChart extends React.Component {
         windowId:this.props.windowId,
         time:null,
         currentWaitTime:'N/A',
+        updateTime: "N/A",
+        canteenTime: false,
     };
 
-    componentWillMount(){
-        if (this.props.windowId !== 0) {
-            this.drawChart(this.props.windowId,null);
-            let formdata2=new FormData();
-            formdata2.append("window",this.props.windowId);
-            fetch('http://localhost:8080/Data/GetTime',{
-                credentials: 'include',
-                method:'POST',
-                mode:'cors',
-                body:formdata2,
-            }).then(response=>{
-                console.log('Request successful',response);
-                return response.text().then(result=>{
-                    this.setState({time:result});
-                })
-            });
-        }
-    }
-
     componentDidMount(){
-
+        this.myChart = echarts.init(document.getElementById('windowChart'));
+        if (!this.getTimeSeries()) return;
         let _this=this;
         setInterval(function(){
 
-            _this.updateChart();
+            _this.updateCurrentChart();
 
         },120000);
+
+
+        if (this.props.windowId === 0) return;
+        let formdata2=new FormData();
+        formdata2.append("window",this.props.windowId);
+        fetch('http://localhost:8080/Data/GetTime',{
+            credentials: 'include',
+            method:'POST',
+            mode:'cors',
+            body:formdata2,
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.text().then(result=>{
+                this.setState({time:result});
+            })
+        });
+
+        this.getCurrentData(this.props.windowId);
+
     };
 
-    handleWaitTime = event=>{
-        let date=new Date(this.state.time);
-        let avgCost=date.getMinutes()*60+date.getSeconds();
-        let totalCost=0;
-        let temp=0;
-        let i=0;
-        let numberData=this.state.currentData;
-        while (i<15){
-            let number=numberData[i]==null?0:numberData[i];
-            temp=number*avgCost+totalCost-120;
-            totalCost=temp<0? 0:temp;
-            i++;
+    getTimeSeries = () => {
+        let currentHour = new Date().getHours();
+        if (currentHour >= 7 && currentHour < 10){
+            let timeSeries = [];
+            for (let hour = 7;hour<10;hour++){
+                for (let minute = 0;minute < 60;minute += 2){
+                    if (minute < 10){
+                        timeSeries.push("0"+hour+":"+"0"+minute);
+                    }
+                    else {
+                        timeSeries.push("0"+hour+":"+minute);
+                    }
+                }
+            }
+            this.timeSeries = timeSeries;
         }
-        totalCost=new Date(totalCost*1000);
-        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
-        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
-        this.setState({currentWaitTime:"00:"+min+":"+second});
-
-        // this.setState({currentWaitTime:totalCost});
+        else if (currentHour >= 11 && currentHour < 14){
+            let timeSeries = [];
+            for (let hour = 11;hour<14;hour++){
+                for (let minute = 0;minute < 60;minute += 2){
+                    if (minute < 10){
+                        timeSeries.push(hour+":"+"0"+minute);
+                    }
+                    else {
+                        timeSeries.push(hour+":"+minute);
+                    }
+                }
+            }
+            this.timeSeries = timeSeries;
+        }
+        else if (currentHour >= 17 && currentHour < 20){
+            let timeSeries = [];
+            for (let hour = 17;hour<20;hour++){
+                for (let minute = 0;minute < 60;minute += 2){
+                    if (minute < 10){
+                        timeSeries.push(hour+":"+"0"+minute);
+                    }
+                    else {
+                        timeSeries.push(hour+":"+minute);
+                    }
+                }
+            }
+            this.timeSeries = timeSeries;
+        }
+        else{
+            this.setState({canteenTime: false});
+            return false;
+        }
+        this.setState({canteenTime: true});
+        return true;
     };
 
-    initWaitTime = (data,time)=>{
-        let date=new Date(time);
+    initWaitTime = (data)=>{
+        let date=new Date(this.state.time);
         let avgCost=date.getMinutes()*60+date.getSeconds();
         let totalCost=0;
         let temp=0;
@@ -165,12 +204,12 @@ class WindowChart extends React.Component {
         let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
         let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
         this.setState({currentWaitTime:"00:"+min+":"+second});
-
-        // this.setState({currentWaitTime:totalCost});
     };
 
     componentWillReceiveProps=nextProps=>{
-        this.setState({windowId:nextProps.windowId});
+        this.setState({windowId:nextProps.windowId, chartMode:"0",
+            historyMode:"0",});
+        if (!this.getTimeSeries()) return;
         if (nextProps.windowId !== 0) {
             let formdata2=new FormData();
             formdata2.append("window",nextProps.windowId);
@@ -185,424 +224,229 @@ class WindowChart extends React.Component {
                     this.setState({time:result});
                 })
             });
-            this.drawChart(nextProps.windowId,this.state.time);
+            this.getCurrentData(nextProps.windowId);
         }
     };
 
-    drawChart = (windowId,result0) =>{
-        let date=new Date();
-        let hourN=date.getHours();
-        let minuteN=date.getMinutes();
-        let hour=hourN-1+Math.floor((minuteN+30)/60);
-        let minute=(minuteN+30)%60;
-        let topHour=hour+Math.floor((minute+60)/60);
-        let topMin=(minute+60)%60;
-        let time="";
-        let timeLabel=[];
-        let testCurrentData=[];
-        let testTotalData=[];
-        let testTotal=0;
-        let testHistoryCurrentData=[];
-        let testHistoryTotalData=[];
-        let testHistoryTotal=0;
-        let testHopeCurrentData=[];
-        let testHopeTotalData=[];
-        let testHopeTotal=0;
-        let currentLength=0;
-        while (hour!==topHour || minute!==topMin){
-            if (minute<10 && hour<10) { time="0"+hour.toString()+":0"+minute.toString();}
-            else if (minute<10){ time=hour.toString()+":0"+minute.toString();}
-            else if (hour<10) {time="0"+hour.toString()+":"+minute.toString();}
-            else {time=hour.toString()+":"+minute.toString();}
-            timeLabel.push(time);
-            hour=hour+Math.floor((minute+2)/60);
-            minute=(minute+2)%60;
+    static getOption(ydata, ydata2, xdata){
+        return {
+            tooltip: {
+                show: true,
+            },
+            legend:{
+                type: 'plain',
+                show: true,
+                data:['current', 'history'],
+            },
+            dataZoom:[{
+                type: 'slider',
+            }],
+            xAxis: {
+                data: xdata,
+                axisPointer:{
+                    show:true,
+                }
+            },
+            yAxis: {},
+            series: [{
+                name: 'current',
+                type: 'line',
+                data: ydata,
+                lineStyle:{
+                    color: '#c5e1a5',
+                },
+                itemStyle:{
+                    color: '#c5e1a5',
+                },
+                smooth: true,
+                symbol: 'none',
+            },{
+                name: 'history',
+                type: 'line',
+                data: ydata2,
+                lineStyle:{
+                    color: '#f2aeae',
+                    type: 'dashed'
+                },
+                itemStyle:{
+                    color: '#f2aeae',
+                },
+                smooth: true,
+                symbol: 'none',
+            }]
         }
-        let formData = new FormData();
-        let formDate = date.getFullYear()+"-";
-        if ((date.getMonth()+1).toString().length===1){formDate += "0"+(date.getMonth()+1).toString()+"-";}
-        else { formDate += (date.getMonth()+1).toString()+"-"; }
-        if (date.getDate().toString().length === 1){formDate += "0"+date.getDate()+" ";}
-        else { formDate += date.getDate()+" "; }
-        if (date.getHours().toString().length === 1){formDate += "0"+date.getHours()+":";}
-        else {formDate += date.getHours()+":";}
-        if (date.getMinutes().toString().length === 1){formDate += "0"+date.getMinutes()+":";}
-        else {formDate += date.getMinutes()+":";}
-        if (date.getSeconds().toString().length === 1){formDate += "0"+date.getSeconds();}
-        else {formDate += date.getSeconds();}
-        formData.append("time",formDate);
-        formData.append("window",windowId);
-        fetch('http://localhost:8080/Data/Init',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData,
+    }
 
+    static getTotalData = (data) =>{
+        let totalData = JSON.parse(JSON.stringify(data));
+        for (let i=1;i<totalData.length;i++){
+            totalData[i] += totalData[i-1];
+        }
+        return totalData;
+    };
+
+    static getTimeIndex = () =>{
+        let date = new Date();
+        let currentHour = date.getHours();
+        let currentMinute = date.getMinutes();
+        let index = 0;
+        if (currentHour >= 7 && currentHour < 10){
+            index = (currentHour-7)*30+currentMinute/2;
+        }
+        else if (currentHour >= 11 && currentHour < 14){
+            index = (currentHour-11)*30+currentMinute/2;
+        }
+        else if (currentHour >= 17 && currentHour < 20){
+            index = (currentHour-17)*30+currentMinute/2;
+        }
+        return index;
+    };
+
+    getCurrentData = (windowId) =>{
+        fetch('http://localhost:5000/data/now?windowId='+windowId, {
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                if (result.length === 0){
-                    let idx=0;
-                    while (idx<15){
-                        testCurrentData.push(null);
-                        testTotalData.push(null);
-                        idx++;
+                this.dataNow = result;
+                fetch('http://localhost:5000/data/yesterday?windowId='+windowId, {
+                    credentials: 'include',
+                    method:'GET',
+                    mode:'cors',
+                }).then(response2=>{
+                    console.log('Request successful',response2);
+                    return response2.json().then(result2=>{
+                        this.dataNow = this.dataNow.slice(0, WindowChart.getTimeIndex()+1);
+                        this.dataYesterday = result2;
+                        this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataYesterday, this.timeSeries));
+                        this.totalDataNow = WindowChart.getTotalData(this.dataNow);
+                        this.totalDataYesterday = WindowChart.getTotalData(this.dataYesterday);
+                        if (this.dataNow.length > 0) {
+                            this.setState({
+                                updateTime: this.timeSeries[this.dataNow.length - 1],
+                                currentLength: this.dataNow[this.dataNow.length - 1]
+                            })
+                        }
+                        else{
+                            this.setState({
+                                updateTime: "N/A",
+                                currentLength: 0
+                            })
+                        }
+                        this.initWaitTime(this.dataNow);
+                    });
+                });
+                fetch('http://localhost:5000/data/predict?windowId='+windowId, {
+                    credentials: 'include',
+                    method:'GET',
+                    mode:'cors',
+                }).then(response3=>{
+                    console.log('Request successful',response3);
+                    return response3.json().then(result3=>{
+                        this.dataPredict = result3;
+                        this.totalDataPredict = WindowChart.getTotalData(this.dataPredict);
+                    });
+                });
+            });
+        });
+    };
+
+    updateCurrentChart = () =>{
+        fetch('http://localhost:5000/data/now?windowId='+this.state.windowId, {
+            credentials: 'include',
+            method:'GET',
+            mode:'cors',
+        }).then(response=>{
+            console.log('Request successful',response);
+            return response.json().then(result=>{
+                this.dataNow = result.slice(0, WindowChart.getTimeIndex()+1);
+                this.totalDataNow = WindowChart.getTotalData(this.dataNow);
+                if (this.state.chartMode === "0"){
+                    if (this.state.historyMode === "0"){
+                        this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataYesterday, this.timeSeries));
                     }
+                    else {
+                        this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataPredict, this.timeSeries));
+                    }
+                }
+                else{
+                    if (this.state.historyMode === "0"){
+                        this.myChart.setOption(WindowChart.getOption(this.totalDataNow, this.totalDataYesterday, this.timeSeries));
+                    }
+                    else {
+                        this.myChart.setOption(WindowChart.getOption(this.totalDataNow, this.totalDataPredict, this.timeSeries));
+                    }
+                }
+                if (this.dataNow.length > 0) {
+                    this.setState({
+                        updateTime: this.timeSeries[this.dataNow.length - 1],
+                        currentLength: this.dataNow[this.dataNow.length - 1]
+                    });
+                    this.initWaitTime(this.dataNow);
                 }
                 else {
-                    currentLength=parseInt(result[result.length-1][0]);
-                    let idx = 0;
-                    let iidx=0;
-                    while ( iidx < result.length && idx < 15 && !(result[iidx][1].toString().substring(11, 16) >= timeLabel[idx] &&
-                        result[iidx][1].toString().substring(11, 16) < timeLabel[idx + 1]) ) {
-                        testCurrentData.push(null);
-                        testTotalData.push(null);
-                        idx++;
-                    }
-                    if (iidx < result.length) {
-                        testCurrentData.push(parseInt(result[iidx][0]));
-                        testTotal += parseInt(result[iidx][0]);
-                        testTotalData.push(testTotal);
-                        idx++;
-                        iidx++;
-                        while (iidx < result.length) {
-                            testCurrentData.push(parseInt(result[iidx][0]));
-                            testTotal += parseInt(result[iidx][0]);
-                            testTotalData.push(testTotal);
-                            idx++;
-                            iidx++;
-                        }
-                    }
-
-                }
-                this.setState({currentData:testCurrentData,totalData:testTotalData,
-                    currentLength:currentLength});
-                if (result0) this.initWaitTime(testCurrentData,result0);
-
-            });
-        });
-
-        formData.append("time",date.toString());
-        fetch('http://localhost:8080/Data/HistoryInit',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData,
-
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                if (result.length === 0){
-                    let idx=0;
-                    while (idx<30){
-                        testHistoryCurrentData.push(null);
-                        testHistoryTotalData.push(null);
-                        idx++;
-                    }
-                }
-                else{
-                    let idx=0;
-                    let iidx=0;
-                    while (iidx < result.length && idx < 29 && !(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
-                        result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])) {
-                        testHistoryCurrentData.push(null);
-                        testHistoryTotalData.push(null);
-                        idx++;
-                    }
-                    if (iidx < result.length){
-                        testHistoryCurrentData.push(parseInt(result[iidx][0]));
-                        testHistoryTotal+=parseInt(result[iidx][0]);
-                        testHistoryTotalData.push(testHistoryTotal);
-                        idx++;
-                        iidx++;
-                        while (iidx < result.length){
-                            /* if (!(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
-                                     result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])){
-                                 testHistoryCurrentData.push(null);
-                                 testHistoryTotalData.push(null);
-                                 idx++;
-                             }
-                             else{*/
-                            testHistoryCurrentData.push(parseInt(result[iidx][0]));
-                            testHistoryTotal+=parseInt(result[iidx][0]);
-                            testHistoryTotalData.push(testHistoryTotal);
-                            idx++;
-                            iidx++;
-                            //}
-                        }
-                        while (idx < 30){
-                            testHistoryCurrentData.push(null);
-                            testHistoryTotalData.push(null);
-                            idx++;
-                        }
-                    }
-                    else{
-                        while (idx < 30){
-                            testHistoryCurrentData.push(null);
-                            testHistoryTotalData.push(null);
-                            idx++;
-                        }
-                    }
-                }
-                this.setState({historyCurrentData:testHistoryCurrentData,historyTotalData:testHistoryTotalData,});
-            });
-        });
-        fetch('http://localhost:8080/Data/HopeInit',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData,
-
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                if (result.length === 0){
-                    let idx=0;
-                    while (idx<30){
-                        testHopeCurrentData.push(null);
-                        testHopeTotalData.push(null);
-                        idx++;
-                    }
-                }
-                else{
-                    let idx=0;
-                    let iidx=0;
-                    while (iidx < result.length && idx < 29 && !(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
-                        result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])) {
-                        testHopeCurrentData.push(null);
-                        testHopeTotalData.push(null);
-                        idx++;
-                    }
-                    if (iidx < result.length){
-                        testHopeCurrentData.push(parseInt(result[iidx][0]));
-                        testHopeTotal+=parseInt(result[iidx][0]);
-                        testHopeTotalData.push(testHopeTotal);
-                        idx++;
-                        iidx++;
-                        while (iidx < result.length){
-                            /* if (!(result[iidx][1].toString().substring(11,16)>=timeLabel[idx] &&
-                                     result[iidx][1].toString().substring(11,16)<=timeLabel[idx+1])){
-                                 testHopeCurrentData.push(null);
-                                 testHopeTotalData.push(null);
-                                 idx++;
-                             }
-                             else{*/
-                            testHopeCurrentData.push(parseInt(result[iidx][0]));
-                            testHopeTotal+=parseInt(result[iidx][0]);
-                            testHopeTotalData.push(testHopeTotal);
-                            idx++;
-                            iidx++;
-                            //}
-                        }
-                        while (idx < 30){
-                            testHopeCurrentData.push(null);
-                            testHopeTotalData.push(null);
-                            idx++;
-                        }
-                    }
-                    else{
-                        while (idx < 30){
-                            testHopeCurrentData.push(null);
-                            testHopeTotalData.push(null);
-                            idx++;
-                        }
-                    }
-                }
-                this.setState({hopeCurrentData:testHopeCurrentData,hopeTotalData:testHopeTotalData,});
-            });
-        });
-
-        this.setState({label:timeLabel,});
-    };
-
-    updateChart=()=>{
-        if (this.state.windowId !== 0) {
-            let label = this.state.label;
-            let date = new Date();
-            let hourN = date.getHours();
-            let minuteN = date.getMinutes();
-            label.push(hourN.toString() + ":" + minuteN.toString());
-            label.shift();
-            let formData = new FormData();
-            let formData2 = new FormData();
-            let formDate = date.getFullYear() + "-";
-            if ((date.getMonth() + 1).toString().length === 1) {
-                formDate += "0" + (date.getMonth() + 1).toString() + "-";
-            }
-            else {
-                formDate += (date.getMonth() + 1).toString() + "-";
-            }
-            if (date.getDate().toString().length === 1) {
-                formDate += "0" + date.getDate() + " ";
-            }
-            else {
-                formDate += date.getDate() + " ";
-            }
-            if (date.getHours().toString().length === 1) {
-                formDate += "0" + date.getHours() + ":";
-            }
-            else {
-                formDate += date.getHours() + ":";
-            }
-            if (date.getMinutes().toString().length === 1) {
-                formDate += "0" + date.getMinutes() + ":";
-            }
-            else {
-                formDate += date.getMinutes() + ":";
-            }
-            if (date.getSeconds().toString().length === 1) {
-                formDate += "0" + date.getSeconds();
-            }
-            else {
-                formDate += date.getSeconds();
-            }
-            formData.append("time", formDate);
-            formData.append("window", this.state.windowId);
-            formData2.append("window", this.state.windowId);
-            let testCurrent = this.state.currentData;
-            let testTotal = this.state.totalData;
-            let testHistoryCurrent = this.state.historyCurrentData;
-            let testHistoryTotal = this.state.historyTotalData;
-            let testHopeCurrent=this.state.hopeCurrentData;
-            let testHopeTotal=this.state.hopeTotalData;
-            let total = 0;
-            let currentLength = 0;
-            if (testTotal.length > 0) {
-                if (testTotal[testTotal.length - 1] != null) {
-                    total = testTotal[testTotal.length - 1];
-                }
-            }
-            let historyTotal = 0;
-            if (testHistoryTotal.length > 0) {
-                if (testHistoryTotal[testHistoryTotal.length - 1] != null) {
-                    historyTotal = testHistoryTotal[testHistoryTotal.length - 1];
-                }
-            }
-            let hopeTotal=0;
-            if (testHopeTotal.length>0){
-                if (testHopeTotal[testHopeTotal.length-1]!=null){
-                    hopeTotal=testHopeTotal[testHopeTotal.length-1];
-                }
-            }
-            fetch('http://localhost:8080/Data/Current', {
-                credentials: 'include',
-                method: 'POST',
-                mode: 'cors',
-                body: formData2
-
-            }).then(response => {
-                console.log('Request successful', response);
-                return response.json().then(result => {
-                    if (result != null) {
-                        currentLength = parseInt(result[0]);
-                        testCurrent.push(currentLength);
-                        testCurrent.shift();
-                        total += currentLength;
-                        testTotal.push(total);
-                        testTotal.shift();
-                    }
-                    else {
-                        testCurrent.push(null);
-                        testCurrent.shift();
-                        testTotal.push(null);
-                        testTotal.shift();
-                    }
                     this.setState({
-                        currentData: testCurrent, totalData: testTotal,
-                        currentLength: currentLength
-                    });
-                    this.initWaitTime(testCurrent,this.state.time);
-                });
+                        updateTime: "N/A",
+                        currentLength: 0,
+                        currentWaitTime: "N/A"
+                    })
+                }
             });
-            fetch('http://localhost:8080/Data/HistoryCurrent', {
-                credentials: 'include',
-                method: 'POST',
-                mode: 'cors',
-                body: formData,
-            }).then(response => {
-                console.log('Request successful', response);
-                return response.json().then(result => {
-                    if (result != null) {
-                        testHistoryCurrent.push(parseInt(result[0]));
-                        testHistoryCurrent.shift();
-                        historyTotal += parseInt(result[0]);
-                        testHistoryTotal.push(historyTotal);
-                        testHistoryTotal.shift();
-                    }
-                    else {
-                        testHistoryCurrent.push(null);
-                        testHistoryCurrent.shift();
-                        testHistoryTotal.push(null);
-                        testHistoryTotal.shift();
-                    }
-                    this.setState({historyCurrentData: testHistoryCurrent, historyTotalData: testHistoryTotal,});
-                });
-            });
-            fetch('http://localhost:8080/Data/HopeCurrent',{
-                credentials: 'include',
-                method:'POST',
-                mode:'cors',
-                body: formData,
-            }).then(response=>{
-                console.log('Request successful',response);
-                return response.json().then(result=>{
-                    if (result!=null){
-                        testHopeCurrent.push(parseInt(result[0]));
-                        testHopeCurrent.shift();
-                        hopeTotal+=parseInt(result[0]);
-                        testHopeTotal.push(hopeTotal);
-                        testHopeTotal.shift();
-                    }
-                    else {
-                        testHopeCurrent.push(null);
-                        testHopeCurrent.shift();
-                        testHopeTotal.push(null);
-                        testHopeTotal.shift();
-                    }
-                    this.setState({hopeCurrentData:testHopeCurrent,hopeTotalData:testHopeTotal,});
-                });
-            });
-            this.setState({label: label,});
-
-        }
+        });
     };
 
     handleChangeChart= event =>{
+        if (event.target.value === "1") {
+            if (this.state.historyMode === "0") {
+                this.myChart.setOption(WindowChart.getOption(this.totalDataNow, this.totalDataYesterday, this.timeSeries));
+            }
+            else {
+                this.myChart.setOption(WindowChart.getOption(this.totalDataNow, this.totalDataPredict, this.timeSeries));
+            }
+        }
+        else {
+            if (this.state.historyMode === "0") {
+                this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataYesterday, this.timeSeries));
+            }
+            else {
+                this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataPredict, this.timeSeries));
+            }
+        }
         this.setState({chartMode:event.target.value});
     };
 
     handleChangeHistory= event =>{
+        if (event.target.value === "0") {
+            if (this.state.chartMode === "0") {
+                this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataYesterday, this.timeSeries));
+            }
+            else {
+                this.myChart.setOption(WindowChart.getOption(this.totalDataNow, this.totalDataYesterday, this.timeSeries));
+            }
+        }
+        else {
+            if (this.state.chartMode === "0") {
+                this.myChart.setOption(WindowChart.getOption(this.dataNow, this.dataPredict, this.timeSeries));
+            }
+            else {
+                this.myChart.setOption(WindowChart.getOption(this.totalDataNow, this.totalDataPredict, this.timeSeries));
+            }
+        }
         this.setState({historyMode:event.target.value});
     };
 
     render(){
         const { classes, theme } = this.props;
-        if (this.props.windowId!==0){
+
             return (
                 <div className={classes.root}>
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
+                        {!this.state.canteenTime && <p>还没开饭呢</p>}
                         <Paper className={classes.paper}>
-                            {this.state.historyMode === "0" &&<ChartistGraph
-
-                                className="ct-chart"
-                                data={this.state.chartMode==="0"?
-                                    {labels:this.state.label,series:[this.state.currentData,this.state.historyCurrentData]}:
-                                    {labels:this.state.label,series:[this.state.totalData,this.state.historyTotalData]}
-                                }
-                                type="Line"
-                                options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                                listener={dailySalesChart.animation}/>}
-                            {this.state.historyMode === "1" &&<ChartistGraph
-
-                                className="ct-chart"
-                                data={this.state.chartMode==="0"?
-                                    {labels:this.state.label,series:[this.state.currentData,this.state.hopeCurrentData]}:
-                                    {labels:this.state.label,series:[this.state.totalData,this.state.hopeTotalData]}
-                                }
-                                type="Line"
-                                options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                                listener={dailySalesChart.animation}/>}
+                            <div id="windowChart" style={{ width: 1000, height: 400,}}></div>
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
@@ -655,7 +499,7 @@ class WindowChart extends React.Component {
                             <Divider/>
                             <ListItem button>
                                 <ListItemText>
-                                    the last time of update: {this.state.label[14]}
+                                    the last time of update: {this.state.updateTime}
                                 </ListItemText>
                             </ListItem>
                         </List>
@@ -668,10 +512,7 @@ class WindowChart extends React.Component {
 
             )
         }
-        else {
-            return (<p> </p>)
-        }
-    }
+
 }
 
 WindowChart.propTypes = {

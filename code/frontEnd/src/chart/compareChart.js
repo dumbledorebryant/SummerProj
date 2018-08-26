@@ -22,6 +22,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import echarts from "echarts/lib/echarts";
+import 'echarts/lib/component/tooltip';
+import  'echarts/lib/chart/line';
+import  'echarts/lib/component/legend';
+import  'echarts/lib/component/dataZoom';
 
 const chartStyle= theme => ({
     root:{
@@ -76,11 +81,13 @@ class CompareChart extends React.Component {
         windows2:[],
         time1:null,
         time2:null,
-        currentWaitTime1:null,
-        currentWaitTime2:null,
+        currentWaitTime1:'N/A',
+        currentWaitTime2:'N/A',
+        timeUpdate: 'N/A',
+        canteenTime: false,
     };
 
-    componentWillMount(){
+    componentDidMount(){
         let formdata=new FormData();
         formdata.append("restaurant","one");
         formdata.append("floor",0);
@@ -96,28 +103,56 @@ class CompareChart extends React.Component {
             })
         });
 
-        let date=new Date();
-        let hourN=date.getHours();
-        let minuteN=date.getMinutes();
-        let hour=hourN-1+Math.floor((minuteN+30)/60);
-        let minute=(minuteN+30)%60;
-        //let topHour=hour+Math.floor((minute+60)/60);
-        //let topMin=(minute+60)%60;
-        let topHour=hourN;
-        let topMin=minuteN;
-        let time="";
-        let timeLabel=[];
-
-        while (hour*60+minute<=topHour*60+topMin){
-            if (minute<10 && hour<10) { time="0"+hour.toString()+":0"+minute.toString();}
-            else if (minute<10){ time=hour.toString()+":0"+minute.toString();}
-            else if (hour<10) {time="0"+hour.toString()+":"+minute.toString();}
-            else {time=hour.toString()+":"+minute.toString();}
-            timeLabel.push(time);
-            hour=hour+Math.floor((minute+2)/60);
-            minute=(minute+2)%60;
+        let currentHour = new Date().getHours();
+        if (currentHour >= 7 && currentHour < 10){
+            let timeSeries = [];
+            for (let hour = 7;hour<10;hour++){
+                for (let minute = 0;minute < 60;minute += 2){
+                    if (minute < 10){
+                        timeSeries.push("0"+hour+":"+"0"+minute);
+                    }
+                    else {
+                        timeSeries.push("0"+hour+":"+minute);
+                    }
+                }
+            }
+            this.timeSeries = timeSeries;
         }
-        this.setState({label:timeLabel,});
+        else if (currentHour >= 11 && currentHour < 14){
+            let timeSeries = [];
+            for (let hour = 11;hour<14;hour++){
+                for (let minute = 0;minute < 60;minute += 2){
+                    if (minute < 10){
+                        timeSeries.push(hour+":"+"0"+minute);
+                    }
+                    else {
+                        timeSeries.push(hour+":"+minute);
+                    }
+                }
+            }
+            this.timeSeries = timeSeries;
+        }
+        else if (currentHour >= 17 && currentHour < 20){
+            let timeSeries = [];
+            for (let hour = 17;hour<20;hour++){
+                for (let minute = 0;minute < 60;minute += 2){
+                    if (minute < 10){
+                        timeSeries.push(hour+":"+"0"+minute);
+                    }
+                    else {
+                        timeSeries.push(hour+":"+minute);
+                    }
+                }
+            }
+            this.timeSeries = timeSeries;
+        }
+        else{
+            this.timeSeries = [];
+            this.setState({canteenTime: false});
+            return;
+        }
+        this.setState({canteenTime: true});
+        this.myChart = echarts.init(document.getElementById('compareChart'));
     }
 
 
@@ -159,156 +194,131 @@ class CompareChart extends React.Component {
         let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
         let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
         this.setState({currentWaitTime2:"00:"+min+":"+second});
+    };
 
-        // this.setState({currentWaitTime:totalCost});
+    static getTimeIndex = () =>{
+        let date = new Date();
+        let currentHour = date.getHours();
+        let currentMinute = date.getMinutes();
+        let index = 0;
+        if (currentHour >= 7 && currentHour < 10){
+            index = (currentHour-7)*30+currentMinute/2;
+        }
+        else if (currentHour >= 11 && currentHour < 14){
+            index = (currentHour-11)*30+currentMinute/2;
+        }
+        else if (currentHour >= 17 && currentHour < 20){
+            index = (currentHour-17)*30+currentMinute/2;
+        }
+        return index;
+    };
+
+    static getOption(ydata, ydata2, xdata){
+        return {
+            tooltip: {
+                show: true,
+            },
+            legend:{
+                type: 'plain',
+                show: true,
+                data:['window1', 'window2'],
+            },
+            dataZoom:[{
+                type: 'slider',
+            }],
+            xAxis: {
+                data: xdata,
+                axisPointer:{
+                    show:true,
+                }
+            },
+            yAxis: {},
+            series: [{
+                name: 'window1',
+                type: 'line',
+                data: ydata,
+                lineStyle:{
+                    color: '#c5e1a5',
+                },
+                itemStyle:{
+                    color: '#c5e1a5',
+                },
+                smooth: true,
+                symbol: 'none',
+            },{
+                name: 'window2',
+                type: 'line',
+                data: ydata2,
+                lineStyle:{
+                    color: '#f2aeae',
+                },
+                itemStyle:{
+                    color: '#f2aeae',
+                },
+                smooth: true,
+                symbol: 'none',
+            }]
+        }
+    }
+
+    static getTotalData = (data) =>{
+        let totalData = JSON.parse(JSON.stringify(data));
+        for (let i=1;i<totalData.length;i++){
+            totalData[i] += totalData[i-1];
+        }
+        return totalData;
     };
 
     drawChart = (windowId,windowId2) =>{
-        let date=new Date();
-        let hourN=date.getHours();
-        let minuteN=date.getMinutes();
-        let hour=hourN-1+Math.floor((minuteN+30)/60);
-        let minute=(minuteN+30)%60;
-        //let topHour=hour+Math.floor((minute+60)/60);
-        //let topMin=(minute+60)%60;
-        let topHour=hourN;
-        let topMin=minuteN;
-        let time="";
-        let timeLabel=[];
-        let testCurrentData=[];
-        let testTotalData=[];
-        let testTotal=0;
-        let testCurrentData2=[];
-        let testTotalData2=[];
-        let testTotal2=0;
-        //let currentLength=0;
-        while (hour*60+minute<=topHour*60+topMin){
-            if (minute<10 && hour<10) { time="0"+hour.toString()+":0"+minute.toString();}
-            else if (minute<10){ time=hour.toString()+":0"+minute.toString();}
-            else if (hour<10) {time="0"+hour.toString()+":"+minute.toString();}
-            else {time=hour.toString()+":"+minute.toString();}
-            timeLabel.push(time);
-            hour=hour+Math.floor((minute+2)/60);
-            minute=(minute+2)%60;
-        }
-        let formDate = date.getFullYear()+"-";
-        if ((date.getMonth()+1).toString().length===1){formDate += "0"+(date.getMonth()+1).toString()+"-";}
-        else { formDate += (date.getMonth()+1).toString()+"-"; }
-        if (date.getDate().toString().length === 1){formDate += "0"+date.getDate()+" ";}
-        else { formDate += date.getDate()+" "; }
-        if (date.getHours().toString().length === 1){formDate += "0"+date.getHours()+":";}
-        else {formDate += date.getHours()+":";}
-        if (date.getMinutes().toString().length === 1){formDate += "0"+date.getMinutes()+":";}
-        else {formDate += date.getMinutes()+":";}
-        if (date.getSeconds().toString().length === 1){formDate += "0"+date.getSeconds();}
-        else {formDate += date.getSeconds();}
-        let formData = new FormData();
-        formData.append("time",formDate);
-        formData.append("window",windowId);
-        fetch('http://localhost:8080/Data/Init',{
+        if (this.timeSeries.length === 0) return;
+        fetch('http://localhost:5000/data/now?windowId='+windowId, {
             credentials: 'include',
-            method:'POST',
+            method:'GET',
             mode:'cors',
-            body:formData,
-
         }).then(response=>{
             console.log('Request successful',response);
             return response.json().then(result=>{
-                if (result.length === 0){
-                    let idx=0;
-                    while (idx<15){
-                        testCurrentData.push(null);
-                        testTotalData.push(null);
-                        idx++;
-                    }
-                }
-                else {
-                    //currentLength=parseInt(result[result.length-1][0]);
-                    let idx = 0;
-                    let iidx=0;
-                    while ( iidx < result.length && idx < 15 && !(result[iidx][1].toString().substring(11, 16) >= timeLabel[idx] &&
-                        result[iidx][1].toString().substring(11, 16) < timeLabel[idx + 1]) ) {
-                        testCurrentData.push(null);
-                        testTotalData.push(null);
-                        idx++;
-                    }
-                    if (iidx < result.length) {
-                        testCurrentData.push(parseInt(result[iidx][0]));
-                        testTotal += parseInt(result[iidx][0]);
-                        testTotalData.push(testTotal);
-                        idx++;
-                        iidx++;
-                        while (iidx < result.length) {
-                            testCurrentData.push(parseInt(result[iidx][0]));
-                            testTotal += parseInt(result[iidx][0]);
-                            testTotalData.push(testTotal);
-                            idx++;
-                            iidx++;
+                this.dataNow = result.slice(0, CompareChart.getTimeIndex()+1);
+                this.totalDataNow = CompareChart.getTotalData(this.dataNow);
+                this.initWaitTime1(this.dataNow);
+                fetch('http://localhost:5000/data/now?windowId='+windowId2, {
+                    credentials: 'include',
+                    method:'GET',
+                    mode:'cors',
+                }).then(response=>{
+                    console.log('Request successful',response);
+                    return response.json().then(result=>{
+                        this.dataNow2 = result.slice(0, CompareChart.getTimeIndex()+1);
+                        this.totalDataNow2 = CompareChart.getTotalData(this.dataNow2);
+                        this.initWaitTime2(this.dataNow2);
+                        if (this.state.chartMode === "0") {
+                            this.myChart.setOption(CompareChart.getOption(this.dataNow,
+                                this.dataNow2, this.timeSeries.slice(0, CompareChart.getTimeIndex() + 1)));
                         }
-                    }
-
-                }
-                this.setState({currentData:testCurrentData,totalData:testTotalData});
-                this.initWaitTime1(testCurrentData);
-            });
+                        else {
+                            this.myChart.setOption(CompareChart.getOption(this.totalDataNow,
+                                this.totalDataNow2, this.timeSeries.slice(0, CompareChart.getTimeIndex() + 1)));
+                        }
+                        this.setState({
+                            timeUpdate: this.timeSeries[this.dataNow.length - 1],
+                        });
+                    })
+                });
+            })
         });
 
-        let formData2 = new FormData();
-        formData2.append("time",formDate);
-        formData2.append("window",windowId2);
-        fetch('http://localhost:8080/Data/Init',{
-            credentials: 'include',
-            method:'POST',
-            mode:'cors',
-            body:formData2,
-
-        }).then(response=>{
-            console.log('Request successful',response);
-            return response.json().then(result=>{
-                if (result.length === 0){
-                    let idx=0;
-                    while (idx<15){
-                        testCurrentData2.push(null);
-                        testTotalData2.push(null);
-                        idx++;
-                    }
-                }
-                else {
-                    //currentLength=parseInt(result[result.length-1][0]);
-                    let idx = 0;
-                    let iidx=0;
-                    while ( iidx < result.length && idx < 15 && !(result[iidx][1].toString().substring(11, 16) >= timeLabel[idx] &&
-                        result[iidx][1].toString().substring(11, 16) < timeLabel[idx + 1]) ) {
-                        testCurrentData2.push(null);
-                        testTotalData2.push(null);
-                        idx++;
-                    }
-                    if (iidx < result.length) {
-                        testCurrentData2.push(parseInt(result[iidx][0]));
-                        testTotal2 += parseInt(result[iidx][0]);
-                        testTotalData2.push(testTotal2);
-                        idx++;
-                        iidx++;
-                        while (iidx < result.length) {
-                            testCurrentData2.push(parseInt(result[iidx][0]));
-                            testTotal2 += parseInt(result[iidx][0]);
-                            testTotalData2.push(testTotal2);
-                            idx++;
-                            iidx++;
-                        }
-                    }
-
-                }
-                this.setState({currentData2:testCurrentData2,totalData2:testTotalData2});
-                this.initWaitTime2(testCurrentData2);
-            });
-        });
-
-        this.setState({label:timeLabel,});
     };
 
 
     handleChangeChart= event =>{
+        if (event.target.value === "0"){
+            this.myChart.setOption(CompareChart.getOption(this.dataNow,
+                this.dataNow2, this.timeSeries.slice(0, CompareChart.getTimeIndex() + 1)));
+        }
+        else {
+            this.myChart.setOption(CompareChart.getOption(this.totalDataNow,
+                this.totalDataNow2, this.timeSeries.slice(0, CompareChart.getTimeIndex() + 1)));
+        }
         this.setState({chartMode:event.target.value});
     };
 
@@ -356,12 +366,10 @@ class CompareChart extends React.Component {
 
     handleChangeWindow = event =>{
         this.setState({windowId:event.target.value});
-        //this.drawChart(event.target.value);
     };
 
     handleChangeWindow2 = event =>{
         this.setState({windowId2:event.target.value});
-       // this.drawChart(event.target.value);
     };
 
     handleCompare =()=>{
@@ -396,66 +404,15 @@ class CompareChart extends React.Component {
 
     };
 
-    handleWaitTime = ()=>{
-        let date=new Date(this.state.time1);
-        let avgCost=date.getMinutes()*60+date.getSeconds();
-        let totalCost=0;
-        let temp=0;
-        let i=0;
-        let numberData=this.state.currentData;
-        while (i<15){
-            let number=numberData[i]==null?0:numberData[i];
-            temp=number*avgCost+totalCost-120;
-            totalCost=temp<0? 0:temp;
-            i++;
-        }
-        totalCost=new Date(totalCost*1000);
-        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
-        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
-        this.setState({currentWaitTime1:"00:"+min+":"+second});
-
-        // this.setState({currentWaitTime:totalCost});
-    };
-
-    handleWaitTime2 = ()=>{
-        let date=new Date(this.state.time2);
-        let avgCost=date.getMinutes()*60+date.getSeconds();
-        let totalCost=0;
-        let temp=0;
-        let i=0;
-        let numberData=this.state.currentData2;
-        while (i<15){
-            let number=numberData[i]==null?0:numberData[i];
-            temp=number*avgCost+totalCost-120;
-            totalCost=temp<0? 0:temp;
-            i++;
-        }
-        totalCost=new Date(totalCost*1000);
-        let min=totalCost.getMinutes().toString().length===1? "0"+totalCost.getMinutes():totalCost.getMinutes();
-        let second=totalCost.getSeconds().toString().length===1? "0"+totalCost.getSeconds():totalCost.getSeconds();
-        this.setState({currentWaitTime2:"00:"+min+":"+second});
-
-        // this.setState({currentWaitTime:totalCost});
-    };
-
-
     render(){
         const { classes, theme } = this.props;
         return (
 
             <Grid container spacing={24}>
                 <Grid item xs={12}>
+                    {!this.state.canteenTime && <p>还没开饭呢</p>}
                     <Paper className={classes.paper}>
-                        <ChartistGraph
-                            className="ct-chart"
-                            id ="compareChart"
-                            data={this.state.chartMode==="0"?
-                                {labels:this.state.label,series:[this.state.currentData,[],this.state.currentData2]}:
-                                {labels:this.state.label,series:[this.state.totalData,[],this.state.totalData2]}
-                            }
-                            type="Line"
-                            options={this.state.chartMode==="0"? dailySalesChart.options:dailySalesChart.options2}
-                            listener={dailySalesChart.animation}/>
+                        <div id="compareChart" style={{ width: 1000, height: 400,}}></div>
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
@@ -565,7 +522,7 @@ class CompareChart extends React.Component {
                             <Divider/>
                             <ListItem button>
                                 <ListItemText>
-                                    the last time of update: {this.state.label[14]}
+                                    the last time of update: {this.state.timeUpdate}
                                 </ListItemText>
                             </ListItem>
 
