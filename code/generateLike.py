@@ -33,7 +33,7 @@ def generateLike(window_id):
     day = 1
     days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-    while month < 9:
+    while month < 10:
         day = 1
         while day <= days[month-1]:
             hour = 12

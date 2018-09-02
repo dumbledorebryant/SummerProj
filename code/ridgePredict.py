@@ -99,7 +99,8 @@ def predict(window_id):
         .filter(CanteenData.windowId == window_id).order_by(CanteenData.date).all()
     
     y = []
-    
+
+
     # i * 90 + j
     start = 0
     end = 0
@@ -108,12 +109,12 @@ def predict(window_id):
         maxList = []
         for j in range(0, 90):
             if dataList[i * 3 * 7 * 90 + j][0] < maxData:
-                X.append([j * j, j, math.sqrt(j)])
+                X.append([(j+1) * (j+1), j+1, math.sqrt(j+1)])
                 X[-1].append(parse_weather_type(weatherList[7 * i].type))
                 X[-1].append((weatherList[7 * i].low + weatherList[7 * i].high) / 2.0)
                 X[-1].append(historyList[7 * i].count)
                 X[-1].append(likeList[7 * 3 * i + periodToPredict].count)
-                y.append(dataList[i * 3 * 7 * 90 + j][0])
+                y.append(dataList[i * 3 * 7 * 90 + periodToPredict * 90 + j][0])
             else:
                 maxList.append(j)
         if len(maxList) != 0:
@@ -143,9 +144,10 @@ def predict(window_id):
         xToPredict.append([i*i, i, math.sqrt(i), x0, x1, x2, x3])
     
     result = reg.predict(xToPredict)
-    
-    for i in range(start, end+1):
-        result[i] = maxData
+
+    # print(result)
+    # for i in range(start, end+1):
+    #     result[i] = maxData
     
     for i in range(0, 90):
         if result[i] < 0:
