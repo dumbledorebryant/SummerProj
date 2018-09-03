@@ -14,7 +14,7 @@ const styles = theme => ({
         padding: theme.spacing.unit / 2,
     },
     chip: {
-        margin: theme.spacing.unit / 2,
+        margin: theme.spacing.unit / 2 + 10 ,
     },
 
 });
@@ -51,7 +51,7 @@ class Tag extends React.Component{
                     <Avatar><TagFacesIcon  /></Avatar>:null}
                 label={this.state.data.tagName}
                 onClick={this.handleClick(this.state.data)}
-
+                className={this.props.className}
             />
         )
     }
@@ -106,7 +106,7 @@ class TagList extends React.Component {
             <Paper className={classes.root}>
                 {this.state.TagList.map(data => {
                     return (
-                        <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}/>
+                        <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}  className={classes.chip}/>
                     );
                 })}
                 </Paper>

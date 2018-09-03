@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
+//import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Grid from '@material-ui/core/Grid';
@@ -70,7 +70,6 @@ class Dishes extends React.Component {
     };
 
     handleExpandClick = () => {
-      //  alert(this.props.Tags);
         this.setState(state => ({
             expanded: !state.expanded
         }));
@@ -175,15 +174,13 @@ class Dishes extends React.Component {
                 <Card className={classes.card}>
                     <CardHeader
                         avatar={
-                            <Avatar className={classes.avatar}>
+                            <Avatar aria-label="Recipe" className={classes.avatar}>
+                                CLM
                             </Avatar>
                         }
-                        action={
-                            <IconButton>
-                                <MoreVertIcon />
-                            </IconButton>
-                        }
+
                         title={this.props.foodname}
+                        header={this.props.price}
                         subheader={this.props.window_name}
                         className={classes.cardHeader}
                     />
@@ -194,7 +191,6 @@ class Dishes extends React.Component {
                     />
                     <CardContent>
                         <Typography component="p">
-                            Price:{this.props.price}￥
                             {this.props.Tags.map(data => {
                             let avatar = null;
                             return (
@@ -210,12 +206,13 @@ class Dishes extends React.Component {
 
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
+                        <h4>Price:{this.props.price}￥ </h4>
                         <IconButton aria-label="Add to favorites" onClick={this.handleLikeClick}>
                             {this.state.icon?<FavoriteIcon className={classes.avatar2}/>:
                             <FavoriteIcon className={classes.avatar3}/>}
                         </IconButton>{this.state.like}
-                        <IconButton aria-label="Share">
-                        </IconButton><i>{!this.state.icon?"已收藏":"加入收藏"}</i>
+
+
                         <IconButton
                             className={classnames(classes.expand, {
                                 [classes.expandOpen]: this.state.expanded,

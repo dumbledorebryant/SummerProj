@@ -206,14 +206,14 @@ class Floor extends React.Component {
   render() {
     const { classes /*,theme,params*/ } = this.props;
     return (
-        <div className={classes.root}>
+        <div  className="container">
             <AppBar position="static" color="default">
                 <Tabs key = {this.state.canteen}
                       value={this.state.value}
                       onChange={this.handleChange}
                       indicatorColor="primary"
                       textColor="primary"
-                      fullWidth
+                      centered
                 >
                     {this.state.floorList.map((item,i) => (
                         i===0? <Tab label="全部" index={i} onClick={event=>this.handleChangeFloor(event,i)}/>:

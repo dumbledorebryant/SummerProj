@@ -39,6 +39,18 @@ const styles = theme => ({
         height: 60,
     },
 
+    sortbutton:{
+        margin:20,
+
+    },
+
+    pagination:{
+        margin:20,
+        backgroundColor: theme.palette.background.paper,
+        justifyContent:'center',
+        alignItems:'center',
+    }
+
 });
 
 const option=[
@@ -99,8 +111,9 @@ class WindowsFoodList extends React.Component {
     handleMenuItemClick = (event, index) => {
         let formData=new FormData();
         var s = JSON.stringify(this.state.dishesList);
+
         formData.append("foodList",s);
-        formData.append("type",index );
+        formData.append("type",index);
         fetch('http://localhost:8080/Food/SortFood',{
             credentials: 'include',
             method:'POST',
@@ -140,13 +153,13 @@ class WindowsFoodList extends React.Component {
         this.setState({
             dishesList:temp,
         })
-    }
+    };
 
     arrange=(data)=>{
         let result = data;
         let likeList = [];
         let foodListGroup=[];
-        let groupNum=0;
+        let groupNum = 0 ;
         let j = 5;
         if(result.length % j === 0){
             groupNum=result.length/j;//groupNum:页数
@@ -186,9 +199,11 @@ class WindowsFoodList extends React.Component {
                         aria-owns={this.state.anchorEl? 'simple-menu' : null}
                         aria-haspopup="true"
                         onClick={this.handleClick}
+                        className={classes.sortbutton}
                     >
                         {this.state.sort}
                     </Button>
+
                     <Menu
                         id="simple-menu"
                         anchorEl={anchorEl}
@@ -201,13 +216,11 @@ class WindowsFoodList extends React.Component {
                         <MenuItem onClick={event=>this.handleMenuItemClick(event,3)}>{option[3]}</MenuItem>
                         <MenuItem onClick={event=>this.handleMenuItemClick(event,4)}>{option[4]}</MenuItem>
 
-                    </Menu> <Pagination current={this.state.current}
-                                        onChange={this.onPageChange}
-                                        total={this.state.pageNum*10}/>
+                    </Menu>
+
                     <div align ="center">
                         <TagList addClickTag={this.props.addClickTag} delClickTag={this.props.delClickTag}/>
                     </div>
-
 
                     <div>
                         <MuiThemeProvider>
@@ -224,12 +237,15 @@ class WindowsFoodList extends React.Component {
                                 </Grid>
                             </Grid>
                         </MuiThemeProvider>
+
                         <div align ="center">
                             <Pagination current={this.state.current}
                                         onChange={this.onPageChange}
-                                        total={this.state.pageNum*10}/>
+                                        total={this.state.pageNum*10}
+                                        className={classes.pagination}
+                            />
                         </div>
-                        <br/><br/>
+
                     </div>
 
             </div>
