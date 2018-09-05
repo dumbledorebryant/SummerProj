@@ -5,16 +5,50 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
+import Typography from '@material-ui/core/Typography';
+import DoneIcon from '@material-ui/icons/Done';
+import Card from '@material-ui/core/Card';
 
 const styles = theme => ({
+    root1:{
+        margin:10
+    },
     root: {
         display: 'flex',
         justifyContent: 'left',
         flexWrap: 'wrap',
         padding: theme.spacing.unit / 2,
+        borderColor:"white",
+        borderStyle:'solid',
+        borderWidth:0.5,
+
     },
-    chip: {
-        margin: theme.spacing.unit / 2 + 10 ,
+    chip : {
+        width:100,
+        marginLeft: theme.spacing.unit / 2 + 20,
+        marginHeight:5,
+        backgroundColor:"white",
+        borderColor:"#63ccff",
+        borderStyle:'solid',
+        borderWidth:1,
+        borderRadius:5,
+        paddingLeft:18,
+        paddingRight:18
+
+},
+
+    chip2: {
+        width:100,
+        marginLeft: theme.spacing.unit / 2 + 20,
+        marginHeight:5,
+        backgroundColor:"#63ccff",
+        borderColor:"#63ccff",
+        borderStyle:'solid',
+        borderWidth:1,
+        borderRadius:5,
+        paddingLeft:18,
+        paddingRight:18
+
     },
 
 });
@@ -48,7 +82,7 @@ class Tag extends React.Component{
             <Chip
                 key = {this.state.data.tagId}
                 avatar={this.state.ifPick?
-                    <Avatar><TagFacesIcon  /></Avatar>:null}
+                     <TagFacesIcon  /> :null}
                 label={this.state.data.tagName}
                 onClick={this.handleClick(this.state.data)}
                 className={this.props.className}
@@ -103,13 +137,46 @@ class TagList extends React.Component {
         const { classes } = this.props;
         const { anchorEl } = this.state;
         return(
+            <div className={classes.root1}>
             <Paper className={classes.root}>
+                <Chip
+                    label="TASTE"
+                    className={classes.chip2}
+                />
                 {this.state.TagList.map(data => {
                     return (
-                        <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}  className={classes.chip}/>
-                    );
+                        data.tagType==="taste"?
+                        <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}  className={classes.chip}/>:null
+                );
                 })}
                 </Paper>
+                <Paper className={classes.root}>
+                    <Chip
+                        label="FOOD"
+                        className={classes.chip2}
+                    />
+                    {this.state.TagList.map(data => {
+                        return (
+                            data.tagType==="food"?
+                                <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}  className={classes.chip}/>:null
+                        );
+                    })}
+                </Paper>
+
+                <Paper className={classes.root}>
+                    <Chip
+                        label="COUNTRY"
+                        className={classes.chip2}
+                    />
+                    {this.state.TagList.map(data => {
+                        return (
+                            data.tagType==="country"?
+                                <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}  className={classes.chip}/>:null
+                        );
+                    })}
+                </Paper>
+
+            </div>
         )
     }
 }
@@ -120,3 +187,12 @@ TagList.propTypes = {
 
 export default withStyles(styles)(TagList);
 
+/*
+*   <Paper className={classes.root}>
+                    {this.state.TagList.map(data => {
+                        return (
+                            data.tagType==="taboo"?
+                                <Tag data={data} key={data.tagId} addClickTag={this.addClickTag} delClickTag={this.delClickTag}  className={classes.chip}/>:null
+                        );
+                    })}
+                </Paper>*/

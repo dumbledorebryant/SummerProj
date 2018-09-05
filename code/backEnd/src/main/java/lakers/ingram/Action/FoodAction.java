@@ -1,5 +1,6 @@
 package lakers.ingram.Action;
 
+import lakers.ingram.Dao.FoodTagDao;
 import lakers.ingram.ImgUtil.ImgUtil;
 import lakers.ingram.ModelEntity.FoodEntity;
 import lakers.ingram.ModelEntity.TagEntity;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpSession;
 import javax.swing.text.html.HTML;
 import java.io.PrintWriter;
 import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 @RestController
 @RequestMapping(value = "/Food")
@@ -121,10 +124,25 @@ public class FoodAction extends HttpServlet {
         PrintWriter out = response.getWriter();
         System.out.println("========sort==========");
         System.out.println(foodList);
-        JSONArray arr = JSONArray.fromObject(foodList);
-        SortFoodList(arr,type);
-        out.println(arr.toString());
-        System.out.println(arr.toString());
+
+        String[] arr = foodList.split(",");
+        List<FoodEntity> Foods = new ArrayList<FoodEntity>();
+        int len = arr.length;
+        for(int i = 0;i<len;i++){
+            int foodId = parseInt(arr[i]);
+            FoodEntity food = appService.getFoodById(foodId);
+            Foods.add(food);
+        }
+
+        System.out.println(Foods);
+
+        JSONArray arr3 = FoodEntityAddWindowName(Foods);
+        JSONArray arr4 = FoodEntityAddTag(arr3);
+        JSONArray arr5 = AddFoodPic(arr4);
+        SortFoodList(arr5,type);
+
+        out.println(arr5.toString());
+
         out.flush();
         out.close();
     }
@@ -162,14 +180,13 @@ public class FoodAction extends HttpServlet {
             Collections.sort(arr, new Comparator<JSONObject>() {
                 @Override
                 public int compare(JSONObject o1, JSONObject o2) {//降序
-                    System.out.println("000"+o2.getDouble("price"));
                     if(o1.getDouble("price")>o2.getDouble("price"))return -1;
                     return 1;
                 }
             });
         }
         System.out.println("-------------------SORT-------------");
-        System.out.println(arr.toString());
+
     }
     private JSONArray FoodEntityAddTag(JSONArray foodList){
         JSONArray arr = JSONArray.fromObject(foodList);

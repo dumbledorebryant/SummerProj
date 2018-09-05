@@ -148,6 +148,9 @@ public class AppServiceImpl implements AppService {
         return foodDao.getAllFoodByRestaurantAndFloor(restaurant,floor);
     };
 
+    public FoodEntity getFoodById(int foodId){
+        return foodDao.getFoodById(foodId);
+    };
     public List<FoodEntity> getAllFoodByWindowid(int window_id){
         return foodDao.getAllFoodByWindowid(window_id);
     };

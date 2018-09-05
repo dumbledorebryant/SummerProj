@@ -41,6 +41,11 @@ const styles = theme => ({
 
     sortbutton:{
         margin:20,
+        borderColor:"#63ccff",
+        backgroundColor:"#63ccff",
+        borderStyle:'solid',
+        borderWidth:1,
+        borderRadius:5,
 
     },
 
@@ -111,8 +116,14 @@ class WindowsFoodList extends React.Component {
     handleMenuItemClick = (event, index) => {
         let formData=new FormData();
         var s = JSON.stringify(this.state.dishesList);
+        let data = this.state.dishesList;
+        let foodIdList = [];
+        for(let i in data ){
+            var add = data[i].foodId;
+            foodIdList.push(add);
+        }
 
-        formData.append("foodList",s);
+        formData.append("foodList",foodIdList);
         formData.append("type",index);
         fetch('http://localhost:8080/Food/SortFood',{
             credentials: 'include',
@@ -257,68 +268,3 @@ WindowsFoodList.propTypes = {
 
 };
 export default withStyles(styles)(WindowsFoodList);
-/*
-*
-                    <Grid container className={classes.root} spacing={16} >
-                            <Grid container spacing={24} justify="left">
-                                {this.state.dishesList.map((item, i) => (
-                                    <Grid>
-                                        <Dishes id={item.foodId} userId={this.props.userId} key={item.foodId}
-                                                foodId={item.foodId} foodname={item.foodName} price={item.price}
-                                                tips={item.tips} window_name={item.windowName} like={item.likes}
-                                                picture="" Tags={item.Tags} clickLike={this.clickLike} idx={i}/>
-                                    </Grid>))
-                                }
-                                </Grid>
-                    </Grid>
-
-
-                    <TextField
-                        className={classes.search}
-                        id="search"
-                        style={{backgroundColor:'#26c3fe' ,paddingLeft:5 }}
-                        InputProps={{
-                             disableUnderline: true,
-                            startAdornment: (
-                                <InputAdornment  position="start">
-                                    <SearchIcon id="searchBtn" onClick={this.onHandleSearch}/>
-                                </InputAdornment>
-                            ),
-                        }}
-                        onFocus={this.onFocusSearch}
-                        onBlur={this.onBlurSearch}
-                    />
-
-
-                    <Button
-                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
-                        aria-haspopup="true"
-                        onClick={this.handleClick}
-                    >
-                        {tagtype[0]}
-                    </Button>
-
-                    <Button
-                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
-                        aria-haspopup="true"
-                        onClick={this.handleClick}
-                    >
-                        {tagtype[1]}
-                    </Button>
-
-                    <Button
-                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
-                        aria-haspopup="true"
-                        onClick={this.handleClick}
-                    >
-                        {tagtype[2]}
-                    </Button>
-
-                    <Button
-                        aria-owns={this.state.anchorE1? 'simple-menu' : null}
-                        aria-haspopup="true"
-                        onClick={this.handleClick}
-                    >
-                        {tagtype[3]}
-                    </Button>
-* */

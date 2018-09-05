@@ -14,6 +14,9 @@ const styles = theme => ({
         width: '20%',
         backgroundColor: theme.palette.background.paper,
         flexFlow:1,
+        borderColor:"#63ccff",
+        borderStyle:'solid',
+        borderWidth:1,
     },
 
     row: {

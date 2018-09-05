@@ -55,8 +55,14 @@ const styles = theme => ({
     avatar:{
         backgroundColor:'#fb8c00'
     },
-    chip: {
-        margin: theme.spacing.unit / 2,
+    chip : {
+        margin:2,
+        backgroundColor:"white",
+        borderColor:"#63ccff",
+        borderStyle:'solid',
+        borderWidth:1,
+        borderRadius:5,
+
     },
 });
 

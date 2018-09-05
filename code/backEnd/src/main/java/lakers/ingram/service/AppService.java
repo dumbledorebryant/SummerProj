@@ -69,6 +69,8 @@ public interface AppService {
 
     public String uploadNewFoodPic(File imgFile,Integer foodID);
 
+    public FoodEntity getFoodById(int foodId);
+
     //UserLikeFood
 
     public boolean IsSave(int userId, int foodId);//是否已经收藏，是返回1，不是返回0
