@@ -1,0 +1,82 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ct-series-a .ct-line,
+.ct-series-a .ct-point{
+  stroke: #c5e1a5;
+}
+
+.ct-series-b .ct-line,
+.ct-series-b .ct-point {
+  width:100%;
+  stroke: #ffecb3;
+  stroke-dasharray: 5,5;
+}
+
+.ct-series-c .ct-line,
+.ct-series-c .ct-point {
+  stroke:#f2aeae;
+
+}
+
+.ct-chart{
+  height:300px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+
+margin:20px;
+}
+
+
+.ct-tooltip{
+position:absolute;
+     color: rgba(153, 175, 128, 0.98);
+  padding:2px 2px;
+
+  display: inline-block;
+  min-width: 5em;
+  font-size:16px;
+  font-family: 'sans-serif';
+  text-align: center;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity .2s linear;
+
+}
+
+#searchBtn{
+  border-radius: 5px;
+  margin:5px;
+}
+#searchBtn:hover{
+  background-color:#c5e1a5;
+}
+
+
