@@ -197,6 +197,7 @@ class PersonalRecommend extends React.Component
         fetch('http://localhost:8080/UserLikeFood/GetPic?' +
             'foodID=' + name,
             {
+                credentials: 'include',
                 method: 'GET',
                 mode: 'cors',
             }
@@ -242,6 +243,7 @@ class PersonalRecommend extends React.Component
             '&userLikeId=' + name +
             '&flag=' + flag,
             {
+                credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
             }
@@ -258,6 +260,7 @@ class PersonalRecommend extends React.Component
         fetch('http://localhost:8080/UserTag/UserTagRelatedFood/search?' +
             'userId='+this.props.userid ,
             {
+                credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
             }
@@ -352,6 +355,7 @@ class PersonalRecommend extends React.Component
         fetch('http://localhost:8080/UserTag/UpdateUserDislikeTag?' +
             '&dislikeTags=' + dislikeTags,
             {
+                credentials: 'include',
                 method: 'POST',
                 mode: 'cors',
             }

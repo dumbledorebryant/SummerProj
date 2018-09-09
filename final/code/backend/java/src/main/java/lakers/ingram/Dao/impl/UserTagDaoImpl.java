@@ -110,6 +110,15 @@ public class UserTagDaoImpl implements UserTagDao{
         List<UsertagEntity> list1 = query1.list();
         Set<Integer> foodList = new TreeSet<>();
         Set<Integer> tagList = new TreeSet<>();
+        Set<Integer> tagTabooList = new TreeSet<>();
+        for (int i=0;i<list1.size();i++) {
+            Query query = session.createQuery("select a " +
+                    "from TagEntity a where a.tagId= :tagID").
+                    setParameter("tagID", list1.get(i).getTagId());
+            if(((TagEntity)query.uniqueResult()).getTagType().equals("taboo")){
+                tagTabooList.add(list1.get(i).getTagId());
+            }
+        }
         for (int i=0;i<list1.size();i++) {
             Query query2 = session.createQuery("select a " +
                     "from FoodtagEntity a where a.tagId= :tagID").
@@ -197,7 +206,11 @@ public class UserTagDaoImpl implements UserTagDao{
                 if(dislikeTagsID.contains(tag.getTagId())){
                     flag=false;
                 }
+                if(tagTabooList.contains(tag.getTagId())){
+                    flag=false;
+                }
             }
+
             if(!flag){
                 continue;
             }
